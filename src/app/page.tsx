@@ -1,10 +1,8 @@
 export default function Home() {
   return (
     <>
-      <dl>
-        <dt>HTML</dt>
-        <dd>Language of the Web</dd>
-      </dl>
+      <h1>Welcome to TryScentic</h1>
+      <a href="/login">Loign</a>
     </>
   );
 }
