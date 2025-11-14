@@ -3,9 +3,9 @@ import Link from "next/link";
 // import Image from "next/image";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Hero from "./components/Hero";
+import Hero from "./parts/Hero";
 import ProductCard from "./components/ProductCard";
-import FAQ from "./components/FAQ";
+import FAQ from "./parts/FAQ";
 
 export default function Home() {
   return (
