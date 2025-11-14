@@ -1,16 +1,16 @@
 "use client";
-import { useState } from "react";
+import React, { useState, type ChangeEvent, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Lock } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 
 interface InputFieldProps {
-  icon: JSX.Element;
+  icon: ReactNode;
   placeholder: string;
   type?: string;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
