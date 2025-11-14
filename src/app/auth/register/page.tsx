@@ -1,8 +1,9 @@
-'use client';
-import { useState } from 'react';
-import Image from 'next/image';
-import { Mail, Lock } from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc'; 
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Mail, Lock } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 interface InputFieldProps {
   icon: JSX.Element;
@@ -12,9 +13,15 @@ interface InputFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ icon, placeholder, type = 'text', value, onChange }) => (
+const InputField: React.FC<InputFieldProps> = ({
+  icon,
+  placeholder,
+  type = "text",
+  value,
+  onChange,
+}) => (
   <div className="relative">
-    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#511624] pointer-events-none">
+    <div className="absolute left-3 top-1/2 transform translate-y-1/2 text-[#511624] pointer-events-none">
       {icon}
     </div>
     <input
@@ -29,14 +36,14 @@ const InputField: React.FC<InputFieldProps> = ({ icon, placeholder, type = 'text
 );
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [confirmEmail, setConfirmEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (email !== confirmEmail) {
-      console.error('Emails do not match.');
+      console.error("Emails do not match.");
       return;
     }
     console.log(`Registration attempted for: ${email}`);
@@ -44,9 +51,7 @@ export default function RegisterPage() {
 
   return (
     <div className="h-screen overflow-hidden flex items-center justify-center bg-[#3D0B18] font-sans">
-
       <div className="flex flex-col md:flex-row w-full max-w-7xl h-[95vh] items-center justify-center gap-4 px-4">
-
         {/* Left Section: Register */}
         <div className="relative w-full md:w-[30%] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl">
           <div className="absolute inset-0 bg-white/30 backdrop-blur-sm z-10 pointer-events-none rounded-xl"></div>
@@ -82,7 +87,6 @@ export default function RegisterPage() {
                   <hr className="flex-grow border-gray-400" />
                 </div>
 
-                
                 <button
                   type="button"
                   className="w-full py-2 flex items-center justify-center gap-2 bg-white text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-100 font-medium transition text-sm shadow"
@@ -92,35 +96,40 @@ export default function RegisterPage() {
                 </button>
 
                 <div className="text-center text-xs mt-1">
-                  <a href="/forgot-password" className="text-[#511624] font-medium hover:underline">
+                  <a
+                    href="/forgot-password"
+                    className="text-[#511624] font-medium hover:underline"
+                  >
                     Forgot Password?
                   </a>
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-[#511624] text-white py-2 rounded-lg hover:bg-[#3D0B18] font-semibold transition text-sm shadow-md mt-2"
+                <Link
+                  href="../../"
+                  className="block bg-black text-white py-2 rounded-lg hover:bg-[#380206] font-semibold transition text-sm shadow-md mt-2"
                 >
                   Sign Up
-                </button>
+                </Link>
 
-                <a href="/login" className="block w-full">
-                  <button
-                    type="button"
-                    className="w-full bg-white text-gray-800 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 font-semibold transition text-sm shadow-sm mt-2"
-                  >
-                    Login
-                  </button>
-                </a>
+                <Link
+                  href="/auth/login"
+                  className="block bg-white text-gray-800 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 font-semibold transition text-sm shadow-sm mt-2"
+                >
+                  Login
+                </Link>
               </form>
             </div>
 
             <p className="text-[10px] text-center text-gray-700 mt-1">
-              By creating an account you agree with our{' '}
-              <a href="/terms" className="text-[#3D0B18] hover:underline">Terms</a> &{' '}
-              <a href="/privacy" className="text-[#3D0B18] hover:underline">Privacy Policy</a>
+              By creating an account you agree with our{" "}
+              <a href="/terms" className="text-[#3D0B18] hover:underline">
+                Terms
+              </a>{" "}
+              &{" "}
+              <a href="/privacy" className="text-[#3D0B18] hover:underline">
+                Privacy Policy
+              </a>
             </p>
-
           </div>
         </div>
 
@@ -130,7 +139,7 @@ export default function RegisterPage() {
             <div className="w-full h-full rounded-xl bg-transparent flex items-center justify-center">
               <div className="relative w-[95%] h-[95%] rounded-xl overflow-hidden shadow-xl">
                 <Image
-                  src="/2.PNG"
+                  src="/assets/images/2.PNG"
                   alt="Luxury Fragrance Display"
                   fill
                   className="object-cover rounded-xl"
@@ -139,7 +148,6 @@ export default function RegisterPage() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

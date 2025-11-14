@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cinzel, Cinzel_Decorative } from "next/font/google";
 import "./globals.css";
+import AOSInit from "./components/AOSInit";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const cinzel = Cinzel({
   subsets: ["latin"],
+  weight: ["400", "700"], // optional: choose weights you need
+  variable: "--font-cinzel",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const decorative = Cinzel_Decorative({
   subsets: ["latin"],
+  weight: ["400", "700"], // optional
+  variable: "--font-decorative",
 });
 
 export const metadata: Metadata = {
@@ -26,8 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${cinzel.variable} ${decorative.variable} antialiased text-gray-900 font-sans`}
       >
+        <AOSInit />
         {children}
       </body>
     </html>
