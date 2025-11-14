@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel, Cinzel_Decorative } from "next/font/google";
 import "./globals.css";
-import AOSInit from "./components/AOSInit";
+import AOSInit from "./components/animation/AOSInit";
 
 const cinzel = Cinzel({
   subsets: ["latin"],
