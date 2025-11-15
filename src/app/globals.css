@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  --background: #380206;
+  --background-gradient: radial-gradient(circle, rgba(56, 2, 6, 1) 0%, rgba(0, 0, 0, 1) 100%, rgba(56, 2, 6, 1) 100%);
+  --foreground: #FFFFFF;
+  --primary: #380206;
+  --secondary: #F79A20;
+  /* RGB format for Tailwind alpha utilities */
+  --color-brand-primary: 56 2 6;
+  --color-brand-secondary: 247 154 32;
+  --color-brand-accent: 26 1 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #380206;
+    --foreground: #FFFFFF;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  background: var(--background-gradient);
+  color: var(--foreground);
+  font-family: 'Cinzel', serif;
+}
+
+section {
+  @apply py-10;
+}
+
+.bg-img {
+  background-size: 100px;
+  filter: drop-shadow(2px 2px 100px #000000);
+}
+
+.hero-img {
+  filter: brightness(.1);
+  animation: hero 5s 1s infinite alternate-reverse;
+}
+
+@keyframes hero {
+  0% {
+    filter: brightness(0.2);
+  }
+
+  25% {
+    filter: brightness(0.5);
+  }
+
+  50% {
+    filter: brightness(0.85);
+  }
+
+  75% {
+    filter: brightness(0.55);
+  }
+
+  100% {
+    filter: brightness(0.2);
+  }
+}
