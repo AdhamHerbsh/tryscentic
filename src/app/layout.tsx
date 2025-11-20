@@ -1,17 +1,19 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Cinzel, Cinzel_Decorative } from "next/font/google";
 import "./globals.css";
 import AOSInit from "./components/animation/AOSInit";
+import { CartProvider } from "./components/context/CartContext"; // استدعاء CartProvider
 
 const cinzel = Cinzel({
   subsets: ["latin"],
-  weight: ["400", "700"], // optional: choose weights you need
+  weight: ["400", "700"],
   variable: "--font-cinzel",
 });
 
 const decorative = Cinzel_Decorative({
   subsets: ["latin"],
-  weight: ["400", "700"], // optional
+  weight: ["400", "700"],
   variable: "--font-decorative",
 });
 
@@ -31,8 +33,10 @@ export default function RootLayout({
       <body
         className={`${cinzel.variable} ${decorative.variable} antialiased text-gray-900 font-sans`}
       >
-        <AOSInit />
-        {children}
+        <CartProvider> {/* هنا ضفنا الـ Provider */}
+          <AOSInit />
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

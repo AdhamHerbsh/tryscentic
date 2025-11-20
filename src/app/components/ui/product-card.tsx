@@ -10,7 +10,7 @@ interface ProductCardProps {
 }
 
 // Product Card Component
-function ProductCard({ image, title, price, rating }: ProductCardProps) {
+function ProductCardd({ image, title, price, rating }: ProductCardProps) {
   return (
     <div className="group relative overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-2xl">
       {/* Product Image Container */}
