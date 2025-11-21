@@ -1,0 +1,10 @@
+.btn {
+    padding: 10px 20px;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+}
+
+.addToCart {
+    background-color: yellow;
+}

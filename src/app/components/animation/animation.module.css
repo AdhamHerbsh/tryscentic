@@ -1,0 +1,296 @@
+.loaderWrapper {
+    position: relative;
+    width: 320px;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fadeOut {
+    animation: wrapper-fade-out 1s ease-out forwards;
+}
+
+@keyframes wrapper-fade-out {
+    to {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.95);
+    }
+}
+
+.loaderWrapper svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Enhanced metallic stroke */
+.drawPath {
+    fill: none;
+    stroke: url(#metallic-gradient);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    filter: drop-shadow(0 0 3px rgba(217, 37, 37, 0.4));
+    animation: draw-line 1.5s ease-out forwards;
+}
+
+/* Central rod */
+.centralRod {
+    stroke: #feffef;
+    /* Hardcoded var(--bottle-red-dark) for CSS-in-JS compatibility if needed */
+    stroke-width: 6;
+    stroke-linecap: butt;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    opacity: 0.3;
+    transform-origin: center top;
+    transform: translateY(-150px);
+    animation: central-rod-slide 1s ease-out 0.2s forwards;
+}
+
+/* Stopper animation */
+.stopper {
+    fill: url(#sphere-gradient);
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: drop-stopper 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.2s forwards;
+}
+
+/* Injection arm */
+.injectionArm {
+    stroke: url(#metallic-gradient);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: draw-line 1s ease-out 1s forwards;
+}
+
+.nozzleTip {
+    fill: #ff6b6b;
+    opacity: 0;
+    animation: fade-in 0.5s ease-out 1.8s forwards;
+}
+
+/* Enhanced essence droplet */
+.essenceDroplet {
+    fill: #fff;
+    filter: drop-shadow(0 0 4px #fff);
+    opacity: 0;
+    offset-path: path("M 60 50 L 145 130 L 150 350");
+    offset-rotate: auto;
+    animation: inject-flow 1.2s ease-in-out 1.8s forwards;
+}
+
+/* --- ENHANCED LIQUID ANIMATIONS --- */
+
+/* Multi-layered liquid fill */
+.liquidBase {
+    fill: url(#liquid-gradient);
+    opacity: 0.9;
+    transform: translateY(340px);
+    animation: fill-water 2.5s cubic-bezier(0.4, 0, 0.2, 1) 3s forwards;
+}
+
+/* Animated liquid surface wave */
+.liquidSurface {
+    fill: rgba(255, 255, 255, 0.35);
+    opacity: 0;
+    animation: surface-wave 2.5s ease-in-out 5.5s infinite;
+}
+
+/* Dynamic shimmer effect */
+.liquidShimmer {
+    fill: url(#shimmer-gradient);
+    opacity: 0;
+    animation: shimmer-pulse 3s ease-in-out 5.5s infinite;
+}
+
+/* Enhanced bubbles */
+.bubble {
+    fill: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+}
+
+.bubbleB1 {
+    animation: rise-bubble 2.2s ease-in-out 3.2s infinite;
+}
+
+.bubbleB2 {
+    animation: rise-bubble 2.8s ease-in-out 3.8s infinite;
+}
+
+.bubbleB3 {
+    animation: rise-bubble 2s ease-in-out 4.5s infinite;
+}
+
+.bubbleB4 {
+    animation: rise-bubble 2.5s ease-in-out 5s infinite;
+}
+
+/* --- KEYFRAMES --- */
+@keyframes draw-line {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes central-rod-slide {
+    0% {
+        stroke-dashoffset: 300;
+        transform: translateY(-150px);
+        opacity: 0;
+    }
+
+    60% {
+        opacity: 0.3;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+        transform: translateY(0);
+        opacity: 0.3;
+    }
+}
+
+@keyframes fade-in {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes drop-stopper {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes inject-flow {
+    0% {
+        offset-distance: 0%;
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    10% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+
+    90% {
+        opacity: 1;
+        transform: scale(0.5);
+    }
+
+    100% {
+        offset-distance: 100%;
+        opacity: 0;
+    }
+}
+
+@keyframes fill-water {
+    0% {
+        transform: translateY(340px) scaleX(0.95);
+        opacity: 0.7;
+    }
+
+    30% {
+        opacity: 0.85;
+        transform: translateY(220px) scaleX(1.01);
+    }
+
+    60% {
+        transform: translateY(100px) scaleX(1.02);
+        opacity: 0.9;
+    }
+
+    80% {
+        transform: translateY(20px) scaleX(1);
+    }
+
+    100% {
+        transform: translateY(0) scaleX(1);
+        opacity: 0.9;
+    }
+}
+
+@keyframes surface-wave {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateY(-8px) scaleX(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: translateY(-12px) scaleX(1.05);
+    }
+}
+
+@keyframes shimmer-pulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: translateX(-10%) scaleY(0.8);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: translateX(10%) scaleY(1.2);
+    }
+}
+
+@keyframes rise-bubble {
+    0% {
+        cy: 320;
+        opacity: 0;
+        r: 1;
+    }
+
+    15% {
+        opacity: 0.8;
+        r: 1.5;
+    }
+
+    85% {
+        opacity: 0.8;
+        r: 3;
+    }
+
+    100% {
+        cy: 140;
+        opacity: 0;
+        r: 4;
+    }
+}
+
+@keyframes text-glow {
+    from {
+        text-shadow: 0 0 5px #b01010;
+    }
+
+    to {
+        text-shadow: 0 0 15px #ff6b6b, 0 0 5px white;
+    }
+}
+
+.loaderText {
+    margin-top: -10px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--color-white);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: text-glow 1s ease-in-out 1s infinite alternate, fade-in 1s ease-out 1s forwards;
+}

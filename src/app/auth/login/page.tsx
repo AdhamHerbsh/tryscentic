@@ -9,7 +9,7 @@ export default function Login() {
       <div
         className="bg-img h-screen bg-center text-center items-center content-center"
         style={{
-          backgroundImage: `url('assets/images/logo/logo-icon-1200x1200.png')`,
+          backgroundImage: `url('/assets/images/logo/logo-icon-1200x1200.png')`,
         }}
       >
         <div className="container mx-auto">

@@ -1,0 +1,9 @@
+.sidebar {
+    background: rgba(255, 255, 223, .53);
+
+}
+
+.sidebar input {
+    accent-color: var(--color-secondary);
+
+}

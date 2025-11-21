@@ -1,3 +1,5 @@
+"use client";
+import Image from "next/image";
 import { MouseEventHandler, useState } from "react";
 import { Plus, X } from "lucide-react";
 
@@ -40,7 +42,7 @@ function FAQItem({ question, answer, isOpen, onToggle }: Props) {
 }
 
 // Main FAQ Component
-export default function FAQSection() {
+export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -90,10 +92,12 @@ export default function FAQSection() {
     <section className="relative min-h-screen px-4 py-16 sm:px-6 lg:px-8">
       {/* Background Decorative Image (Optional) */}
       <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 opacity-30 lg:block">
-        <img
-          src="assets/images/logo/logo-icon-1200x1200.png"
-          alt="Decorative perfume"
+        <Image
           className="object-contain"
+          src="/assets/images/logo/logo-icon-1200x1200.png"
+          alt="Decorative perfume"
+          width={1200}
+          height={1200}
         />
       </div>
 

@@ -1,0 +1,18 @@
+.card {
+
+    background: rgba(245, 245, 220, .4);
+
+    transition: ease-in-out .5s;
+}
+
+.card img {
+    transform: scale(1);
+    transition: ease-in-out .5s;
+}
+
+
+.card:hover img {
+    transform: scale(1.05);
+    border-radius: var(--radius-md);
+    transition: ease-in-out .5s;
+}

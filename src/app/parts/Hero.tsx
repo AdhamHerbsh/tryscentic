@@ -1,17 +1,14 @@
-import { usePathname } from "next/navigation";
+import Link from "next/link";
 
-const Hero = () => {
-  const pathname = usePathname();
-
+export default function Hero() {
   return (
     <section id="hero">
       <div className="relative h-screen w-full overflow-hidden">
         {/* Background Image with Overlay */}
         <div
-          key={pathname}
           className="hero-img absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('assets/images/trung-do-bao.jpg')`,
+            backgroundImage: `url('/assets/images/trung-do-bao.jpg')`,
           }}
         ></div>
 
@@ -41,9 +38,12 @@ const Hero = () => {
             data-aos="fade-up"
             data-aos-delay="1000"
           >
-            <button className="rounded-md bg-orange-400 px-8 py-3 text-lg font-semibold text-white transition-all hover:bg-orange-500 hover:shadow-lg">
+            <Link
+              href="/pages/shop"
+              className="rounded-md bg-orange-400 px-8 py-3 text-lg font-semibold text-white transition-all hover:bg-orange-500 hover:shadow-lg"
+            >
               Shop Now
-            </button>
+            </Link>
             <button className="rounded-md border-2 border-white bg-transparent px-8 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-gray-900">
               Explore Brands
             </button>
@@ -52,6 +52,4 @@ const Hero = () => {
       </div>
     </section>
   );
-};
-
-export default Hero;
+}

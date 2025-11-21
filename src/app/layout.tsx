@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Cinzel, Cinzel_Decorative } from "next/font/google";
-import "./globals.css";
 import AOSInit from "./components/animation/AOSInit";
+import { Providers } from "./Providers";
+import "./globals.css";
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -29,10 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${cinzel.variable} ${decorative.variable} antialiased text-gray-900 font-sans`}
+        className={`${cinzel.variable} ${decorative.variable} antialiased bg-primary`}
       >
-        <AOSInit />
-        {children}
+        <Providers>
+          <AOSInit />
+          {children}
+        </Providers>
       </body>
     </html>
   );
