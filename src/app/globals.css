@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @import "tailwindcss";
 
 @theme {
@@ -7,36 +6,12 @@
   --color-primary: #380206;
   --color-secondary: #F79A20;
   --color-accent: #1A0101;
-=======
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
-
-@import "tailwindcss";
-
-:root {
-  --background: #380206;
-  --background-gradient: radial-gradient(circle, rgba(56, 2, 6, 1) 0%, rgba(0, 0, 0, 1) 100%, rgba(56, 2, 6, 1) 100%);
-  --foreground: #FFFFFF;
-  --primary: #380206;
-  --secondary: #F79A20;
-  /* RGB format for Tailwind alpha utilities */
-  --color-brand-primary: 56 2 6;
-  --color-brand-secondary: 247 154 32;
-  --color-brand-accent: 26 1 1;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #380206;
-    --foreground: #FFFFFF;
-  }
->>>>>>> master
 }
 
 * {
   box-sizing: border-box;
 }
 
-<<<<<<< HEAD
 /* 
   Loader Animation
   ▱▰▱▰▱▰▱▰▱▰▱▰▱▰
@@ -78,27 +53,19 @@
 
 body {
   background: #000000;
-=======
-body {
-  background: var(--background);
->>>>>>> master
   background: var(--background-gradient);
   color: var(--foreground);
   font-family: 'Cinzel', serif;
 }
 
-<<<<<<< HEAD
 main {
   @apply pt-10;
 }
 
-=======
->>>>>>> master
 section {
   @apply py-10;
 }
 
-<<<<<<< HEAD
 button {
   @apply hover:cursor-pointer;
 }
@@ -111,8 +78,6 @@ button {
 
 /* End Buttons */
 
-=======
->>>>>>> master
 .bg-img {
   background-size: 100px;
   filter: drop-shadow(2px 2px 100px #000000);

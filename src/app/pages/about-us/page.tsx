@@ -1,9 +1,9 @@
-import Image from 'next/image';
-import React from 'react';
-import Link from 'next/link';
-import Footer from '../../../components/layout/Footer';
-import Header from '../../../components/layout/Header';
-import Icon from '../../../components/layout/icon';
+import Image from "next/image";
+import React from "react";
+import Link from "next/link";
+import Footer from "../../components/layout/Footer";
+import Header from "../../components/layout/Header";
+import Icon from "../../components/layout/icon";
 
 const AboutPage = () => {
   return (
@@ -11,7 +11,6 @@ const AboutPage = () => {
       <Header />
 
       <div className="min-h-screen text-foreground font-sans bg-[var(--background-gradient)]">
-
         {/* Hero Section */}
         <section className="relative w-full h-[550px] flex items-center justify-center overflow-hidden">
           <Image
@@ -60,11 +59,12 @@ const AboutPage = () => {
             <p className="text-gray-200/90 max-w-3xl leading-relaxed">
               At [Your Brand Name], we believe that every scent tells a story.
               We are passionate about curating a unique collection of perfumes
-              that reflect elegance, authenticity, and individuality. Our journey
-              began with a simple vision — to bring the world’s most captivating
-              fragrances closer to you, combining luxury, quality, and
-              affordability.
-              <br /><br />
+              that reflect elegance, authenticity, and individuality. Our
+              journey began with a simple vision — to bring the world’s most
+              captivating fragrances closer to you, combining luxury, quality,
+              and affordability.
+              <br />
+              <br />
               We work closely with trusted international brands and authentic
               suppliers to ensure every bottle you receive is 100% original.
               Whether you’re drawn to classic notes, modern blends, or rare

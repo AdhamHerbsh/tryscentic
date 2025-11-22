@@ -2,8 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import Header from "../../../components/layout/Header";
-import Footer from "../../../components/layout/Footer";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
 
 export default function UserDashboardPage() {
   return (
@@ -15,12 +15,16 @@ export default function UserDashboardPage() {
 
       {/* Page Content */}
       <div className="min-h-screen bg-gradient-to-b from-[#2b0505] to-[#0d0303] text-white flex flex-col lg:flex-row pt-20">
-        
         {/* Sidebar */}
         <aside className="w-full lg:w-64 bg-[#1a1a1a]/40 backdrop-blur-md p-6 flex flex-col border-b lg:border-b-0 lg:border-r border-white/10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-full overflow-hidden">
-              <Image src="/placeholder-profile.png" alt="Profile" width={48} height={48} />
+              <Image
+                src="/placeholder-profile.png"
+                alt="Profile"
+                width={48}
+                height={48}
+              />
             </div>
             <div>
               <h3 className="text-sm font-semibold">John Doe</h3>
@@ -30,14 +34,26 @@ export default function UserDashboardPage() {
 
           {/* Sidebar Links */}
           <nav className="space-y-3 flex-1">
-            <button className="w-full text-left px-3 py-2 rounded-md bg-[#f0a020] text-black font-semibold">Personal Info</button>
-            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Order History</button>
-            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Wallet</button>
-            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Promo Codes</button>
-            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Favorites</button>
+            <button className="w-full text-left px-3 py-2 rounded-md bg-[#f0a020] text-black font-semibold">
+              Personal Info
+            </button>
+            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">
+              Order History
+            </button>
+            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">
+              Wallet
+            </button>
+            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">
+              Promo Codes
+            </button>
+            <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">
+              Favorites
+            </button>
           </nav>
 
-          <button className="mt-6 bg-[#f0a020] text-black font-semibold py-2 rounded-md">Edit Profile</button>
+          <button className="mt-6 bg-[#f0a020] text-black font-semibold py-2 rounded-md">
+            Edit Profile
+          </button>
         </aside>
 
         {/* Main Content */}
@@ -49,7 +65,9 @@ export default function UserDashboardPage() {
             <h2 className="text-xl font-semibold mb-2">My Wallet</h2>
             <div className="flex items-center justify-between bg-[#111]/60 p-5 rounded-lg">
               <p className="text-3xl font-bold">$500.00</p>
-              <button className="px-4 py-2 bg-[#f0a020] text-black font-semibold rounded">Top-up</button>
+              <button className="px-4 py-2 bg-[#f0a020] text-black font-semibold rounded">
+                Top-up
+              </button>
             </div>
           </section>
 
@@ -72,23 +90,35 @@ export default function UserDashboardPage() {
                   <tr className="border-t border-white/10">
                     <td className="p-3">#12345</td>
                     <td className="p-3">12/12/2023</td>
-                    <td className="p-3"><span className="text-green-400">Delivered</span></td>
+                    <td className="p-3">
+                      <span className="text-green-400">Delivered</span>
+                    </td>
                     <td className="p-3">$180.00</td>
-                    <td className="p-3 text-[#f0a020] cursor-pointer">View Order</td>
+                    <td className="p-3 text-[#f0a020] cursor-pointer">
+                      View Order
+                    </td>
                   </tr>
                   <tr className="border-t border-white/10">
                     <td className="p-3">#12346</td>
                     <td className="p-3">11/11/2023</td>
-                    <td className="p-3"><span className="text-green-400">Delivered</span></td>
+                    <td className="p-3">
+                      <span className="text-green-400">Delivered</span>
+                    </td>
                     <td className="p-3">$250.00</td>
-                    <td className="p-3 text-[#f0a020] cursor-pointer">View Order</td>
+                    <td className="p-3 text-[#f0a020] cursor-pointer">
+                      View Order
+                    </td>
                   </tr>
                   <tr className="border-t border-white/10">
                     <td className="p-3">#12347</td>
                     <td className="p-3">10/10/2023</td>
-                    <td className="p-3"><span className="text-yellow-400">Processing</span></td>
+                    <td className="p-3">
+                      <span className="text-yellow-400">Processing</span>
+                    </td>
                     <td className="p-3">$100.00</td>
-                    <td className="p-3 text-[#f0a020] cursor-pointer">View Order</td>
+                    <td className="p-3 text-[#f0a020] cursor-pointer">
+                      View Order
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -103,17 +133,25 @@ export default function UserDashboardPage() {
               <div className="border border-white/10 bg-white/10 rounded-xl p-4 flex justify-between items-center">
                 <div>
                   <h3 className="font-semibold">SUMMER20</h3>
-                  <p className="text-gray-300 text-sm">20% off all summer fragrances. Expires: 30/08/2024</p>
+                  <p className="text-gray-300 text-sm">
+                    20% off all summer fragrances. Expires: 30/08/2024
+                  </p>
                 </div>
-                <button className="text-[#f0a020] font-semibold">COPY CODE</button>
+                <button className="text-[#f0a020] font-semibold">
+                  COPY CODE
+                </button>
               </div>
 
               <div className="border border-white/10 bg-white/10 rounded-xl p-4 flex justify-between items-center">
                 <div>
                   <h3 className="font-semibold">FREESHIP</h3>
-                  <p className="text-gray-300 text-sm">Free shipping on orders over $100. Expires: 31/12/2024</p>
+                  <p className="text-gray-300 text-sm">
+                    Free shipping on orders over $100. Expires: 31/12/2024
+                  </p>
                 </div>
-                <button className="text-[#f0a020] font-semibold">COPY CODE</button>
+                <button className="text-[#f0a020] font-semibold">
+                  COPY CODE
+                </button>
               </div>
             </div>
           </section>
