@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
-import Icon from "../../components/layout/Icon";
+// import Icon from "../../components/layout/Icon";
 
 export default function ContactPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -21,9 +21,9 @@ export default function ContactPage() {
     <>
       <Header />
 
-      <div ref={containerRef} className="relative bg-[#1C0606] text-white">
+      <div ref={containerRef} className="relative bg-accent text-white">
         {/* HERO بنفس الحجم الأصلي تمامًا */}
-        <section className="h-[45vh] flex items-center justify-center text-center bg-[#1C0606]">
+        <section className="h-[45vh] flex items-center justify-center text-center">
           <div className="max-w-xl mx-auto">
             <h1 className="text-4xl font-bold mb-2">Contact Us</h1>
             <p className="opacity-70 text-lg">We’d love to hear from you</p>
@@ -62,7 +62,7 @@ export default function ContactPage() {
                 </button>
               </div>
 
-              <Icon />
+              {/* <Icon /> */}
             </div>
 
             {/* INFO */}

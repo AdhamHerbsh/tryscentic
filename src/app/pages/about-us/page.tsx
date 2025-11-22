@@ -1,9 +1,8 @@
 import Image from "next/image";
-import React from "react";
 import Link from "next/link";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
-import Icon from "../../components/layout/Icon";
+// import Icon from "../../components/layout/Icon";
 
 const AboutPage = () => {
   return (
@@ -77,7 +76,7 @@ const AboutPage = () => {
         </section>
 
         {/* Icons Section */}
-        <Icon />
+        {/* <Icon /> */}
         <Footer />
       </div>
     </>
