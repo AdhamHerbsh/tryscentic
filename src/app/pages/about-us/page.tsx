@@ -10,7 +10,7 @@ const AboutPage = () => {
       <div className="min-h-screen text-foreground font-sans bg-[var(--background-gradient)]">
 
         <Hero kind="about" isCenter={true} />
-
+          Zainab 
         {/* Who We Are Section */}
         <section className="bg-brand-primary/40 py-16 flex items-center justify-center">
           <div className="max-w-6xl mx-auto px-6 text-white">
