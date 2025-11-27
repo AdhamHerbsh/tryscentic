@@ -1,6 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 
-export default function Hero() {
+export function IndexHero({ bgimage }: { bgimage: string }) {
   return (
     <section id="hero">
       <div className="relative h-screen w-full overflow-hidden">
@@ -8,7 +9,7 @@ export default function Hero() {
         <div
           className="hero-img absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/assets/images/trung-do-bao.jpg')`,
+            backgroundImage: `url(${bgimage})`,
           }}
         ></div>
 
@@ -53,3 +54,66 @@ export default function Hero() {
     </section>
   );
 }
+
+export function AboutHero({ bgimage }: { bgimage: string }) {
+  return (
+    <>
+      {/* Hero Section */}
+      < section className="relative w-full h-[550px] flex items-center justify-center overflow-hidden" >
+        <Image
+          src="/assets/images/beautinow-niche-perfume-0sHorINihAI-unsplash.jpg"
+          alt="About Hero Image"
+          fill
+          className="hero-img object-cover"
+        />
+
+        <div className="absolute inset-0 bg-black/50" />
+
+        {/* Content Section (Logo + Text + Button) */}
+        <section className="absolute inset-0 flex flex-col justify-end items-start px-12 pb-12 z-10">
+          <div className="mb-6">
+            {/* Logo */}
+            <Image
+              src="/assets/images/logo/logo-icon-1200x1200.png"
+              alt="Logo"
+              width={200}
+              height={300}
+            />
+          </div>
+
+          <div className="max-w-xl">
+            <h1 className="text-5xl font-bold text-white tracking-wide">
+              About US
+            </h1>
+            <p className="mt-3 text-lg text-gray-300">
+              Authentic perfumes delivered to your door
+            </p>
+
+            <Link
+              href="#contact"
+              className="mt-6 inline-block border border-white text-white px-6 py-2 font-medium bg-white/10 hover:bg-white/20 transition"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </section>
+      </section ></>
+  );
+}
+
+function Hero({ kind }: { kind: string }) {
+  return (
+    <>
+
+      {
+
+        kind === "index" ?
+          <IndexHero bgimage="/assets/images/trung-do-bao.jpg" />
+          :
+          <AboutHero bgimage="/assets/images/beautinow-niche-perfume-0sHorINihAI-unsplash.jpg" />
+      }
+    </>
+  );
+}
+
+export default Hero;

@@ -1,10 +1,7 @@
 "use client";
 // import styles from "./buttons.module.css";
-import { useCart } from "../../../parts/CartContext";
-import type {
-  ProductDetail,
-  ProductSizeOption,
-} from "../../../data/productDetails";
+import { useCart } from "@/lib/context/CartContext";
+import type { ProductDetail, ProductSizeOption } from "@/types";
 
 type Props = {
   product: ProductDetail;

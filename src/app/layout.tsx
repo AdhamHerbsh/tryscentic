@@ -1,25 +1,37 @@
 import type { Metadata } from "next";
-import { Cinzel, Cinzel_Decorative } from "next/font/google";
-import AOSInit from "./components/animation/AOSInit";
-import { Providers } from "./Providers";
+import { cinzel, cinzelDecorative } from "@/lib/fonts";
+import { CartProvider } from "@/lib/context/CartContext";
+import AOSInit from "@/components/shared/AOSInit";
+import { APP_NAME, APP_DESCRIPTION } from "@/lib/utils/constants";
 import "./globals.css";
 
-const cinzel = Cinzel({
-  subsets: ["latin"],
-  weight: ["400", "700"], // optional: choose weights you need
-  variable: "--font-cinzel",
-});
-
-const decorative = Cinzel_Decorative({
-  subsets: ["latin"],
-  weight: ["400", "700"], // optional
-  variable: "--font-decorative",
-});
-
 export const metadata: Metadata = {
-  title: "TryScentic",
-  description:
-    "Tryscentic offers 100% authentic Perfumes samples and full bottle You can now experience rare fragrance at exceptional prices",
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
+  description: APP_DESCRIPTION,
+  keywords: [
+    "perfume",
+    "fragrance",
+    "authentic perfumes",
+    "perfume samples",
+    "luxury perfumes",
+    "designer fragrances",
+  ],
+  authors: [{ name: APP_NAME }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: APP_NAME,
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
@@ -30,12 +42,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${cinzel.variable} ${decorative.variable} antialiased bg-primary`}
+        className={`${cinzel.variable} ${cinzelDecorative.variable} antialiased bg-primary`}
       >
-        <Providers>
+        <CartProvider>
           <AOSInit />
           {children}
-        </Providers>
+        </CartProvider>
       </body>
     </html>
   );

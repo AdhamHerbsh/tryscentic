@@ -1,6 +1,6 @@
-import Header from "../../components/layout/Header";
-import Footer from "../../components/layout/Footer";
-import GiftCard from "../../components/ui/Cards/GiftCard";
+import Header from "../../../components/layout/Header";
+import Footer from "../../../components/layout/Footer";
+import GiftCard from "../../../components/ui/Cards/GiftCard";
 import FAQ from "../../parts/FAQ";
 
 // تعريف بيانات بطاقات الهدايا

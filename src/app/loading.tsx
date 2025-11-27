@@ -1,9 +1,5 @@
-import Loader from "./components/animation/Loader";
+import Loader from "@/components/shared/Loader";
 
-export default function loading() {
-  return (
-    <div>
-      <Loader />
-    </div>
-  );
+export default function Loading() {
+  return <Loader />;
 }

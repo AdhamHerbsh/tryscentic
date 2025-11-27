@@ -20,9 +20,7 @@ export default function Login() {
                 {/* Logo */}
                 <div className="mb-8">
                   <h1
-                    data-aos="slide-up"
-                    className="text-5xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-b from-white to-amber-800 sm:text-6xl md:text-7xl"
-                  >
+                    className="text-5xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-b from-white to-amber-800 sm:text-6xl md:text-7xl">
                     TRYSCENTIC
                   </h1>
                 </div>

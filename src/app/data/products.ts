@@ -1,4 +1,6 @@
-const sample = [
+import type { Product } from "@/types";
+
+const products: Product[] = [
   {
     id: "1",
     title: "Velvet Orchid",
@@ -41,6 +43,7 @@ const sample = [
     price: 130,
     image: "/assets/images/products/6.png",
   },
-  // ... duplicate to reach more items if needed
 ];
-export default sample;
+
+export default products;
+

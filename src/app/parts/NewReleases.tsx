@@ -1,4 +1,4 @@
-import VactionCard from "../components/ui/Cards/VactionCard";
+import VactionCard from "../../components/ui/Cards/VactionCard";
 
 // Main Products Grid Component
 function CardsGrid() {

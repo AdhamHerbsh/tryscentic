@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import Sidebar from "../components/ui/Sidebars/Sidebar";
-import ProductCard from "../components/ui/Cards/ProductCard";
-import Pagination from "../components/ui/Pagination";
+import Sidebar from "../../components/ui/Sidebars/Sidebar";
+import ProductCard from "../../components/ui/Cards/ProductCard";
+import Pagination from "../../components/ui/Pagination/Pagination";
 
 import sampleData from "../data/products";
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import AddToCart from "../Buttons/AddToCart";
 import { useState } from "react";
 import { Heart } from "lucide-react";
-import { useCart } from "../../../parts/CartContext";
+import { useCart } from "@/lib/context/CartContext";
 import styles from "./cards.module.css";
 
 type Product = {
@@ -57,7 +57,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="flex gap-3">
         <button
           onClick={handleAddToCart}
-          className="btn py-3 rounded-md font-semibold bg-secondary text-black hover:bg-transparent hover:text-white transition"
+          className="btn py-3 rounded-md font-semibold bg-secondary hover:bg-accent transition"
         >
           Add to Cart
         </button>

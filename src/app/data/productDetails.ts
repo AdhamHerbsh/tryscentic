@@ -1,30 +1,7 @@
-"use client";
 
-export type ProductReview = {
-  author: string;
-  rating: number;
-  content: string;
-};
+import type { ProductCatalog } from "@/types";
 
-export type ProductSizeOption = {
-  label: string;
-  price: number;
-};
-
-export type ProductDetail = {
-  id: string;
-  name: string;
-  type: string;
-  baseDescription: string;
-  baseImage: string;
-  images: string[];
-  sizes: ProductSizeOption[];
-  rating: number;
-  reviewCount: number;
-  reviews: ProductReview[];
-};
-
-export const productCatalog: Record<string, ProductDetail> = {
+export const productCatalog: ProductCatalog = {
   "velvet-shadow": {
     id: "velvet-shadow",
     name: "Velvet Shadow",

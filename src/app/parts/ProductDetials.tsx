@@ -6,7 +6,7 @@ import { Heart, Share2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Reviews from "./Reviews";
 import type { ProductDetail, ProductSizeOption } from "../data/productDetails";
-import ButtonAddToCart from "../components/ui/Buttons/AddToCart";
+import ButtonAddToCart from "../../components/ui/Buttons/AddToCart";
 
 type Breadcrumb = {
   label: string;

@@ -2,8 +2,8 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import Header from "../../components/layout/Header";
-import Footer from "../../components/layout/Footer";
+import Header from "../../../components/layout/Header";
+import Footer from "../../../components/layout/Footer";
 // import Icon from "../../components/layout/Icon";
 
 export default function ContactPage() {
