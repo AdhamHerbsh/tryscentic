@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Search, ShoppingCart, Menu, X, SquareArrowUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,8 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
   const {
     cartItems,
     totalItems,
@@ -17,6 +20,10 @@ export default function Header() {
     removeItem,
     clearCart,
   } = useCart();
+
+  useEffect(() => {
+    setMounted(true); 
+  }, []);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -29,9 +36,12 @@ export default function Header() {
   return (
     <>
       <header
-        className="fixed bg-accent text-white font-bold z-50 w-full"
-        data-aos="slide-down"
-      >
+  className={`fixed bg-accent text-white font-bold z-50 w-full ${
+    mounted ? "aos-init aos-animate" : ""
+  }`}
+  data-aos="slide-down"
+>
+
         <div className="mx-auto max-w-9xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             {/* Logo */}
@@ -56,13 +66,13 @@ export default function Header() {
 
             {/* Right Side Actions */}
             <div className="flex items-center gap-3 sm:gap-4">
-              {/* Top-Up Button - Hidden on small screens */}
+              {/* Top-Up Button */}
               <button className="hidden sm:flex items-center gap-2 rounded-md bg-secondary text-black px-3 py-1.5 font-semibold transition-all hover:bg-amber-700 hover:border-amber-700 lg:px-4 lg:py-2 cursor-pointer">
                 <span>Top-Up</span>
                 <SquareArrowUp />
               </button>
 
-              {/* Search Bar - Hidden on mobile, show on tablet+ */}
+              {/* Search Bar */}
               <div className="hidden md:flex items-center gap-2 rounded-lg bg-black bg-opacity-30 px-4 py-2 lg:w-64">
                 <Search className="h-4 w-4 text-orange-400" />
                 <input
@@ -85,10 +95,13 @@ export default function Header() {
                 className="relative rounded-full p-2 transition-colors hover:bg-white hover:text-black"
               >
                 <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
-                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-bold">
-                  {totalItems}
-                </span>
+                {mounted && (
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-bold">
+                    {totalItems}
+                  </span>
+                )}
               </button>
+
               {/* User Avatar */}
               <Link
                 href="/pages/user-dashboard"
@@ -109,11 +122,7 @@ export default function Header() {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden rounded-full p-2 transition-colors hover:bg-white hover:bg-opacity-10"
               >
-                {isMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
           </div>
@@ -165,9 +174,7 @@ export default function Header() {
           >
             <header className="flex items-center justify-between border-b px-6 py-4">
               <div>
-                <p className="text-xs uppercase tracking-widest text-gray-500">
-                  Bag
-                </p>
+                <p className="text-xs uppercase tracking-widest text-gray-500">Bag</p>
                 <h2 className="text-xl font-semibold">
                   {totalItems} item{totalItems !== 1 && "s"}
                 </h2>
@@ -188,10 +195,7 @@ export default function Header() {
               ) : (
                 <ul className="space-y-4">
                   {cartItems.map((item) => (
-                    <li
-                      key={item.id}
-                      className="flex gap-4 rounded-lg border p-3"
-                    >
+                    <li key={item.id} className="flex gap-4 rounded-lg border p-3">
                       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-gray-100">
                         <Image
                           src={item.image}
@@ -204,12 +208,8 @@ export default function Header() {
                       <div className="flex flex-1 flex-col justify-between">
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <h3 className="text-sm font-semibold">
-                              {item.name}
-                            </h3>
-                            <p className="text-xs text-gray-500">
-                              ${item.price.toFixed(2)}
-                            </p>
+                            <h3 className="text-sm font-semibold">{item.name}</h3>
+                            <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
                           </div>
                           <button
                             onClick={() => removeItem(item.id)}
@@ -227,9 +227,7 @@ export default function Header() {
                             >
                               -
                             </button>
-                            <span className="px-4 text-sm font-semibold">
-                              {item.quantity}
-                            </span>
+                            <span className="px-4 text-sm font-semibold">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.id, 1)}
                               className="px-3 py-1 text-lg font-semibold text-gray-600 transition hover:bg-gray-100"
@@ -251,9 +249,7 @@ export default function Header() {
             <footer className="border-t px-6 py-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="text-lg font-semibold">
-                  ${subtotal.toFixed(2)}
-                </span>
+                <span className="text-lg font-semibold">${subtotal.toFixed(2)}</span>
               </div>
               <div className="mt-3 flex gap-3">
                 <button

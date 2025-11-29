@@ -8,6 +8,14 @@ export interface Product {
   inStock?: boolean;
 }
 
+// type Product = {
+//   id: string;
+//   title: string;
+//   brand: string;
+//   price: number;
+//   image: string;
+// };
+
 export interface ProductSizeOption {
   label: string;
   price: number;
