@@ -59,18 +59,18 @@ export function AboutHero({ bgimage }: { bgimage: string }) {
   return (
     <>
       {/* Hero Section */}
-      < section className="relative w-full h-[550px] flex items-center justify-center overflow-hidden" >
+      < section className="relative w-full h-[800px] flex items-center justify-center overflow-hidden" >
         <Image
-          src="/assets/images/beautinow-niche-perfume-0sHorINihAI-unsplash.jpg"
+          src="/assets/images/leiada-krozjhen.jpg"
           alt="About Hero Image"
           fill
-          className="hero-img object-cover"
+          className="object-cover"
         />
 
         <div className="absolute inset-0 bg-black/50" />
 
         {/* Content Section (Logo + Text + Button) */}
-        <section className="absolute inset-0 flex flex-col justify-end items-start px-12 pb-12 z-10">
+        <section className="absolute inset-0 flex flex-col justify-center items-start p-10">
           <div className="mb-6">
             {/* Logo */}
             <Image
