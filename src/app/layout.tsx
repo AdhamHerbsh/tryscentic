@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cinzel, cinzelDecorative } from "@/lib/fonts";
 import { CartProvider } from "@/lib/context/CartContext";
+import { OrderProvider } from "@/lib/context/OrderContext";
 import AOSInit from "@/components/shared/AOSInit";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/utils/constants";
 import "./globals.css";
@@ -46,7 +47,10 @@ export default function RootLayout({
       >
         <CartProvider>
           <AOSInit />
-          {children}
+           <OrderProvider>
+            {children}
+          </OrderProvider>
+          
         </CartProvider>
       </body>
     </html>

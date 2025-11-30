@@ -1,19 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import AddToCart from "../Buttons/AddToCart";
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import { useCart } from "@/lib/context/CartContext";
 import styles from "./cards.module.css";
+import type { Product } from "@/types/product";
 
-type Product = {
-  id: string;
-  title: string;
-  brand: string;
-  price: number;
-  image: string;
-};
+
 
 export default function ProductCard({ product }: { product: Product }) {
   const [liked, setLiked] = useState(false);
@@ -32,13 +26,16 @@ export default function ProductCard({ product }: { product: Product }) {
     <article
       className={
         styles.card +
-        ` rounded-lg p-3 shadow-card hover:cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105`
+        ` rounded-lg p-3 shadow-card hover:cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 `
       }
     >
+   
+
       {/* Aspect Ratio Wrapper for Responsive Image */}
       <div className="rounded-md mb-4 relative aspect-square">
         {/* Ensure the parent element is relatively positioned for `fill` to work */}
         <Link href={`/pages/shop/${product.id}`}>
+       
           <Image
             src={product.image}
             alt={product.title}

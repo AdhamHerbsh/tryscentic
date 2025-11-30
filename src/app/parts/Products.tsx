@@ -19,7 +19,7 @@ export default function ProductsPage() {
   return (
     <section>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar - Takes full width on small screens, 1 column on large screens */}
+        
         <aside className="lg:col-span-1">
           <Sidebar
             onSearch={(q: string) => {
@@ -29,7 +29,7 @@ export default function ProductsPage() {
           />
         </aside>
 
-        {/* Products Content - Takes full width on small, 3 columns on large screens */}
+      
         <div className="lg:col-span-3">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             Showing {Math.min((page - 1) * pageSize + 1, filtered.length)} -{" "}
@@ -42,14 +42,14 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          {/* Product Grid - More responsive on smaller screens */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {shown.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
 
-          <div className="mt-12 flex justify-center">
+          <div className="mt-12 flex justify-center ">
             <Pagination
               page={page}
               total={Math.ceil(filtered.length / pageSize)}
