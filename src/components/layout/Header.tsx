@@ -36,7 +36,7 @@ export default function Header() {
           <div className="flex h-20 items-center justify-between">
             {/* Logo */}
             <div className="shrink-0">
-              <h1 className="text-3xl font-bold tracking-wider sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-wider sm:text-3xl">
                 TRYSCENTIC
               </h1>
             </div>
