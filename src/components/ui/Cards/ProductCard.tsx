@@ -29,6 +29,8 @@ export default function ProductCard({ product }: { product: Product }) {
         ` rounded-lg p-3 shadow-card hover:cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 `
       }
     >
+   
+
       {/* Aspect Ratio Wrapper for Responsive Image */}
       <div className="rounded-md mb-4 relative aspect-square">
         {/* Ensure the parent element is relatively positioned for `fill` to work */}
