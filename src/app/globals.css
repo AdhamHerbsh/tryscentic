@@ -50,6 +50,42 @@
   }
 }
 
+/* Add this to your CSS file */
+.bright-box {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated shine effect */
+.bright-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 30%,
+      var(--color-primary) 50%,
+      transparent 70%);
+  transform: rotate(45deg);
+  animation: shine 10s ease-in-out infinite;
+}
+
+/* Shine animation */
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+
+  50% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+}
 
 body {
   background: #000000;

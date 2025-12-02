@@ -13,18 +13,13 @@ export default function Footer() {
     { name: "Track Order", href: "#track" },
   ];
 
-  const companyLinks = [
-    { name: "About Us", href: "#about" },
-    { name: "Careers", href: "#careers" },
-    { name: "Privacy Policy", href: "#privacy" },
-    { name: "Terms of Service", href: "#terms" },
-  ];
+
 
   return (
     <footer className="bg-black text-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {/* Shop Section */}
           <div>
             <h3 className="mb-4 text-lg font-semibold">Shop</h3>
@@ -59,22 +54,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Company Section */}
-          <div>
-            <h3 className="mb-4 text-lg font-semibold">Company</h3>
-            <ul className="space-y-3">
-              {companyLinks.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-gray-400 transition-colors hover:text-white"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+
 
           {/* Stay Connected Section */}
           <div>
@@ -101,10 +81,11 @@ export default function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="px-3 py-2 bright-box">
             <h2 className="text-2xl font-serif font-bold tracking-wider">
               TRYSCENTIC™
             </h2>
+            <h4>Genuine Scents, Genuine Value</h4>
           </div>
 
           {/* Copyright */}

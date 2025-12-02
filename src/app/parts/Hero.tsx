@@ -61,7 +61,7 @@ export function AboutHero({ bgimage }: { bgimage: string }) {
       {/* Hero Section */}
       < section className="relative w-full h-[800px] flex items-center justify-center overflow-hidden" >
         <Image
-          src="/assets/images/leiada-krozjhen.jpg"
+          src={bgimage}
           alt="About Hero Image"
           fill
           className="object-cover"
@@ -108,9 +108,9 @@ function Hero({ kind }: { kind: string }) {
       {
 
         kind === "index" ?
-          <IndexHero bgimage="/assets/images/trung-do-bao.jpg" />
+          <IndexHero bgimage="/assets/images/hero.jpg" />
           :
-          <AboutHero bgimage="/assets/images/beautinow-niche-perfume-0sHorINihAI-unsplash.jpg" />
+          <AboutHero bgimage="/assets/images/leiada-krozjhen.jpg" />
       }
     </>
   );

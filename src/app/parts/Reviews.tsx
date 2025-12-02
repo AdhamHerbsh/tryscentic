@@ -1,5 +1,5 @@
 import { Star, StarHalf } from "lucide-react";
-import type { ProductReview } from "../data/productDetails";
+import type { ProductReview } from "@/types/product";
 
 type ReviewsProps = {
   rating: number;
@@ -79,45 +79,6 @@ export default function Reviews({
           ))}
         </div>
       </section>
-
-      <hr />
-      <p className="text-8xl">OR</p>
-      <hr />
-
-      {/* قسم مراجعات العملاء */}
-      <div className="bg-[#2b0004] text-white px-6 md:px-12 py-10">
-        <div className="border-t border-gray-600 my-8"></div>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Customer Reviews</h2>
-          <button className="border border-orange-500 text-white px-6 py-2 rounded-xl hover:bg-orange-500 transition-colors text-sm">
-            Write a Review
-          </button>
-        </div>
-        <div className="flex items-center gap-2 text-yellow-400 mb-4">
-          <span>⭐⭐⭐⭐⭐</span>
-          <span className="text-gray-300 text-sm">Based on 12 reviews</span>
-        </div>
-        <div className="border-b border-gray-600 pb-4 mb-4">
-          <div className="flex justify-between items-center">
-            <p className="font-semibold">Olivia R.</p>
-            <span className="text-yellow-400">⭐⭐⭐⭐⭐</span>
-          </div>
-          <p className="text-gray-300 text-sm mt-1">
-            Absolutely divine! The scent is long-lasting and I get so many
-            compliments.
-          </p>
-        </div>
-        <div className="pb-4">
-          <div className="flex justify-between items-center">
-            <p className="font-semibold">James T.</p>
-            <span className="text-yellow-400">⭐⭐⭐⭐⭐</span>
-          </div>
-          <p className="text-gray-300 text-sm mt-1">
-            A very sophisticated and elegant scent. Perfect for evening wear.
-            The packaging is also beautiful.
-          </p>
-        </div>
-      </div>
     </>
   );
 }

@@ -1,4 +1,3 @@
-
 import type { ProductCatalog } from "@/types";
 
 export const productCatalog: ProductCatalog = {
@@ -38,4 +37,3 @@ export const productCatalog: ProductCatalog = {
     ],
   },
 };
-
