@@ -21,15 +21,16 @@ export default function ProductsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
         <aside className="lg:col-span-1">
-          <Sidebar
-            onSearch={(q: string) => {
-              setQuery(q);
-              setPage(1);
-            }}
-          />
-        </aside>
+  <Sidebar
+    type="shop"
+    onSearch={(q: string) => {
+      setQuery(q);
+      setPage(1);
+    }}
+   
+  />
+</aside>
 
-      
         <div className="lg:col-span-3">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             Showing {Math.min((page - 1) * pageSize + 1, filtered.length)} -{" "}

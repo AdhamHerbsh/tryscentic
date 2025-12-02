@@ -1,20 +1,53 @@
+
 "use client";
 
+import { useCart } from "@/lib/context/CartContext";
 import Image from "next/image";
-import { useCart } from "@/lib/context/CartContext"; 
 
-export default function OrderSummary() {
+type OrderSummaryProps = {
+  kind?: "full" | "summary";
+};
+
+export default function OrderSummary({ kind = "full" }: OrderSummaryProps) {
   const { cartItems, subtotal } = useCart();
+  const shipping = 5.0;
+  const taxes = 21.5;
+  const grandTotal = subtotal + shipping + taxes;
+  const walletBalance = 50.0;
 
-  const shipping = 5.0; 
-  const grandTotal = subtotal + shipping;
-  const walletBalance = 50.0; 
+  if (kind === "summary") {
+    return (
+      <div className="bg-[#473033] rounded-xl shadow-md text-white p-4 w-full max-w-md">
+        <h3 className="text-lg font-bold mb-2 tracking-wide">ORDER SUMMARY</h3>
 
+        <div className="space-y-5 text-sm tracking-wide">
+          <div className="flex justify-between opacity-90">
+            <span>Subtotal</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between opacity-90">
+            <span>Shipping</span>
+            <span>${shipping.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between opacity-90">
+            <span>Taxes</span>
+            <span>${taxes.toFixed(2)}</span>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-500/40 my-2"></div>
+
+        <div className="flex justify-between font-bold text-lg tracking-wide">
+          <span>Total</span>
+          <span>${grandTotal.toFixed(2)}</span>
+        </div>
+      </div>
+    );
+  }
+
+ 
   return (
-   <div
-  className="rounded-xl p-6 h-fit text-white"
-  style={{ backgroundColor: '#5D4348' }}
->
+    <div className="rounded-xl p-6 h-fit text-white" style={{ backgroundColor: "#5D4348" }}>
       <h2 className="text-xl font-bold mb-4">Order Summary</h2>
 
       <div className="space-y-4 pb-4">
@@ -36,7 +69,7 @@ export default function OrderSummary() {
               <div className="flex-1 flex justify-between items-center pr-2">
                 <div>
                   <p className="font-medium text-base">{item.name}</p>
-                  <p className="text-gray-300 text-sm">{item.price}</p>
+                  <p className="text-gray-300 text-sm">${item.price}</p>
                 </div>
 
                 <p className="font-medium text-base">
@@ -66,33 +99,16 @@ export default function OrderSummary() {
 
       <div className="flex justify-between text-lg font-bold">
         <span>Grand Total</span>
-        <span>${grandTotal.toFixed(2)}</span>
-      </div>
-
-      <div className="mt-6">
-        <p className="mb-2 text-sm">Promo Code</p>
-        <div className="flex gap-2">
-          <input
-            placeholder="Enter code"
-            className="flex-1 p-2 rounded bg-white text-gray-800 placeholder-gray-500 focus:outline-none"
-          />
-          <button className="px-4 py-2 bg-[#393631] text-black rounded font-medium text-sm hover:bg-opacity-90 transition-colors">
-            Apply
-          </button>
-        </div>
+        <span>${(subtotal + shipping).toFixed(2)}</span>
       </div>
 
       <div className="mt-4 flex justify-between items-center p-3 bg-[#393631] rounded-lg">
         <div className="text-sm flex flex-col">
           <p>Wallet Balance:</p>
-          <span className="font-bold text-lg text-[#F0A020]">
-            ${walletBalance.toFixed(2)}
-          </span>
+          <span className="font-bold text-lg text-[#F0A020]">${walletBalance.toFixed(2)}</span>
         </div>
 
-        <button className="text-[#F0A020] font-semibold text-sm hover:underline">
-          Use Balance
-        </button>
+        <button className="text-[#F0A020] font-semibold text-sm hover:underline">Use Balance</button>
       </div>
     </div>
   );

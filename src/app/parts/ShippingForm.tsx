@@ -1,6 +1,8 @@
 "use client";
-
-export default function ShippingForm() {
+interface ShippingFormProps {
+  onContinue: () => void; 
+}
+export default function ShippingForm({ onContinue }: ShippingFormProps) {
   const PrimaryOrange = "#F0A020";
   const InputBgColor = "#473033";
   const FormMaxWidth = "max-w-4xl";
@@ -8,6 +10,8 @@ export default function ShippingForm() {
     backgroundColor: InputBgColor,
     backgroundImage: "linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3))",
   };
+
+
 
   return (
     <div className={`lg:col-span-2 text-white ${FormMaxWidth}`}>
@@ -127,15 +131,20 @@ export default function ShippingForm() {
           />
         </div>
 
-        <div className="mt-8 flex justify-end">
+    <div className="mt-8 flex justify-end">
           <button
+            type="button"
             className="px-6 py-3 text-white font-semibold rounded hover:opacity-90 transition-opacity"
             style={{ backgroundColor: PrimaryOrange }}
+            onClick={onContinue} 
           >
             Continue to Payment
           </button>
         </div>
+
+     
+  
       </form>
-    </div>
+    </ div >
   );
 }

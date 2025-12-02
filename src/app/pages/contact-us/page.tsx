@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Header from "../../../components/layout/Header";
 import Footer from "../../../components/layout/Footer";
-// import Icon from "../../components/layout/Icon";
 
 export default function ContactPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -14,7 +13,6 @@ export default function ContactPage() {
     offset: ["start start", "end start"],
   });
 
-  // الفورم يتحرك لفوق بس — من غير ما يختفي
   const formY = useTransform(scrollYProgress, [0, 0.5], [0, -80]);
 
   return (
@@ -22,7 +20,7 @@ export default function ContactPage() {
       <Header />
 
       <div ref={containerRef} className="relative bg-accent text-white">
-        {/* HERO بنفس الحجم الأصلي تمامًا */}
+      
         <section className="h-[45vh] flex items-center justify-center text-center">
           <div className="max-w-xl mx-auto">
             <h1 className="text-4xl font-bold mb-2">Contact Us</h1>
@@ -30,7 +28,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* الفورم ظاهر من الأول — ويتحرك بس مع السكروول */}
+    
         <motion.section
           style={{ y: formY }}
           className="px-6 py-16 bg-[#2C0A0A] relative z-10 -mt-10"
@@ -65,7 +63,7 @@ export default function ContactPage() {
               {/* <Icon /> */}
             </div>
 
-            {/* INFO */}
+          
             <div className="space-y-30">
               <div>
                 <h2 className="text-xl font-semibold">Contact</h2>

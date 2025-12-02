@@ -11,12 +11,12 @@ import PromoCodesSection from "../../parts/PromoCodesSection";
 export default function UserDashboardPage() {
   return (
     <>
-      {/* Header ثابت */}
+      
       <div className="fixed top-0 w-full z-50">
         <Header />
       </div>
 
-      {/* محتوى الصفحة */}
+    
       <div className="min-h-screen bg-gradient-to-b from-[#2b0505] to-[#0d0303] text-white flex flex-col lg:flex-row pt-20">
         <Sidebar
           type="user"
@@ -27,17 +27,18 @@ export default function UserDashboardPage() {
           }}
         />
 
-        <main className="flex-1 p-6 lg:p-10">
+        <main className="flex-1 p-6 lg:p-10 ml-64">
           <h1 className="text-3xl font-bold mb-4">My Account</h1>
 
           <WalletSection />
           <OrderHistorySection />
           <PromoCodesSection />
         </main>
+        
       </div>
+      
+       <Footer />
 
-      {/* Footer واحد فقط */}
-      <Footer />
     </>
   );
 }

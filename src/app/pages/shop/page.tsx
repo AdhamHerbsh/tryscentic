@@ -6,15 +6,17 @@ import Products from "../../parts/Products";
 export default function Shop() {
   return (
     <>
-      <Header />
+       <Header />
 
-      <main className="bg-primary">
+      <main className="bg-primary ">
         <div className="container mx-auto p-3">
           <Products />
         </div>
       </main>
 
-      <Footer />
+      <Footer /> 
+     
+
     </>
   );
 }
