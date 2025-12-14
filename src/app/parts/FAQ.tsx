@@ -96,8 +96,8 @@ export default function FAQ() {
           className="object-contain"
           src="/assets/images/logo/logo-icon-1200x1200.png"
           alt="Decorative perfume"
-          width={1200}
-          height={1200}
+          width={600}
+          height={600}
         />
       </div>
 

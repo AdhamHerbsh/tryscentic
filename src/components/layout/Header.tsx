@@ -30,27 +30,27 @@ export default function Header() {
     <>
       <header
         className="fixed bg-accent text-white font-bold z-50 w-full"
-        data-aos="slide-down"
+        data-aos="fade-down"
       >
         <div className="mx-auto max-w-9xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             {/* Logo */}
             <div className="shrink-0">
               <h1 className="text-2xl font-bold tracking-wider sm:text-3xl">
-                TRYSCENTIC
+                <Link href="/">TRYSCENTIC</Link>
               </h1>
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
                   href={link.href}
                   className="text-sm font-medium transition-colors hover:text-amber-400 lg:text-base"
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
             </nav>
 
@@ -123,14 +123,14 @@ export default function Header() {
             <div className="border-t border-amber-900 py-4 md:hidden">
               <nav className="flex flex-col space-y-4">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsMenuOpen(false)}
                     className="text-base font-medium transition-colors hover:text-amber-400"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 ))}
                 {/* Mobile Top-Up Button */}
                 <button className="flex items-center justify-center gap-2 rounded-md border-2 border-amber-600 bg-amber-600 px-4 py-2 text-sm font-semibold transition-all hover:bg-amber-700">

@@ -6,6 +6,9 @@
   --color-primary: #380206;
   --color-secondary: #F79A20;
   --color-accent: #1A0101;
+  --color-primary-rgb: 56, 2, 6;
+  --color-secondary-rgb: 247, 154, 32;
+  --color-accent-rgb: 26, 1, 1;
 }
 
 * {
@@ -107,20 +110,18 @@ button {
 }
 
 /* Start Buttons */
+
 .btn {
-  width: 100%;
+  @apply w-full mx-auto text-center;
 }
 
-/* End Buttons */
-
-.bg-img {
-  background-size: 100px;
-  filter: drop-shadow(2px 2px 100px #000000);
+.btn:hover {
+  @apply bg-secondary/450 hover:cursor-pointer hover:border hover:border-secondary;
 }
 
 .hero-img {
   filter: brightness(.1);
-  animation: hero 5s 1s infinite alternate-reverse;
+  animation: hero 10s 1s infinite alternate-reverse;
 }
 
 @keyframes hero {
@@ -142,5 +143,49 @@ button {
 
   100% {
     filter: brightness(0.2);
+  }
+}
+
+.footer-icons {
+  @apply hover:cursor-pointer hover:scale-110 transition-all duration-300
+}
+
+/* Glass Effect */
+
+/*
+  This class targets the core style of the <rect> element:
+  <rect x="2" y="2" width="1144" height="641" rx="20" fill="url(#paint0_linear_403_1356)" fill-opacity="0.4"/>
+*/
+
+.card-glass {
+  @apply bg-white/40;
+  /* Use white with 40% opacity (similar to fill-opacity="0.4") */
+
+  @apply rounded-xl;
+  /* rounded-xl is roughly 12px, rounded-2xl is 16px, or use rounded-[20px] for exact match */
+
+  @apply backdrop-blur-sm;
+}
+
+.card-glass-border {
+  @apply border-2 rounded-xl;
+  @apply border-white/20;
+}
+
+video {
+  animation: slide-bg 10s linear infinite;
+
+}
+
+/* * 2. Keyframes for Sliding Motion 
+ * This creates the continuous movement of the background image.
+ */
+@keyframes slide-bg {
+  from {
+    background-position-y: 100%;
+  }
+
+  to {
+    background-position-y: 0%;
   }
 }

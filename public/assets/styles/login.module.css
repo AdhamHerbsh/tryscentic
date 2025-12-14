@@ -1,0 +1,74 @@
+.brandTitle {
+    /* Tryscentic */
+
+    width: 500px;
+    height: 25px;
+
+    font-family: 'Cinzel';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 80px;
+    line-height: 24px;
+    /* identical to box height, or 30% */
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #F2F2F2;
+
+    text-shadow: 4px 3px 20px rgba(255, 255, 255, 0.8);
+    /* 2. Define the stroke (width color) for WebKit browsers */
+    -webkit-text-stroke: 1px var(--color-secondary);
+
+    /* 3. Optional: Smooths out the text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+}
+
+.loginForm {
+
+    /* Glass Effect */
+    background: rgba(202, 202, 202, 0.15);
+    border: 1px solid rgba(180, 180, 180, 0.6);
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 16px;
+
+}
+
+
+/* End Buttons */
+
+.bgImage {
+    width: 100%;
+    height: 100%;
+    transform: rotate(0deg);
+    background-size: 100px;
+    filter: drop-shadow(2px 2px 100px #000000);
+    position: fixed;
+    z-index: -1;
+    overflow: hidden;
+    animation: slide-bg 100s linear infinite;
+}
+
+/* * 2. Keyframes for Sliding Motion 
+ * This creates the continuous movement of the background image.
+ */
+@keyframes slide-bg {
+    from {
+        background-position-x: 0%;
+        background-position-y: 100%;
+    }
+
+    to {
+        /* Move the background image horizontally by 100% of its container width */
+        background-position-x: 100%;
+        background-position-y: 0%;
+    }
+}

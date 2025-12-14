@@ -8,12 +8,10 @@ import FAQ from "./parts/FAQ";
 export default function Home() {
   return (
     <>
-      <Header />
       <Hero kind="index" />
       <Posters />
       <NewReleases />
       <FAQ />
-      <Footer />
     </>
   );
 }

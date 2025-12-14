@@ -3,6 +3,8 @@ import { cinzel, cinzelDecorative } from "@/lib/fonts";
 import { CartProvider } from "@/lib/context/CartContext";
 import { OrderProvider } from "@/lib/context/OrderContext";
 import AOSInit from "@/components/shared/AOSInit";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/utils/constants";
 import "./globals.css";
 
@@ -45,12 +47,14 @@ export default function RootLayout({
       <body
         className={`${cinzel.variable} ${cinzelDecorative.variable} antialiased bg-primary`}
       >
+
         <CartProvider>
           <AOSInit />
-           <OrderProvider>
+          <OrderProvider>
+            <Header />
             {children}
+            <Footer />
           </OrderProvider>
-          
         </CartProvider>
       </body>
     </html>

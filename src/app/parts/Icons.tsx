@@ -11,10 +11,10 @@ export default function Icons() {
             <div className="max-w-6xl mx-auto px-6 text-white">
 
                 <div className="flex justify-center gap-4">
-                    <Image src={FacebookIcon} alt="Facebook" />
-                    <Image src={InstagramIcon} alt="Instagram" />
-                    <Image src={WhatsappIcon} alt="Whatsapp" />
-                    <Image src={TiktokIcon} alt="Tiktok" />
+                    <Image className="footer-icons" src={FacebookIcon} alt="Facebook" />
+                    <Image className="footer-icons" src={InstagramIcon} alt="Instagram" />
+                    <Image className="footer-icons" src={WhatsappIcon} alt="Whatsapp" />
+                    <Image className="footer-icons" src={TiktokIcon} alt="Tiktok" />
                 </div>
 
             </div>

@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import styles from "./sidebars.module.css";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
+import Link from "next/link";
 
 interface SidebarProps {
   type: "shop" | "user";
@@ -10,74 +12,101 @@ interface SidebarProps {
     image?: string;
   };
   onSearch?: (q: string) => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 
-      
-export default function Sidebar({ type = "shop", user, onSearch }: SidebarProps) {
+
+export default function Sidebar({ type = "shop", user, onSearch, isOpen, onClose }: SidebarProps) {
   // ========== Shop Sidebar ==========
   if (type === "shop") {
     return (
-     <div
-  className={
-    styles.sidebar +
-    ` p-6 rounded-md shadow-card sticky top-20`
-  }
->
-  <h3 className="text-white font-semibold mb-4">Filters</h3>
+      <div
+        className={
+          styles.sidebar +
+          ` p-4 sm:p-6 rounded-md shadow-card h-full overflow-y-auto`
+        }
+      >
+        {/* Close button - visible on all screen sizes */}
+        <div className="flex items-center justify-end my-4">
+          <button
+            onClick={onClose}
+            className="text-white hover:text-gray-300 transition-colors"
+            aria-label="Close filters"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
 
-  <div className="mb-6">
-    <label className="block text-white">Brand</label>
-    <div className="grid grid-cols-1 gap-3 mt-3">
-      {["Chanel", "Dior", "Gucci"].map((b) => (
+        <div className="mb-6">
+          <label className="block text-white text-sm sm:text-base mb-2">Brand</label>
+          <div className="grid grid-cols-1 gap-2 sm:gap-3">
+            {["Chanel", "Dior", "Gucci"].map((b) => (
+              <button
+                key={b}
+                className="text-xs sm:text-sm bg-primary hover:bg-secondary text-white py-2 rounded-md transition-colors"
+              >
+                {b}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-white text-sm sm:text-base mb-2">Scent Type</label>
+          <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:gap-3">
+            {["Floral", "Woody", "Citrus", "Spicy"].map((s) => (
+              <button
+                key={s}
+                className="text-xs sm:text-sm bg-primary hover:bg-secondary text-white p-2 rounded-md text-center transition-colors"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-white text-sm sm:text-base mb-2">Price Range</label>
+          <input type="range" min={0} max={500} className="w-full mt-3" />
+          <div className="flex justify-between text-xs text-white mt-2">
+            <span>$50</span>
+            <span>$250</span>
+          </div>
+        </div>
+
         <button
-          key={b}
-          className="text-sm bg-primary hover:bg-secondary text-white py-2 rounded-md"
+          onClick={() => {
+            onSearch?.("");
+            onClose?.();
+          }}
+          className="w-full py-2.5 sm:py-3 bg-secondary text-white font-semibold mb-3 rounded-md hover:bg-secondary/90 transition-colors text-sm sm:text-base"
         >
-          {b}
+          Search
         </button>
-      ))}
-    </div>
-  </div>
 
-  <div className="mb-6">
-    <label className="block text-white">Scent Type</label>
-    <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 mt-3">
-      {["Floral", "Woody", "Citrus", "Spicy"].map((s) => (
-        <button
-          key={s}
-          className="text-sm bg-primary hover:bg-secondary text-white p-2 rounded-md text-center"
-        >
-          {s}
+        <button className="w-full py-2.5 sm:py-3 border border-white text-white rounded-md hover:bg-white/10 transition-colors text-sm sm:text-base">
+          Clear All
         </button>
-      ))}
-    </div>
-  </div>
-
-  <div className="mb-6">
-    <label className="block text-white">Price Range</label>
-    <input type="range" min={0} max={500} className="w-full mt-3" />
-    <div className="flex justify-between text-xs text-white mt-2">
-      <span>$50</span>
-      <span>$250</span>
-    </div>
-  </div>
-
-  <button
-    onClick={() => onSearch?.("")}
-    className="w-full py-3 bg-secondary text-white font-semibold mb-3 rounded-md"
-  >
-    Search
-  </button>
-
-  <button className="w-full py-3 border border-white text-white rounded-md">
-    Clear All
-  </button>
-</div>
+      </div>
 
     );
   }
- 
+
   // ========== User Dashboard Sidebar ==========
   return (
     <aside
@@ -103,7 +132,7 @@ export default function Sidebar({ type = "shop", user, onSearch }: SidebarProps)
       </div>
 
       <nav className="space-y-3 flex-1">
-        <button className="w-full text-left px-3 py-2 rounded-md bg-[#f0a020] text-black font-semibold">
+        <button className="w-full text-left px-3 py-2 rounded-md bg-secondary text-black font-semibold">
           Personal Info
         </button>
         <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">
@@ -120,9 +149,14 @@ export default function Sidebar({ type = "shop", user, onSearch }: SidebarProps)
         </button>
       </nav>
 
-      <button className="mt-6 bg-[#f0a020] text-black font-semibold py-2 rounded-md">
+      <button className="mt-6 bg-secondary text-white font-semibold py-2 rounded-md">
         Edit Profile
       </button>
+
+      <Link href="/auth/login" className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Sign in</Link>
+      <Link href="/auth/register" className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Sign up</Link>
+      <LogoutLink className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Logout</LogoutLink>
+
     </aside>
   );
 }

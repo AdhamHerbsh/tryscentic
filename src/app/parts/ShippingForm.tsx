@@ -11,10 +11,10 @@ export default function ShippingForm() {
 
   return (
     <div className={`lg:col-span-2 text-white ${FormMaxWidth}`}>
-    
+
       <h1 className="text-3xl font-bold mb-6">Checkout</h1>
 
-    
+
       <div className="mb-10 w-full">
         <div className="flex justify-between text-sm mb-2">
           <span className="font-semibold text-white">Shipping Information</span>
@@ -37,7 +37,7 @@ export default function ShippingForm() {
       <h2 className="text-xl font-semibold mb-4">Shipping Information</h2>
 
       <form className="space-y-4">
-       
+
         <div className="flex flex-col relative">
           <label className="text-sm text-gray-400 mb-1" htmlFor="fullName">
             Full Name
@@ -46,11 +46,11 @@ export default function ShippingForm() {
             id="fullName"
             className="w-full p-3 rounded text-white focus:outline-none relative z-10"
             style={inputStyle}
-            defaultValue="John Doe"
+            placeholder="John Doe"
           />
         </div>
 
-  
+
         <div className="flex flex-col relative">
           <label className="text-sm text-gray-400 mb-1" htmlFor="address">
             Address
@@ -59,11 +59,11 @@ export default function ShippingForm() {
             id="address"
             className="w-full p-3 rounded text-white focus:outline-none relative z-10"
             style={inputStyle}
-            defaultValue="123 Perfume Lane"
+            placeholder="123 Perfume Lane"
           />
         </div>
 
-   
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col relative">
             <label className="text-sm text-gray-400 mb-1" htmlFor="city">
@@ -73,7 +73,7 @@ export default function ShippingForm() {
               id="city"
               className="p-3 rounded text-white focus:outline-none relative z-10"
               style={inputStyle}
-              defaultValue="Fragranceville"
+              placeholder="Fragranceville"
             />
           </div>
           <div className="flex flex-col relative">
@@ -84,7 +84,7 @@ export default function ShippingForm() {
               id="state"
               className="p-3 rounded text-white focus:outline-none relative z-10"
               style={inputStyle}
-              defaultValue="Scentopia"
+              placeholder="Scentopia"
             />
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function ShippingForm() {
               id="zip"
               className="p-3 rounded text-white focus:outline-none relative z-10"
               style={inputStyle}
-              defaultValue="12345"
+              placeholder="12345"
             />
           </div>
           <div className="flex flex-col relative">
@@ -109,12 +109,12 @@ export default function ShippingForm() {
               id="country"
               className="p-3 rounded text-white focus:outline-none relative z-10"
               style={inputStyle}
-              defaultValue="Aromaland"
+              placeholder="Aromaland"
             />
           </div>
         </div>
 
-      
+
         <div className="flex flex-col relative">
           <label className="text-sm text-gray-400 mb-1" htmlFor="phone">
             Phone Number
@@ -123,7 +123,7 @@ export default function ShippingForm() {
             id="phone"
             className="w-full p-3 rounded text-white focus:outline-none relative z-10"
             style={inputStyle}
-            defaultValue="+1 (555) 123-4567"
+            placeholder="+1 (555) 123-4567"
           />
         </div>
 

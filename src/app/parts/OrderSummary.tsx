@@ -1,20 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useCart } from "@/lib/context/CartContext"; 
+import { useCart } from "@/lib/context/CartContext";
 
 export default function OrderSummary() {
   const { cartItems, subtotal } = useCart();
 
-  const shipping = 5.0; 
+  const shipping = 5.0;
   const grandTotal = subtotal + shipping;
-  const walletBalance = 50.0; 
+  const walletBalance = 50.0;
 
   return (
-   <div
-  className="rounded-xl p-6 h-fit text-white"
-  style={{ backgroundColor: '#5D4348' }}
->
+    <div
+      className="rounded-xl p-6 h-fit text-white"
+      style={{ backgroundColor: '#5D4348' }}
+    >
       <h2 className="text-xl font-bold mb-4">Order Summary</h2>
 
       <div className="space-y-4 pb-4">
@@ -85,12 +85,12 @@ export default function OrderSummary() {
       <div className="mt-4 flex justify-between items-center p-3 bg-[#393631] rounded-lg">
         <div className="text-sm flex flex-col">
           <p>Wallet Balance:</p>
-          <span className="font-bold text-lg text-[#F0A020]">
+          <span className="font-bold text-lg text-secondary">
             ${walletBalance.toFixed(2)}
           </span>
         </div>
 
-        <button className="text-[#F0A020] font-semibold text-sm hover:underline">
+        <button className="text-secondary font-semibold text-sm hover:underline">
           Use Balance
         </button>
       </div>

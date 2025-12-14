@@ -26,16 +26,16 @@ export default function ProductCard({ product }: { product: Product }) {
     <article
       className={
         styles.card +
-        ` rounded-lg p-3 shadow-card hover:cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 `
+        ` rounded-lg p-2 sm:p-3 shadow-card hover:cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 `
       }
     >
-   
+
 
       {/* Aspect Ratio Wrapper for Responsive Image */}
-      <div className="rounded-md mb-4 relative aspect-square">
+      <div className="rounded-md mb-2 sm:mb-4 relative aspect-square">
         {/* Ensure the parent element is relatively positioned for `fill` to work */}
         <Link href={`/pages/shop/${product.id}`}>
-       
+
           <Image
             src={product.image}
             alt={product.title}
@@ -45,27 +45,27 @@ export default function ProductCard({ product }: { product: Product }) {
         </Link>
       </div>
 
-      <h4 className="text-white font-semibold mb-1">{product.title}</h4>
-      <div className="text-white/70 text-xs mb-4">{product.brand}</div>
-      <div className="text-white font-bold mb-4">
+      <h4 className="text-white font-semibold mb-1 text-sm sm:text-base line-clamp-1">{product.title}</h4>
+      <div className="text-white/70 text-xs mb-2 sm:mb-4">{product.brand}</div>
+      <div className="text-white font-bold mb-2 sm:mb-4 text-sm sm:text-base">
         ${product.price.toFixed(2)}
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-2 sm:gap-3">
         <button
           onClick={handleAddToCart}
-          className="btn py-3 rounded-md font-semibold bg-secondary hover:bg-accent transition"
+          className="flex-3 btn py-2 sm:py-3 rounded-md font-semibold bg-secondary hover:bg-accent transition text-xs sm:text-sm"
         >
           Add to Cart
         </button>
         <button
           onClick={() => setLiked((v) => !v)}
-          className="flex-1 btn rounded-md bg-white flex items-center justify-center p-3"
+          className="flex-1btn rounded-md bg-white flex items-center justify-center p-2 sm:p-3"
         >
           {liked ? (
-            <Heart fill="red" className="text-red-600" />
+            <Heart fill="red" className="text-red-600 w-4 h-4 sm:w-5 sm:h-5" />
           ) : (
-            <Heart className="text-black" />
+            <Heart className="text-black w-4 h-4 sm:w-5 sm:h-5" />
           )}
         </button>
       </div>

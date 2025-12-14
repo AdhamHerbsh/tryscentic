@@ -1,5 +1,3 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 // import Gallery from "@/app/parts/Gallery";
 import Hero from "@/app/parts/Hero";
 import { Facebook, Instagram } from "lucide-react";
@@ -8,8 +6,6 @@ import { Facebook, Instagram } from "lucide-react";
 export default function page() {
   return (
     <>
-      <Header />
-
       {/* <Gallery /> */}
 
       <Hero kind="about" />
@@ -19,7 +15,7 @@ export default function page() {
         <div className="max-w-6xl mx-auto px-6 text-white">
           <h2 className="text-3xl font-bold mb-4">Who We Are?!</h2>
           <p className="text-gray-200/90 max-w-3xl leading-relaxed">
-            At [Your Brand Name], we believe that every scent tells a story.
+            At TRYSCENTIC™, we believe that every scent tells a story.
             We are passionate about curating a unique collection of perfumes
             that reflect elegance, authenticity, and individuality. Our
             journey began with a simple vision — to bring the world’s most
@@ -43,8 +39,6 @@ export default function page() {
         <Facebook href="facebbok.com" />
         <Instagram href="instagram.com" />
       </div>
-
-      <Footer />
 
     </>
   )

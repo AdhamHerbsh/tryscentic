@@ -1,9 +1,7 @@
 "use client";
 
 import React from "react";
-import Header from "../../../components/layout/Header";
-import Footer from "../../../components/layout/Footer";
-import Sidebar from "../../../components/ui/Sidebars/Sidebar";
+import Sidebar from "@/components/ui/Sidebars/Sidebar";
 import WalletSection from "../../parts/WalletSection";
 import OrderHistorySection from "../../parts/OrderHistorySection";
 import PromoCodesSection from "../../parts/PromoCodesSection";
@@ -11,13 +9,8 @@ import PromoCodesSection from "../../parts/PromoCodesSection";
 export default function UserDashboardPage() {
   return (
     <>
-      {/* Header ثابت */}
-      <div className="fixed top-0 w-full z-50">
-        <Header />
-      </div>
-
       {/* محتوى الصفحة */}
-      <div className="min-h-screen bg-gradient-to-b from-[#2b0505] to-[#0d0303] text-white flex flex-col lg:flex-row pt-20">
+      <div className="flex flex-col lg:flex-row pt-20">
         <Sidebar
           type="user"
           user={{
@@ -35,9 +28,6 @@ export default function UserDashboardPage() {
           <PromoCodesSection />
         </main>
       </div>
-
-      {/* Footer واحد فقط */}
-      <Footer />
     </>
   );
 }

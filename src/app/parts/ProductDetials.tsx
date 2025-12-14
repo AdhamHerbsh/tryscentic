@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Share2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Reviews from "./Reviews";
-import type { ProductDetail, ProductSizeOption } from "../data/productDetails";
+import { ProductDetail, ProductSizeOption } from "@/types/product";
 import ButtonAddToCart from "../../components/ui/Buttons/AddToCart";
 
 type Breadcrumb = {
@@ -91,11 +91,10 @@ export default function ProductDetials({
                   <button
                     key={image}
                     onClick={() => setSelectedImage(image)}
-                    className={`relative aspect-square overflow-hidden rounded-2xl border transition ${
-                      selectedImage === image
-                        ? "border-white"
-                        : "border-white/10 hover:border-white/40"
-                    }`}
+                    className={`relative aspect-square overflow-hidden rounded-2xl border transition ${selectedImage === image
+                      ? "border-white"
+                      : "border-white/10 hover:border-white/40"
+                      }`}
                   >
                     <Image
                       src={image}
@@ -131,11 +130,10 @@ export default function ProductDetials({
                     <button
                       key={size.label}
                       onClick={() => setSelectedSize(size)}
-                      className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${
-                        selectedSize.label === size.label
-                          ? "border-white bg-white text-black"
-                          : "border-white/30 text-white hover:border-white"
-                      }`}
+                      className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${selectedSize.label === size.label
+                        ? "border-white bg-white text-black"
+                        : "border-white/30 text-white hover:border-white"
+                        }`}
                     >
                       {size.label}
                     </button>

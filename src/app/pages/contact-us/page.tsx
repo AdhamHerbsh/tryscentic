@@ -1,29 +1,11 @@
-"use client";
-
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import Header from "../../../components/layout/Header";
-import Footer from "../../../components/layout/Footer";
-// import Icon from "../../components/layout/Icon";
-
 export default function ContactPage() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  // الفورم يتحرك لفوق بس — من غير ما يختفي
-  const formY = useTransform(scrollYProgress, [0, 0.5], [0, -80]);
 
   return (
     <>
-      <Header />
-
-      <div ref={containerRef} className="relative bg-accent text-white">
+      <div className="relative bg-accent text-white">
         {/* HERO بنفس الحجم الأصلي تمامًا */}
-        <section className="h-[45vh] flex items-center justify-center text-center">
+        <section className="h-80 flex items-center justify-center text-center">
           <div className="max-w-xl mx-auto">
             <h1 className="text-4xl font-bold mb-2">Contact Us</h1>
             <p className="opacity-70 text-lg">We’d love to hear from you</p>
@@ -31,26 +13,23 @@ export default function ContactPage() {
         </section>
 
         {/* الفورم ظاهر من الأول — ويتحرك بس مع السكروول */}
-        <motion.section
-          style={{ y: formY }}
-          className="px-6 py-16 bg-[#2C0A0A] relative z-10 -mt-10"
-        >
+        <div className="px-6 py-16 bg-primary relative z-10 -mt-10">
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-24">
             {/* FORM */}
             <div className="space-y-6">
               <input
                 type="text"
                 placeholder="Full Name"
-                className="w-full p-3 rounded bg-[#3A1A1A] border border-[#F79A20]/40 outline-none"
+                className="w-full p-3 rounded border border-secondary outline-none"
               />
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full p-3 rounded bg-[#3A1A1A] border border-[#F79A20]/40 outline-none"
+                className="w-full p-3 rounded border border-secondary outline-none"
               />
               <textarea
                 placeholder="Message"
-                className="w-full p-3 rounded bg-[#3A1A1A] border border-[#F79A20]/40 h-32 outline-none"
+                className="w-full p-3 rounded border border-secondary h-35 max-h-70 outline-none"
               />
 
               <div className="flex space-x-6 pt-4">
@@ -61,8 +40,6 @@ export default function ContactPage() {
                   Send Message
                 </button>
               </div>
-
-              {/* <Icon /> */}
             </div>
 
             {/* INFO */}
@@ -77,9 +54,7 @@ export default function ContactPage() {
               </div>
             </div>
           </div>
-        </motion.section>
-
-        <Footer />
+        </div>
       </div>
     </>
   );

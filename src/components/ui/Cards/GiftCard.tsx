@@ -27,7 +27,7 @@ export default function GiftCard({ amount, currency, image }: GiftCardProps) {
         </div>{" "}
       </div>
       {/* زر الإرسال */}{" "}
-      <button className="w-full mt-4 bg-orange-500 text-black py-3 rounded-xl font-semibold hover:bg-orange-600 transition shadow-lg">
+      <button className="w-full mt-4 bg-secondary py-3 rounded-xl font-semibold hover:bg-amber-700 transition shadow-lg">
         Send as a Gift{" "}
       </button>{" "}
     </div>

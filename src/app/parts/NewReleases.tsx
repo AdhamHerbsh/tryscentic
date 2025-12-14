@@ -1,4 +1,4 @@
-import VactionCard from "../../components/ui/Cards/VactionCard";
+import NewReleaseCard from "@/components/ui/Cards/NewReleaseCard";
 
 // Main Products Grid Component
 function CardsGrid() {
@@ -53,7 +53,7 @@ function CardsGrid() {
         {/* Products Grid */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {products.map((product) => (
-            <VactionCard
+            <NewReleaseCard
               key={product.id}
               title={product.title}
               image={product.image}

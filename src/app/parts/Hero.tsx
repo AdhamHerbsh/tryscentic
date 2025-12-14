@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function IndexHero({ bgimage }: { bgimage: string }) {
   return (
-    <section id="hero">
+    <section id="hero" className="!pt-0">
       <div className="relative h-screen w-full overflow-hidden">
         {/* Background Image with Overlay */}
         <div
@@ -51,7 +51,7 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
           </div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }
 
@@ -75,8 +75,8 @@ export function AboutHero({ bgimage }: { bgimage: string }) {
             {/* Logo */}
             <Image
               src="/assets/images/logo/logo-icon-1200x1200.png"
-              alt="Logo"
-              width={200}
+              alt="TRYSCENTIC™"
+              width={300}
               height={300}
             />
           </div>

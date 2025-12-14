@@ -65,10 +65,10 @@ export default function OrderHistorySection() {
                 </span>
               </div>
 
-              <div>${(item.price * item.quantity).toFixed(2)}</div>
+              <div>${(item.items.reduce((total, item) => total + item.price * item.quantity, 0)).toFixed(2)}</div>
 
               <div className="text-right">
-                <button className="text-[#F0A020] font-semibold hover:underline">
+                <button className="text-secondary font-semibold hover:underline">
                   View Order
                 </button>
               </div>

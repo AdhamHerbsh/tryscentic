@@ -1,18 +1,29 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import animation from "./animation.module.css";
+import animation from "./loader-animation.module.css";
 
 export default function Loader() {
+
   const [restartKey, setRestartKey] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
+    // Reset fade out state when key changes (restart)
+    setIsFadingOut(false);
+
     // Simulate loading completion logic
     const timer = setTimeout(() => {
       setIsFadingOut(true);
-    }, 9000);
+    }, 5000);
 
-    return () => clearTimeout(timer);
+    const interval = setInterval(() => {
+      console.log("Interval");
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timer);
+    };
   }, [restartKey]);
 
   const handleRestart = () => {
@@ -20,13 +31,14 @@ export default function Loader() {
     setRestartKey((prev) => prev + 1);
   };
 
+
+
   return (
     <>
       <div className="bg-accent w-full h-screen flex flex-col justify-center items-center">
         <div
-          className={`${animation.loaderWrapper} cursor-pointer ${
-            isFadingOut ? animation.fadeOut : ""
-          }`}
+          className={`${animation.loaderWrapper} cursor-pointer ${isFadingOut ? animation.fadeOut : ""
+            }`}
           onClick={handleRestart}
           key={restartKey} // Key change forces React to remount component, resetting CSS animations
         >
