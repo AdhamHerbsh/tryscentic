@@ -113,7 +113,7 @@ export const RegisterForm: React.FC = () => {
                     </button>
 
                     {/* Equivalent to .loginButton: w-full, padding, bg/color, rounded-lg, styling */}
-                    <Link href="/auth/login" className="block w-full py-4 bg-white text-gray-700 border border-gray-300 rounded-lg font-bold text-center transition-all duration-200 shadow-sm mt-2 hover:bg-gray-50 hover:shadow-md hover:-translate-y-px">
+                    <Link href="/login" className="block w-full py-4 bg-white text-gray-700 border border-gray-300 rounded-lg font-bold text-center transition-all duration-200 shadow-sm mt-2 hover:bg-gray-50 hover:shadow-md hover:-translate-y-px">
                         Login
                     </Link>
                     {/* Equivalent to .forgotPassword, .forgotPasswordLink */}

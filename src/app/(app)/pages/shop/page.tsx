@@ -1,4 +1,4 @@
-import Products from "@/parts/Products";
+import Products from "@/app/(app)/parts/Products";
 
 export default function Shop() {
   return (

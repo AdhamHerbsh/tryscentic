@@ -2,9 +2,9 @@
 
 import React from "react";
 import Sidebar from "@/components/ui/Sidebars/Sidebar";
-import WalletSection from "../../parts/WalletSection";
-import OrderHistorySection from "../../parts/OrderHistorySection";
-import PromoCodesSection from "../../parts/PromoCodesSection";
+import WalletSection from "@/app/(app)/parts/WalletSection";
+import OrderHistorySection from "@/app/(app)/parts/OrderHistorySection";
+import PromoCodesSection from "@/app/(app)/parts/PromoCodesSection";
 
 export default function UserDashboardPage() {
   return (

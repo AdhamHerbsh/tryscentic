@@ -1,8 +1,8 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import ProductDetials from "@/app/parts/ProductDetials";
-import { productCatalog } from "@/app/data/productCatalog";
+import ProductDetials from "@/app/(app)/parts/ProductDetials";
+import { productCatalog } from "@/app/(app)/data/productCatalog";
 
 const defaultProductSlug = "velvet-shadow";
 

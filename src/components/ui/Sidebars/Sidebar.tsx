@@ -118,7 +118,7 @@ export default function Sidebar({ type = "shop", user, onSearch, isOpen, onClose
       <div className="flex items-center gap-3 mb-8">
         <div className="w-12 h-12 rounded-full overflow-hidden">
           <Image
-            src={user?.image || '/placeholder-profile.png'}
+            src={user?.image || '/assets/images/placeholder-profile.png'}
             alt="Profile"
             width={48}
             height={48}
@@ -153,8 +153,8 @@ export default function Sidebar({ type = "shop", user, onSearch, isOpen, onClose
         Edit Profile
       </button>
 
-      <Link href="/auth/login" className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Sign in</Link>
-      <Link href="/auth/register" className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Sign up</Link>
+      <Link href="/login" className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Sign in</Link>
+      <Link href="/register" className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Sign up</Link>
       <LogoutLink className="btn mt-6 bg-secondary text-white font-semibold py-2 rounded-md">Logout</LogoutLink>
 
     </aside>

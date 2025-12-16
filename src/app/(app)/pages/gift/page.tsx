@@ -1,6 +1,6 @@
 "use client"
 import GiftCard from "@/components/ui/Cards/GiftCard";
-import HowItWorks from "@/parts/HowItWorks";
+import HowItWorks from "@/app/(app)/parts/HowItWorks";
 
 // تعريف بيانات بطاقات الهدايا
 const giftCards = [

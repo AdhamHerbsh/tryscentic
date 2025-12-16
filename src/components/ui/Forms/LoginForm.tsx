@@ -68,7 +68,6 @@ export default function LoginForm() {
                             or
                         </span>
                     </div>
-
                     <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
                         {/* Email Input */}
                         <InputField
@@ -101,7 +100,7 @@ export default function LoginForm() {
 
                         {/* Sign Up Button */}
                         <Link
-                            href='/auth/register'
+                            href='/register'
                             className="block w-full py-4 bg-white text-gray-700 border border-gray-300 rounded-lg font-semibold text-center 
                                    transition-all duration-200 shadow-sm mt-2 hover:bg-gray-50 hover:shadow-md hover:-translate-y-px"
                         >
@@ -123,12 +122,12 @@ export default function LoginForm() {
                     <p className="text-center text-sm">
                         By creating an account you agree with our
                         <br />
-                        <Link href="#terms" className="text-cyan-400 hover:underline">
+                        <Link href="/terms" className="text-cyan-400 hover:underline">
                             Terms of Service
                         </Link>
                         {" "}&{" "}
                         <Link
-                            href="#privacy"
+                            href="/privacy"
                             className="text-cyan-400 hover:underline"
                         >
                             Privacy Policy

@@ -1,5 +1,5 @@
 // import Gallery from "@/app/parts/Gallery";
-import Hero from "@/app/parts/Hero";
+import Hero from "@/app/(app)/parts/Hero";
 import { Facebook, Instagram } from "lucide-react";
 
 
