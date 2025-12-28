@@ -1,17 +1,48 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { useCart } from "@/lib/context/CartContext";
+import { toast } from "sonner";
 import styles from "./cards.module.css";
 import type { Product } from "@/types/product";
 
 
 
-export default function ProductCard({ product }: { product: Product }) {
-  const [liked, setLiked] = useState(false);
+interface ProductCardProps {
+  product: Product;
+  isFavorite?: boolean;
+  onToggleFavorite?: (product: Product) => void;
+}
+
+export default function ProductCard({ product, isFavorite = false, onToggleFavorite }: ProductCardProps) {
+  const [liked, setLiked] = useState(isFavorite);
   const { addToCart } = useCart();
+
+  // Sync local state with prop when it changes (e.g. after data fetch)
+  useEffect(() => {
+    setLiked(isFavorite);
+  }, [isFavorite]);
+
+  const handleToggle = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Optimistic update
+    const previousState = liked;
+    setLiked(!previousState);
+
+    if (onToggleFavorite) {
+      try {
+        await onToggleFavorite(product);
+      } catch {
+        // Revert on error
+        setLiked(previousState);
+      }
+    }
+  };
+
 
   const handleAddToCart = () => {
     addToCart({
@@ -20,37 +51,39 @@ export default function ProductCard({ product }: { product: Product }) {
       price: product.price,
       image: product.image,
     });
+    toast.success(`${product.title} added to cart!`);
   };
 
   return (
     <article
       className={
         styles.card +
-        ` rounded-lg p-2 sm:p-3 shadow-card hover:cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 `
+        ` sm:p-3 shadow-card shadow shadow-white hover:cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 hover:rounded-3xl hover:border hover:border-white/50 bg-white/5 p-4 `
       }
     >
+      <Link href={`/pages/shop/${product.id}`}>
 
 
-      {/* Aspect Ratio Wrapper for Responsive Image */}
-      <div className="rounded-md mb-2 sm:mb-4 relative aspect-square">
-        {/* Ensure the parent element is relatively positioned for `fill` to work */}
-        <Link href={`/pages/shop/${product.id}`}>
+        {/* Aspect Ratio Wrapper for Responsive Image */}
+        <div className="rounded-md mb-2 sm:mb-4 relative aspect-square">
+          {/* Ensure the parent element is relatively positioned for `fill` to work */}
 
           <Image
             src={product.image}
             alt={product.title}
             fill
             style={{ objectFit: "cover" }} // Use objectFit for better image control
+            className="rounded-2xl"
           />
-        </Link>
-      </div>
+        </div>
 
-      <h4 className="text-white font-semibold mb-1 text-sm sm:text-base line-clamp-1">{product.title}</h4>
-      <div className="text-white/70 text-xs mb-2 sm:mb-4">{product.brand}</div>
-      <div className="text-white font-bold mb-2 sm:mb-4 text-sm sm:text-base">
-        ${product.price.toFixed(2)}
-      </div>
+        <h4 className="text-white font-semibold mb-1 text-sm sm:text-base line-clamp-1">{product.title}</h4>
+        <div className="text-white/70 text-xs mb-2 sm:mb-4">{product.brand}</div>
+        <div className="text-white font-bold mb-2 sm:mb-4 text-sm sm:text-base">
+          LE {product.price}
+        </div>
 
+      </Link>
       <div className="flex gap-2 sm:gap-3">
         <button
           onClick={handleAddToCart}
@@ -59,7 +92,7 @@ export default function ProductCard({ product }: { product: Product }) {
           Add to Cart
         </button>
         <button
-          onClick={() => setLiked((v) => !v)}
+          onClick={handleToggle}
           className="flex-1btn rounded-md bg-white flex items-center justify-center p-2 sm:p-3"
         >
           {liked ? (

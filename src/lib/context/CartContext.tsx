@@ -30,38 +30,49 @@ const STORAGE_KEY = "tryscentic_cart_items";
 const initialCart: CartItem[] = [];
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") {
-      return initialCart;
-    }
+  // Initialize with empty array to match server-side rendering
+  const [cartItems, setCartItems] = useState<CartItem[]>(initialCart);
+
+  // Flag to track if we've loaded from storage to prevent overwriting with empty
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load from local storage on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (!stored) return initialCart;
-      const parsed = JSON.parse(stored) as CartItem[];
-      if (!Array.isArray(parsed)) return initialCart;
-      return parsed.filter(
-        (item) =>
-          typeof item.id === "string" &&
-          typeof item.name === "string" &&
-          typeof item.price === "number" &&
-          typeof item.image === "string" &&
-          typeof item.quantity === "number" &&
-          item.quantity > 0
-      );
-    } catch {
-      return initialCart;
+      if (stored) {
+        const parsed = JSON.parse(stored) as CartItem[];
+        if (Array.isArray(parsed)) {
+          const validItems = parsed.filter(
+            (item) =>
+              typeof item.id === "string" &&
+              typeof item.name === "string" &&
+              typeof item.price === "number" &&
+              typeof item.image === "string" &&
+              typeof item.quantity === "number" &&
+              item.quantity > 0
+          );
+          setCartItems(validItems);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load cart from storage", e);
+    } finally {
+      setIsInitialized(true);
     }
-  });
+  }, []);
 
+  // Save to local storage whenever cartItems changes
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!isInitialized || typeof window === "undefined") return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cartItems));
     } catch {
-      // Ignore write errors (e.g., storage quotas)
+      // Ignore write errors
     }
-  }, [cartItems]);
+  }, [cartItems, isInitialized]);
 
   const totals = useMemo(() => {
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);

@@ -9,8 +9,9 @@ export default function CheckoutPage() {
   // ارتفاع الهيدر الافتراضي
   const HEADER_HEIGHT_CLASS = "mt-20"; // mt-20 ≈ 80px
 
+
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#2b0505] to-[#0d0303] text-white">
+    <div className="flex flex-col min-h-screen bg-primary text-white">
       {/* Main content */}
       <main className={`flex-1 px-4 lg:px-10 ${HEADER_HEIGHT_CLASS}`}>
         <div className="max-w-7xl mx-auto relative">

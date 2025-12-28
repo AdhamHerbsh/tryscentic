@@ -1,25 +1,55 @@
-"use client";
+import { getProductById } from '@/data-access/products';
+import { isProductFavorite } from '@/data-access/user/favorites';
+import ProductDetials from '@/app/(app)/parts/ProductDetials';
+import { notFound } from 'next/navigation';
 
-import { useParams } from "next/navigation";
-import ProductDetials from "@/app/(app)/parts/ProductDetials";
-import { productCatalog } from "@/app/(app)/data/productCatalog";
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const { id } = await params;
 
-const defaultProductSlug = "velvet-shadow";
+  try {
+    const product = await getProductById(id);
 
-export default function ProductPage() {
-  const params = useParams<{ id: string }>();
-  const slug = params?.id?.toLowerCase() ?? defaultProductSlug;
-  const product = productCatalog[slug] ?? productCatalog[defaultProductSlug];
+    if (!product || !product.is_active) {
+      notFound();
+    }
 
-  const breadcrumbs = [
-    { label: "Home", href: "/" },
-    { label: "Fragrances", href: "/pages/shop" },
-  ];
+    // Map Database Product to ProductDetail UI Type
+    const mappedProduct = {
+      id: product.id,
+      name: product.title,
+      type: product.brand?.name || product.category?.name || "Eau de Parfum",
+      baseImage: product.base_image_url || "",
+      images: product.gallery_images || [],
+      sizes: product.variants?.map(v => ({
+        label: v.size_label,
+        price: v.price,
+        stock: v.stock_quantity // Passing stock if needed, though prop type might not have it
+      })) || [],
+      baseDescription: product.description || "",
+      rating: product.rating || 5.0, // Default if 0
+      reviewCount: product.review_count || 0,
+      reviews: [] // TODO: Fetch real reviews
+    };
 
-  return (
-    <>
-      <ProductDetials product={product} breadcrumbs={breadcrumbs} />
-    </>
-  );
+    const breadcrumbs = [
+      { label: "Home", href: "/" },
+      { label: "Shop", href: "/pages/shop" },
+      { label: product.brand?.name || "Brand", href: `/pages/shop?brand_id=${product.brand_id}` },
+    ];
+
+    const isFavorite = await isProductFavorite(id);
+
+    return (
+      <section className='pt-20'>
+        <ProductDetials
+          product={mappedProduct as any}
+          breadcrumbs={breadcrumbs}
+          isFavorite={isFavorite}
+        />
+      </section>
+    );
+  } catch (error) {
+    console.error('Failed to load product:', error);
+    notFound();
+  }
 }
-

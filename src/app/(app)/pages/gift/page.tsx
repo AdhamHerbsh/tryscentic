@@ -7,19 +7,19 @@ const giftCards = [
   {
     id: 1,
     amount: 200,
-    currency: "EGP",
+    currency: "LE",
     image: "/assets/images/golden.png",
   },
   {
     id: 2,
     amount: 500,
-    currency: "EGP",
+    currency: "LE",
     image: "/assets/images/silver.png",
   },
   {
     id: 3,
     amount: 1000,
-    currency: "EGP",
+    currency: "LE",
     image: "/assets/images/dark-and-elegant.png",
   },
 ];

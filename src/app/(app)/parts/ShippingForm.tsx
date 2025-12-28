@@ -76,31 +76,10 @@ export default function ShippingForm() {
               placeholder="Fragranceville"
             />
           </div>
-          <div className="flex flex-col relative">
-            <label className="text-sm text-gray-400 mb-1" htmlFor="state">
-              State/Province
-            </label>
-            <input
-              id="state"
-              className="p-3 rounded text-white focus:outline-none relative z-10"
-              style={inputStyle}
-              placeholder="Scentopia"
-            />
-          </div>
+
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex flex-col relative">
-            <label className="text-sm text-gray-400 mb-1" htmlFor="zip">
-              ZIP/Postal Code
-            </label>
-            <input
-              id="zip"
-              className="p-3 rounded text-white focus:outline-none relative z-10"
-              style={inputStyle}
-              placeholder="12345"
-            />
-          </div>
           <div className="flex flex-col relative">
             <label className="text-sm text-gray-400 mb-1" htmlFor="country">
               Country
@@ -109,7 +88,9 @@ export default function ShippingForm() {
               id="country"
               className="p-3 rounded text-white focus:outline-none relative z-10"
               style={inputStyle}
-              placeholder="Aromaland"
+              value="Egypt"
+              disabled
+              readOnly
             />
           </div>
         </div>

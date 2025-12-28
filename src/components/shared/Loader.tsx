@@ -2,45 +2,34 @@
 import React, { useState, useEffect } from "react";
 import animation from "./loader-animation.module.css";
 
-export default function Loader() {
+interface LoaderProps {
+  onComplete?: () => void;
+}
 
-  const [restartKey, setRestartKey] = useState(0);
+export default function Loader({ onComplete }: LoaderProps) {
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
-    // Reset fade out state when key changes (restart)
-    setIsFadingOut(false);
-
-    // Simulate loading completion logic
+    // Start fade out animation after 5 seconds
     const timer = setTimeout(() => {
       setIsFadingOut(true);
+      setTimeout(() => {
+        if (onComplete) onComplete();
+      }, 1000);
     }, 5000);
 
-    const interval = setInterval(() => {
-      console.log("Interval");
-    }, 10000);
-
     return () => {
-      clearInterval(interval);
       clearTimeout(timer);
     };
-  }, [restartKey]);
-
-  const handleRestart = () => {
-    setIsFadingOut(false);
-    setRestartKey((prev) => prev + 1);
-  };
-
-
+  }, [onComplete]);
 
   return (
     <>
-      <div className="bg-accent w-full h-screen flex flex-col justify-center items-center">
+      <div className={`bg-accent w-full h-screen flex flex-col justify-center items-center transition-opacity duration-1000 ${isFadingOut ? "opacity-0 invisible" : "opacity-100"
+        }`}>
         <div
-          className={`${animation.loaderWrapper} cursor-pointer ${isFadingOut ? animation.fadeOut : ""
+          className={`${animation.loaderWrapper} ${isFadingOut ? animation.fadeOut : ""
             }`}
-          onClick={handleRestart}
-          key={restartKey} // Key change forces React to remount component, resetting CSS animations
         >
           <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
             <defs>

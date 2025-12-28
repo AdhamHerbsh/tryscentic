@@ -7,14 +7,12 @@
     font-family: 'Cinzel';
     font-style: normal;
     font-weight: 700;
-    font-size: 80px;
+    font-size: 4.5rem;
     line-height: 24px;
     /* identical to box height, or 30% */
     display: flex;
     align-items: center;
     text-align: center;
-
-    color: #F2F2F2;
 
     text-shadow: 4px 3px 20px rgba(255, 255, 255, 0.8);
     /* 2. Define the stroke (width color) for WebKit browsers */
@@ -54,7 +52,7 @@
     position: fixed;
     z-index: -1;
     overflow: hidden;
-    animation: slide-bg 100s linear infinite;
+    animation: slide-bg 1000s linear infinite;
 }
 
 /* * 2. Keyframes for Sliding Motion 

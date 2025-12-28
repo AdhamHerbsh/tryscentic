@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import { useCart } from "@/lib/context/CartContext";
 
@@ -40,7 +39,7 @@ export default function OrderSummary() {
                 </div>
 
                 <p className="font-medium text-base">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  LE {(item.price * item.quantity).toFixed(2)}
                 </p>
               </div>
             </div>
@@ -53,12 +52,12 @@ export default function OrderSummary() {
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
           <span>Subtotal</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>LE {subtotal.toFixed(2)}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Shipping</span>
-          <span>${shipping.toFixed(2)}</span>
+          <span>LE {shipping.toFixed(2)}</span>
         </div>
       </div>
 
@@ -66,7 +65,7 @@ export default function OrderSummary() {
 
       <div className="flex justify-between text-lg font-bold">
         <span>Grand Total</span>
-        <span>${grandTotal.toFixed(2)}</span>
+        <span>LE {grandTotal.toFixed(2)}</span>
       </div>
 
       <div className="mt-6">
@@ -76,17 +75,17 @@ export default function OrderSummary() {
             placeholder="Enter code"
             className="flex-1 p-2 rounded bg-white text-gray-800 placeholder-gray-500 focus:outline-none"
           />
-          <button className="px-4 py-2 bg-[#393631] text-black rounded font-medium text-sm hover:bg-opacity-90 transition-colors">
+          <button className="px-4 py-2 bg-accent rounded font-medium text-sm hover:bg-opacity-90 transition-colors">
             Apply
           </button>
         </div>
       </div>
 
-      <div className="mt-4 flex justify-between items-center p-3 bg-[#393631] rounded-lg">
+      <div className="mt-4 flex justify-between items-center p-3 bg-accent rounded-lg">
         <div className="text-sm flex flex-col">
           <p>Wallet Balance:</p>
           <span className="font-bold text-lg text-secondary">
-            ${walletBalance.toFixed(2)}
+            LE {walletBalance.toFixed(2)}
           </span>
         </div>
 

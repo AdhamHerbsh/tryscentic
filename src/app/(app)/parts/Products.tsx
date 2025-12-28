@@ -4,18 +4,70 @@ import Sidebar from "@/components/ui/Sidebars/Sidebar";
 import ProductCard from "@/components/ui/Cards/ProductCard";
 import Pagination from "@/components/ui/Pagination/Pagination";
 
-import sampleData from "@/app/(app)/data/products";
+import { useEffect } from "react";
+import { createClient } from "@/lib/utils/supabase/client";
+import { Product } from "@/types/product";
+import { Loader } from "lucide-react";
+
+// import sampleData from "@/app/(app)/data/products";
 
 export default function ProductsPage() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const [products, setProducts] = useState<Product[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const supabase = createClient();
   const pageSize = 12;
-  const filtered = sampleData.filter((p) =>
-    p.title.toLowerCase().includes(query.toLowerCase())
-  );
-  const shown = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let queryBuilder = supabase
+          .from('products')
+          .select('*', { count: 'exact' });
+
+        if (query) {
+          queryBuilder = queryBuilder.ilike('title', `%${query}%`);
+        }
+
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
+
+        const { data, count, error } = await queryBuilder
+          .range(from, to)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching products:', error);
+        } else {
+          // Map DB data to Product interface
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const mappedProducts: Product[] = (data || []).map((item: any) => ({
+            id: item.id,
+            title: item.title || item.name,
+            brand: item.brand,
+            price: item.price,
+            image: item.image || item.image_url,
+            category: item.category,
+            inStock: item.in_stock
+          }));
+          setProducts(mappedProducts);
+          setTotalCount(count || 0);
+        }
+      } catch (err) {
+        console.error("Unexpected error fetching products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [page, query, supabase]);
 
   return (
     <section className="relative">
@@ -68,8 +120,8 @@ export default function ProductsPage() {
           }`}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
             <div className="text-sm sm:text-base">
-              Showing {Math.min((page - 1) * pageSize + 1, filtered.length)} -{" "}
-              {Math.min(page * pageSize, filtered.length)} of {filtered.length}{" "}
+              Showing {Math.min((page - 1) * pageSize + 1, totalCount)} -{" "}
+              {Math.min(page * pageSize, totalCount)} of {totalCount}{" "}
               results
             </div>
             <div>
@@ -84,15 +136,21 @@ export default function ProductsPage() {
             ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-3"
             : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             }`}>
-            {shown.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              <div className="col-span-full flex justify-center py-20">
+                <Loader className="animate-spin text-white w-8 h-8" />
+              </div>
+            ) : (
+              products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
           </div>
 
           <div className="mt-8 sm:mt-12 flex justify-center">
             <Pagination
               page={page}
-              total={Math.ceil(filtered.length / pageSize)}
+              total={Math.ceil(totalCount / pageSize)}
               onChange={setPage}
             />
           </div>

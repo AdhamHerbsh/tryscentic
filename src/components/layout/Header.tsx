@@ -4,11 +4,19 @@ import { Search, ShoppingCart, Menu, X, SquareArrowUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/lib/context/CartContext";
+import { createClient } from "@/lib/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { useEffect } from "react";
+import TopUpModal from "@/components/account/wallet/TopUpModal";
+import LoginModal from "@/components/ui/Modals/LoginModal";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isTopUpOpen, setIsTopUpOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   const {
     cartItems,
     totalItems,
@@ -18,10 +26,60 @@ export default function Header() {
     clearCart,
   } = useCart();
 
+  // Auth State
+  const [user, setUser] = useState<User | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  const supabase = createClient();
+
+  useEffect(() => {
+
+
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('avatar_url, role')
+          .eq('id', user.id)
+          .single();
+        if (profile) {
+          setAvatarUrl(profile?.avatar_url || user.user_metadata?.avatar_url,);
+          setUserRole(profile.role);
+        }
+      }
+    };
+
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('avatar_url, role')
+          .eq('id', session.user.id)
+          .single();
+        if (profile) {
+          setAvatarUrl(profile.avatar_url);
+          setUserRole(profile.role);
+        }
+      } else {
+        setAvatarUrl(null);
+        setUserRole(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Shop", href: "/pages/shop" },
-    { name: "Wallet", href: "#wallet" },
+    { name: "Wallet", href: "/pages/account/wallet" },
     { name: "About Us", href: "/pages/about-us" },
     { name: "Contact Us", href: "/pages/contact-us" },
   ];
@@ -29,7 +87,7 @@ export default function Header() {
   return (
     <>
       <header
-        className="fixed bg-accent text-white font-bold z-50 w-full"
+        className="fixed bg-accent backdrop-blur-sm text-white font-bold z-50 w-full"
         data-aos="fade-down"
       >
         <div className="mx-auto max-w-9xl px-4 sm:px-6 lg:px-8">
@@ -43,6 +101,16 @@ export default function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
+
+              {userRole === 'admin' && (
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-medium transition-colors hover:text-amber-400 lg:text-base"
+                >
+                  Admin Dashboard
+                </Link>
+              )}
+
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -57,7 +125,9 @@ export default function Header() {
             {/* Right Side Actions */}
             <div className="flex items-center gap-3 sm:gap-4">
               {/* Top-Up Button - Hidden on small screens */}
-              <button className="hidden sm:flex items-center gap-2 rounded-md bg-secondary text-black px-3 py-1.5 font-semibold transition-all hover:bg-amber-700 hover:border-amber-700 lg:px-4 lg:py-2 cursor-pointer">
+              <button
+                onClick={() => setIsTopUpOpen(true)}
+                className="hidden sm:flex items-center gap-2 rounded-md bg-secondary text-black px-3 py-1.5 font-semibold transition-all hover:bg-amber-700 hover:border-amber-700 lg:px-4 lg:py-2 cursor-pointer">
                 <span>Top-Up</span>
                 <SquareArrowUp />
               </button>
@@ -89,20 +159,48 @@ export default function Header() {
                   {totalItems}
                 </span>
               </button>
-              {/* User Avatar */}
-              <Link
-                href="/pages/user-dashboard"
-                className="h-9 w-9 overflow-hidden rounded-full border-2 border-amber-600 transition-transform hover:scale-105 sm:h-10 sm:w-10"
-              >
-                <Image
-                  className="h-full w-full object-cover"
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-                  alt="User Avatar"
-                  width={40}
-                  height={40}
-                  unoptimized
-                />
-              </Link>
+              {/* Auth Status */}
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/pages/user-dashboard"
+                    className="flex items-center gap-2 rounded-full border-2 border-amber-600 p-1 transition-all hover:bg-amber-600/10"
+                    title="User Dashboard"
+                  >
+                    <div className="h-8 w-8 overflow-hidden rounded-full bg-amber-800 relative">
+                      {avatarUrl ? (
+                        <Image
+                          className="h-full w-full object-cover"
+                          src={avatarUrl}
+                          alt="User Avatar"
+                          width={32}
+                          height={32}
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-xs font-bold text-white hover:scale-125 transition-all">
+                          <span>{user.email?.substring(0, 2).toUpperCase()}</span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                </div>
+              ) : (
+                <div className="hidden sm:flex items-center gap-2">
+                  <button
+                    onClick={() => setIsLoginModalOpen(true)}
+                    className="items-center justify-center rounded-md px-4 py-2 text-sm font-semibold text-white transition-colors hover:text-amber-400 cursor-pointer"
+                  >
+                    Log In
+                  </button>
+                  <Link
+                    href="/register"
+                    className="items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-200"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
 
               {/* Mobile Menu Button */}
               <button
@@ -133,7 +231,9 @@ export default function Header() {
                   </Link>
                 ))}
                 {/* Mobile Top-Up Button */}
-                <button className="flex items-center justify-center gap-2 rounded-md border-2 border-amber-600 bg-amber-600 px-4 py-2 text-sm font-semibold transition-all hover:bg-amber-700">
+                <button
+                  onClick={() => setIsTopUpOpen(true)}
+                  className="flex items-center justify-center gap-2 rounded-md border-2 border-amber-600 bg-amber-600 px-4 py-2 text-sm font-semibold transition-all hover:bg-amber-700">
                   <span>Top-Up</span>
                   <SquareArrowUp className="h-4 w-4" />
                 </button>
@@ -208,7 +308,7 @@ export default function Header() {
                               {item.name}
                             </h3>
                             <p className="text-xs text-gray-500">
-                              ${item.price.toFixed(2)}
+                              LE {item.price.toFixed(2)}
                             </p>
                           </div>
                           <button
@@ -239,7 +339,7 @@ export default function Header() {
                             </button>
                           </div>
                           <p className="text-sm font-semibold">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            LE {(item.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>
@@ -252,7 +352,7 @@ export default function Header() {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Subtotal</span>
                 <span className="text-lg font-semibold">
-                  ${subtotal.toFixed(2)}
+                  LE {subtotal.toFixed(2)}
                 </span>
               </div>
               <div className="mt-3 flex gap-3">
@@ -273,6 +373,17 @@ export default function Header() {
           </aside>
         </>
       )}
+
+      <TopUpModal
+        isOpen={isTopUpOpen}
+        onClose={() => setIsTopUpOpen(false)}
+      />
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
+
     </>
   );
 }

@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
         hostname: "api.dicebear.com",
       },
     ],
+    domains: ["lh3.googleusercontent.com", "drive.google.com"],
   },
 };
 

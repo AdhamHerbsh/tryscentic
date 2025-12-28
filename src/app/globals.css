@@ -15,19 +15,31 @@
   box-sizing: border-box;
 }
 
-/* 
-  Loader Animation
-  ▱▰▱▰▱▰▱▰▱▰▱▰▱▰
-  ▰▱▰▰▱▰▰▱▰▰▱▰▰▱
-  ▱▰▱▰▱▰▱▰▱▰▱▰▱▰
-  ▰▱▰▰▱▰▰▱▰▰▱▰▰▱
-  ▱▰▱▰▱▰▱▰▱▰▱▰▱▰
-  ▰▱▰▰▱▰▰▱▰▰▱▰▰▱
-  ▱▰▱▰▱▰▱▰▱▰▱▰▱▰
-  ▰▱▰▰▱▰▰▱▰▰▱▰▰▱
+/* Loader Animation */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
 
-*/
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 100%;
+}
 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--color-secondary);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+  border: 1px dashed var(--color-secondary);
+}
+
+/* Loader Animation */
 .loader {
   position: absolute;
   top: 0;
@@ -101,9 +113,13 @@ main {
   @apply pt-10;
 }
 
-section {
+/* section {
   @apply py-10;
 }
+
+[aria-label="Notifications"] {
+  padding: 0 !important;
+} */
 
 button {
   @apply hover:cursor-pointer;

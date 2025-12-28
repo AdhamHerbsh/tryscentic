@@ -3,7 +3,7 @@ export default function ContactPage() {
 
   return (
     <>
-      <div className="relative bg-accent text-white">
+      <div className="relative text-white">
         {/* HERO بنفس الحجم الأصلي تمامًا */}
         <section className="h-80 flex items-center justify-center text-center">
           <div className="max-w-xl mx-auto">
@@ -13,7 +13,7 @@ export default function ContactPage() {
         </section>
 
         {/* الفورم ظاهر من الأول — ويتحرك بس مع السكروول */}
-        <div className="px-6 py-16 bg-primary relative z-10 -mt-10">
+        <div className="px-6 py-16 relative z-10 -mt-10">
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-24">
             {/* FORM */}
             <div className="space-y-6">

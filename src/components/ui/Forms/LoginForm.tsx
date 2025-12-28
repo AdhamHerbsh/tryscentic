@@ -2,40 +2,71 @@ import Link from "next/link";
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+
 import styles from "@/assets/styles/login.module.css";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { InputField } from "./InputField";
 import { createClient } from "@/lib/utils/supabase/client";
 
 
-export default function LoginForm() {
+interface LoginFormProps {
+    onSuccess?: () => void;
+}
 
+export default function LoginForm({ onSuccess }: LoginFormProps) {
     const supabase = createClient();
+    const router = useRouter();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleGoogleLogin = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                    redirectTo: `${window.location.origin}/`,
+                },
+            });
+            if (error) {
+                toast.error(error.message);
+            }
+        } catch (error) {
+            toast.error("An error occurred with Google login");
+            console.log(error);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        alert(email + " " + password);
+        setIsLoading(true);
 
         try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
 
-            const { data, error } = await supabase.auth.signInWithPassword(
-                {
-                    email: email,
-                    password: password
+            if (error) {
+                toast.error(error.message);
+                console.log(error);
+            } else {
+                toast.success("Logged in successfully!");
+                if (onSuccess) {
+                    onSuccess();
                 }
-            );
-
-            console.log(JSON.stringify(data));
-            console.log(JSON.stringify(error));
+                router.push('/');
+                router.refresh();
+            }
 
         } catch (error) {
+            toast.error("An unexpected error occurred");
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
-
     }
 
     return (
@@ -49,18 +80,19 @@ export default function LoginForm() {
                         TRYSCENTIC
                     </h1>
                 </div>
+
                 {/* Login Card */}
                 <div className={styles.loginForm + ` rounded-3xl border-2 border-gray-300 p-8 shadow-2xl`}>
                     {/* Google Sign In Button */}
-                    <LoginLink
-                        authUrlParams={{
-                            connection_id: process.env.NEXT_PUBLIC_KINDE_CONNECTION_GOOGLE || '' // Common ID, but might vary. If it fails, Kinde ignores it usually.
-                        }}
+                    {/* Google Sign In Button */}
+                    <button
+                        type="button"
+                        onClick={handleGoogleLogin}
                         className="mb-4 w-full flex items-center gap-5 justify-center rounded-lg bg-white px-6 py-3 font-semibold text-gray-800 shadow-md transition-transform hover:scale-105 hover:shadow-lg"
                     >
                         <FcGoogle size={20} />
                         Continue with Google
-                    </LoginLink>
+                    </button>
 
                     {/* Divider */}
                     <div className="relative flex justify-center my-5">
@@ -68,6 +100,7 @@ export default function LoginForm() {
                             or
                         </span>
                     </div>
+
                     <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
                         {/* Email Input */}
                         <InputField
@@ -78,7 +111,7 @@ export default function LoginForm() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
 
-                        {/* Password Input - Visual Only for now as Kinde handles secure auth */}
+                        {/* Password Input */}
                         <InputField
                             icon={<Lock size={16} />}
                             placeholder="Password"
@@ -88,13 +121,13 @@ export default function LoginForm() {
                         />
 
                         {/* Login Button */}
-                        {/* Equivalent to .signUpButton: w-full, padding, bg/color, rounded-lg, styling */}
                         <button
                             type="submit"
+                            disabled={isLoading}
                             className="block w-full py-4 bg-black text-white rounded-lg font-bold text-center 
-                                   transition-all duration-200 shadow-md mt-2 hover:bg-[#511624] hover:shadow-lg hover:-translate-y-px"
+                                   transition-all duration-200 shadow-md mt-2 hover:bg-[#511624] hover:shadow-lg hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Login
+                            {isLoading ? "Logging in..." : "Login"}
                         </button>
 
 
@@ -108,13 +141,14 @@ export default function LoginForm() {
                         </Link>
 
                         {/* Forget Password Link */}
-                        <div className="mb-6">
+                        <div className="my-2 mx-auto">
                             <Link
-                                href="#forgot"
+                                href="/forgot-password"
                                 className="hover:underline"
                             >
                                 Forget Password?
                             </Link>
+
                         </div>
                     </form>
 

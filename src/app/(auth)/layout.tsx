@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-<>
-    {children}
-</>
+    <>
+      <Suspense fallback={<div> Loading... </div>}>
+        {children}
+      </Suspense>
+    </>
   );
 }

@@ -3,19 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Share2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Reviews from "./Reviews";
 import { ProductDetail, ProductSizeOption } from "@/types/product";
 import ButtonAddToCart from "@/components/ui/Buttons/AddToCart";
+import { toggleFavorite } from "@/data-access/user/favorites";
+import { toast } from "sonner";
 
 type Breadcrumb = {
   label: string;
   href?: string;
-};
-
-type ProductDetailsProps = {
-  product: ProductDetail;
-  breadcrumbs?: Breadcrumb[];
 };
 
 const defaultBreadcrumbs: Breadcrumb[] = [
@@ -23,11 +20,23 @@ const defaultBreadcrumbs: Breadcrumb[] = [
   { label: "Fragrances", href: "/pages/shop" },
 ];
 
+type ProductDetailsProps = {
+  product: ProductDetail;
+  breadcrumbs?: Breadcrumb[];
+  isFavorite?: boolean;
+};
+
 export default function ProductDetials({
   product,
   breadcrumbs = defaultBreadcrumbs,
+  isFavorite = false,
 }: ProductDetailsProps) {
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isFavorite);
+
+  // Sync state (e.g. after revalidation)
+  useEffect(() => {
+    setLiked(isFavorite);
+  }, [isFavorite]);
 
   const [selectedImage, setSelectedImage] = useState(
     product.images[0] ?? product.baseImage
@@ -38,7 +47,7 @@ export default function ProductDetials({
   );
 
   const priceLabel = useMemo(
-    () => `$${selectedSize.price.toFixed(0)}`,
+    () => `LE ${selectedSize.price.toFixed(0)}`,
     [selectedSize.price]
   );
 
@@ -48,9 +57,22 @@ export default function ProductDetials({
     setQuantity((prev) => Math.max(1, prev + delta));
   };
 
+  const handleToggleFavorite = async () => {
+    try {
+      setLiked(prev => !prev); // Optimistic
+      const newStatus = await toggleFavorite(product.id || ""); // Ensure ID exists
+      setLiked(newStatus);
+      if (newStatus) toast.success("Added to favorites");
+      else toast.success("Removed from favorites");
+    } catch {
+      setLiked(prev => !prev); // Revert
+      toast.error("Please login to manage favorites");
+    }
+  };
+
   return (
     <section className="min-h-screen px-4 py-16 text-white sm:px-6 lg:px-12">
-      <div className="mx-auto max-w-6xl space-y-16">
+      <div className="mx-auto space-y-16">
         <div className="space-y-12">
           <nav className="text-sm text-white/60">
             <ul className="flex items-center gap-2">
@@ -173,7 +195,7 @@ export default function ProductDetials({
                   quantity={quantity}
                 />
                 <button
-                  onClick={() => setLiked((v) => !v)}
+                  onClick={handleToggleFavorite}
                   className="rounded-full border border-white/30 p-3 text-white transition hover:border-white hover:bg-white/10"
                 >
                   {liked ? (

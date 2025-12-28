@@ -8,7 +8,7 @@ export default function Posters() {
             backgroundImage: `url('/assets/images/category-1.jpg')`,
           }}
         >
-          <div className="absolute inset-0 bg-gray-400 opacity-30 z-10"></div>
+          <div className="absolute inset-0 bg-gray-800 opacity-30 z-10"></div>
           <span className="relative z-10 text-5xl">All Fragrance Samples</span>
         </div>
         <div
@@ -17,7 +17,7 @@ export default function Posters() {
             backgroundImage: `url('/assets/images/category-2.jpg')`,
           }}
         >
-          <div className="absolute inset-0 bg-gray-400 opacity-30 z-10"></div>
+          <div className="absolute inset-0 bg-gray-800 opacity-30 z-10"></div>
           <span className="relative z-10 text-5xl">Retail Bottoles</span>
         </div>
       </div>

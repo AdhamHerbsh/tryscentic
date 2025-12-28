@@ -1,5 +1,8 @@
-import Loader from "@/components/shared/Loader";
+"use client";
+import SimpleLoader from "@/components/shared/SimpleLoader";
 
-export default function Loading() {
-  return <Loader />;
+export default function AppLoading() {
+    return (
+        <SimpleLoader />
+    );
 }

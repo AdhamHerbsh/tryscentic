@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export function IndexHero({ bgimage }: { bgimage: string }) {
   return (
-    <section id="hero" className="!pt-0">
-      <div className="relative h-screen w-full overflow-hidden">
+    <section id="hero" className="pt-10">
+      <div className="relative h-80 lg:h-screen w-full overflow-hidden">
         {/* Background Image with Overlay */}
         <div
           className="hero-img absolute inset-0 bg-cover bg-center"
@@ -17,7 +17,7 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
           {/* Main Heading */}
           <h1
-            className="mb-4 text-5xl font-bold text-white md:text-6xl lg:text-7xl"
+            className="mb-4 text-2xl font-bold text-white md:text-6xl"
             data-aos="fade-up"
           >
             Discover Your Signature
@@ -35,17 +35,17 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
 
           {/* Call-to-Action Buttons */}
           <div
-            className="flex flex-col gap-4 sm:flex-row"
+            className="flex flex-row gap-4"
             data-aos="fade-up"
             data-aos-delay="1000"
           >
             <Link
               href="/pages/shop"
-              className="rounded-md bg-orange-400 px-8 py-3 text-lg font-semibold text-white transition-all hover:bg-orange-500 hover:shadow-lg"
+              className="rounded-md bg-orange-400 px-6 py-2 text-base font-semibold text-white transition-all hover:bg-orange-500 hover:shadow-lg sm:px-8 sm:py-3 sm:text-lg"
             >
               Shop Now
             </Link>
-            <button className="rounded-md border-2 border-white bg-transparent px-8 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-gray-900">
+            <button className="rounded-md border-2 border-white bg-transparent px-6 py-2 text-base font-semibold text-white transition-all hover:bg-white hover:text-gray-900 sm:px-8 sm:py-3 sm:text-lg">
               Explore Brands
             </button>
           </div>
@@ -57,47 +57,45 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
 
 export function AboutHero({ bgimage }: { bgimage: string }) {
   return (
-    <>
-      {/* Hero Section */}
-      < section className="relative w-full h-[800px] flex items-center justify-center overflow-hidden" >
-        <Image
-          src={bgimage}
-          alt="About Hero Image"
-          fill
-          className="object-cover"
-        />
+    <section className="relative w-full h-[800px] flex items-center justify-center overflow-hidden" >
+      <Image
+        src={bgimage}
+        alt="About Hero Image"
+        fill
+        className="object-cover"
+      />
 
-        <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/50" />
 
-        {/* Content Section (Logo + Text + Button) */}
-        <section className="absolute inset-0 flex flex-col justify-center items-start p-10">
-          <div className="mb-6">
-            {/* Logo */}
-            <Image
-              src="/assets/images/logo/logo-icon-1200x1200.png"
-              alt="TRYSCENTIC™"
-              width={300}
-              height={300}
-            />
-          </div>
+      {/* Content Section (Logo + Text + Button) */}
+      <section className="absolute inset-0 flex flex-col justify-center items-start p-10">
+        <div className="mb-6">
+          {/* Logo */}
+          <Image
+            src="/assets/images/logo/logo-icon-1200x1200.png"
+            alt="TRYSCENTIC™"
+            width={300}
+            height={300}
+          />
+        </div>
 
-          <div className="max-w-xl">
-            <h1 className="text-5xl font-bold text-white tracking-wide">
-              About US
-            </h1>
-            <p className="mt-3 text-lg text-gray-300">
-              Authentic perfumes delivered to your door
-            </p>
+        <div className="max-w-xl">
+          <h1 className="text-5xl font-bold text-white tracking-wide">
+            About US
+          </h1>
+          <p className="mt-3 text-lg text-gray-300">
+            Authentic perfumes delivered to your door
+          </p>
 
-            <Link
-              href="#contact"
-              className="mt-6 inline-block border border-white text-white px-6 py-2 font-medium bg-white/10 hover:bg-white/20 transition"
-            >
-              Contact Us
-            </Link>
-          </div>
-        </section>
-      </section ></>
+          <Link
+            href="#contact"
+            className="mt-6 inline-block border border-white text-white px-6 py-2 font-medium bg-white/10 hover:bg-white/20 transition"
+          >
+            Contact Us
+          </Link>
+        </div>
+      </section>
+    </section >
   );
 }
 
