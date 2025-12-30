@@ -1,6 +1,6 @@
 import { getProductById } from '@/data-access/products';
 import { isProductFavorite } from '@/data-access/user/favorites';
-import ProductDetials from '@/app/(app)/parts/ProductDetials';
+import ProductDetials from '@/components/parts/ProductDetials';
 import { notFound } from 'next/navigation';
 
 export default async function ProductPage({ params }: { params: { id: string } }) {

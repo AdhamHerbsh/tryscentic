@@ -1,8 +1,9 @@
 export interface User {
   id: string;
   name: string;
+  bio: string;
   email: string;
-  avatar?: string;
+  avatar_url?: string;
   walletBalance?: number;
 }
 

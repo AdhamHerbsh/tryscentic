@@ -607,17 +607,17 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
             </div>
 
             {/* Submit */}
-            <div className="flex items-center justify-end gap-3 pt-4 sticky bottom-0 bg-gray-50/90 backdrop-blur-sm p-4 border-t z-10">
+            <div className="flex items-center justify-end gap-3 pt-4 rounded-lg sticky bottom-0 bg-gray-50/10 backdrop-blur-sm p-4 border-t z-10">
                 <Link
                     href="/dashboard/products"
-                    className="px-6 py-3 text-gray-800 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium shadow-sm"
+                    className="px-6 py-3 text-gray-800 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-bold shadow-sm"
                 >
                     Cancel
                 </Link>
                 <button
                     type="submit"
                     disabled={loading || uploading}
-                    className="px-8 py-3 bg-[#511624] text-white rounded-lg hover:bg-[#511624]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-md flex items-center gap-2"
+                    className="px-8 py-3 bg-primary text-white rounded-lg hover:bg-[#511624]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold shadow-md flex items-center gap-2"
                 >
                     {loading ? <Loader2 className="animate-spin" size={20} /> : null}
                     {mode === 'create' ? 'Create Product' : 'Update Product'}

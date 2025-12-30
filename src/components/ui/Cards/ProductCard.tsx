@@ -69,11 +69,11 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
           {/* Ensure the parent element is relatively positioned for `fill` to work */}
 
           <Image
+            className="rounded-2xl object-cover"
             src={product.image}
             alt={product.title}
             fill
-            style={{ objectFit: "cover" }} // Use objectFit for better image control
-            className="rounded-2xl"
+            loading="eager"
           />
         </div>
 

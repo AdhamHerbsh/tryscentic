@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { User, Mail, Lock, RotateCcw } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 

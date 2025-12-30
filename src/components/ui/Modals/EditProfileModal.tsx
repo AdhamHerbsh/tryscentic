@@ -4,7 +4,7 @@ import { X, Save, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface UserData {
-    name: string;
+    full_name: string;
     bio: string;
     avatar_url: string;
 }
@@ -23,7 +23,7 @@ export default function EditProfileModal({
     onSave,
 }: EditProfileModalProps) {
     const [formData, setFormData] = useState<UserData>({
-        name: "",
+        full_name: "",
         bio: "",
         avatar_url: "",
     });
@@ -32,7 +32,7 @@ export default function EditProfileModal({
     useEffect(() => {
         if (user) {
             setFormData({
-                name: user.name || "",
+                full_name: user.full_name || "",
                 bio: user.bio || "",
                 avatar_url: user.avatar_url || "",
             });
@@ -51,7 +51,7 @@ export default function EditProfileModal({
         setLoading(true);
 
         // Basic Validation
-        if (!formData.name.trim()) {
+        if (!formData.full_name.trim()) {
             toast.error("Name is required");
             setLoading(false);
             return;
@@ -96,16 +96,16 @@ export default function EditProfileModal({
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     <div className="space-y-2">
                         <label
-                            htmlFor="name"
+                            htmlFor="full_name"
                             className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
                         >
                             Full Name
                         </label>
                         <input
-                            id="name"
-                            name="name"
+                            id="full_name"
+                            name="full_name"
                             type="text"
-                            value={formData.name}
+                            value={formData.full_name}
                             onChange={handleChange}
                             placeholder="e.g. John Doe"
                             className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"

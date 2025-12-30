@@ -151,13 +151,53 @@ export interface WalletLog {
 
 // Admin Dashboard Stats
 export interface DashboardStats {
+  // Revenue & Orders
   totalRevenue: number;
+  todayRevenue: number;
+  weekRevenue: number;
+  monthRevenue: number;
   totalOrders: number;
   pendingOrders: number;
+  shippedOrders: number;
+  deliveredOrders: number;
+  cancelledOrders: number;
+  todayOrders: number;
+
+  // Users
   totalUsers: number;
+  activeUsers: number;
+  bannedUsers: number;
+  newUsersToday: number;
+  newUsersWeek: number;
+
+  // Products & Inventory
   totalProducts: number;
+  activeProducts: number;
+  inactiveProducts: number;
   lowStockProducts: number;
+  outOfStockProducts: number;
+  totalVariants: number;
+
+  // Transactions & Wallet
   pendingTransactions: number;
+  confirmedTransactions: number;
+  rejectedTransactions: number;
+  totalWalletBalance: number;
+  pendingDeposits: number;
+
+  // Promo & Gift Codes
+  activePromoCodes: number;
+  totalPromoCodes: number;
+  activeGiftCodes: number;
+  usedGiftCodes: number;
+
+  // Reviews
+  totalReviews: number;
+  avgRating: number;
+
+  // Brands & Categories
+  totalBrands: number;
+  totalCategories: number;
 }
 
 // Form Types

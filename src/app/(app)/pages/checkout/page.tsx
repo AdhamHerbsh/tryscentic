@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import ShippingForm from "@/app/(app)/parts/ShippingForm";
-import OrderSummary from "@/app/(app)/parts/OrderSummary";
+import ShippingForm from "@/components/parts/ShippingForm";
+import OrderSummary from "@/components/parts/OrderSummary";
 
 
 export default function CheckoutPage() {

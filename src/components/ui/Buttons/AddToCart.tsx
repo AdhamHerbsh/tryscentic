@@ -2,6 +2,7 @@
 // import styles from "./buttons.module.css";
 import { useCart } from "@/lib/context/CartContext";
 import type { ProductDetail, ProductSizeOption } from "@/types";
+import { toast } from "sonner";
 
 type Props = {
   product: ProductDetail;
@@ -20,6 +21,8 @@ export default function ButtonAddToCart({ product, sizes, quantity }: Props) {
       image: product.baseImage,
       quantity: quantity,
     });
+    toast.success(`${product.name} added to cart!`);
+
   };
 
   return (

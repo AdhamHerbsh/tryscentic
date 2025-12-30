@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Icons from "@/app/(app)/parts/Icons";
+import Icons from "@/components/parts/Icons";
 
 
 // Import Swiper React components

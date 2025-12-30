@@ -1,6 +1,8 @@
 // import Gallery from "@/app/parts/Gallery";
-import Hero from "@/app/(app)/parts/Hero";
+import Hero from "@/components/parts/Hero";
+import Gallery from "@/components/parts/Gallery";
 import { Facebook, Instagram } from "lucide-react";
+import Icons from "@/components/parts/Icons";
 
 
 export default function page() {
@@ -34,11 +36,11 @@ export default function page() {
         </div>
       </section>
 
-
-      <div className="flex justify-center gap-4 py-5">
-        <Facebook href="facebbok.com" />
-        <Instagram href="instagram.com" />
-      </div>
+      <section className="px-auto py-8">
+        <div className="subtitle" data-swiper-parallax="-200">
+          <Icons />
+        </div>
+      </section>
 
     </>
   )

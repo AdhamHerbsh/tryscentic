@@ -1,4 +1,3 @@
-"use client";
 import { AnimatedBackground } from "@/components/ui/AnimatedBackground";
 import { RegisterForm } from "@/components/ui/Forms/RegisterForm";
 import Video from "@/components/ui/Videos/Video";

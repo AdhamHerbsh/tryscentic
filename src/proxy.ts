@@ -9,7 +9,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * 2. Ensures auth cookies are properly set
  * 3. Protects routes that require authentication
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });

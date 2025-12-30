@@ -71,7 +71,7 @@ export default function ProductDetials({
   };
 
   return (
-    <section className="min-h-screen px-4 py-16 text-white sm:px-6 lg:px-12">
+    <section className="min-h-screen px-4 py-8  text-white sm:px-6 lg:px-12">
       <div className="mx-auto space-y-16">
         <div className="space-y-12">
           <nav className="text-sm text-white/60">
@@ -224,9 +224,9 @@ export default function ProductDetials({
           </div>
         </div>
         <Reviews
-          rating={product.rating}
-          reviewCount={product.reviewCount}
-          reviews={product.reviews}
+          productId={product.id}
+          initialRating={product.rating}
+          initialReviewCount={product.reviewCount}
         />
       </div>
     </section>

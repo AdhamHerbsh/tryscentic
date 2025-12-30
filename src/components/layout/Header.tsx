@@ -163,7 +163,7 @@ export default function Header() {
               {user ? (
                 <div className="flex items-center gap-3">
                   <Link
-                    href="/pages/user-dashboard"
+                    href="/pages/account"
                     className="flex items-center gap-2 rounded-full border-2 border-amber-600 p-1 transition-all hover:bg-amber-600/10"
                     title="User Dashboard"
                   >

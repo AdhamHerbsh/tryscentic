@@ -1,13 +1,14 @@
-import { getDashboardStats, getRevenueAnalytics, getRecentActivities } from "@/data-access/admin/dashboard";
+import { getDashboardStats, getRevenueAnalytics, getRecentActivities, getTopProducts } from "@/data-access/admin/dashboard";
 import { StatsCards } from "./stats-cards";
-import { RevenueChart } from "./revenue-chart";
-import { RecentActivity } from "./recent-activity";
+// import { RevenueChart } from "./revenue-chart";
+// import { RecentActivity } from "./recent-activity";
 
 export default async function AdminDashboardPage() {
-    const [stats, revenueData, activities] = await Promise.all([
+    const [stats, revenueData, activities, topProducts] = await Promise.all([
         getDashboardStats(),
         getRevenueAnalytics(),
-        getRecentActivities(5),
+        getRecentActivities(10),
+        getTopProducts(5),
     ]);
 
     return (
@@ -17,7 +18,11 @@ export default async function AdminDashboardPage() {
                 <p className="text-gray-400">Monitor your perfume store performance</p>
             </div>
 
-            <StatsCards stats={stats} />
+            <StatsCards
+                stats={stats}
+                recentActivity={activities}
+                topProducts={topProducts}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
@@ -30,3 +35,4 @@ export default async function AdminDashboardPage() {
         </div>
     );
 }
+

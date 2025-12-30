@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, History, Wallet, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/utils/supabase/client";

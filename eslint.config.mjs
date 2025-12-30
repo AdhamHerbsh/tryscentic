@@ -16,3 +16,9 @@ const eslintConfig = defineConfig([
 ]);
 
 export default eslintConfig;
+
+tseslint.config({
+  rules: {
+    "@typescript-eslint/no-explicit-any": "error",
+  },
+});

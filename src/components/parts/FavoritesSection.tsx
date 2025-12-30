@@ -21,7 +21,13 @@ export default function FavoritesSection() {
 
             const { data, error } = await supabase
                 .from('favorites')
-                .select('product:products(*)')
+                .select(`
+                    product:products(
+                        *,
+                        brand:brands(*),
+                        variants:product_variants(*)
+                    )
+                `)
                 .eq('user_id', user.id)
                 .order('created_at', { ascending: false });
 
@@ -30,15 +36,30 @@ export default function FavoritesSection() {
             console.log("Favorites fetched:", data);
 
             // Map the result to Product array
-            // The query returns { product: { ... } } array
-            const products = data
-                ?.map((item: any) => item.product)
+            const products = (data as any)
+                ?.map((item: any) => {
+                    const p = item.product;
+                    if (!p) return null;
+
+                    // Calculate min price and stock status like ShopPage
+                    const minPrice = p.variants?.length ? Math.min(...p.variants.map((v: any) => v.price)) : 0;
+                    const inStock = p.variants?.some((v: any) => v.stock_quantity > 0);
+
+                    return {
+                        id: p.id,
+                        title: p.title,
+                        brand: p.brand?.name || "Brand",
+                        price: minPrice,
+                        image: p.base_image_url || "/placeholder.jpg",
+                        category: p.category?.name || "Category",
+                        inStock
+                    } as Product;
+                })
                 .filter(Boolean) as Product[];
 
             setFavorites(products || []);
         } catch (error) {
             console.log("Error fetching favorites:", error);
-            // toast.error("Failed to load favorites."); // Optional: Don't spam toasts on load
         } finally {
             setLoading(false);
         }
@@ -103,12 +124,15 @@ export default function FavoritesSection() {
             <h2 className="text-xl font-semibold mb-6 text-white">My Favorites</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
                 {favorites.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                        isFavorite={true}
-                        onToggleFavorite={handleUnfavorite}
-                    />
+                    <>
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            isFavorite={true}
+                            onToggleFavorite={handleUnfavorite}
+                        />
+                    </>
+
                 ))}
             </div>
         </section>

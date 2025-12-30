@@ -85,7 +85,7 @@ export default function ProductsManage() {
                     <p className="text-gray-100 mt-1">Manage your perfume inventory</p>
                 </div>
                 <Link
-                    href="/dashboard/products/add-product"
+                    href="/dashboard/products/add"
                     className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors shadow-md"
                 >
                     <Plus size={20} />
@@ -297,7 +297,7 @@ export default function ProductsManage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <Link
-                                                    href={`/shop/${product.id}`}
+                                                    href={`/pages/shop/${product.id}`}
                                                     target="_blank"
                                                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                                     title="View"

@@ -1,4 +1,4 @@
-import Icons from "@/app/(app)/parts/Icons";
+import Icons from "@/components/parts/Icons";
 
 export default function Footer() {
   const shopLinks = [
