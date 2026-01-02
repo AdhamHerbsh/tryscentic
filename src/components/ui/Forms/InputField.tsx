@@ -22,20 +22,19 @@ const EyeIcon: React.FC<{ className?: string }> = ({ className }) => <Eye size={
 const EyeOffIcon: React.FC<{ className?: string }> = ({ className }) => <EyeOff size={16} className={className} />;
 // ---
 
-interface InputFieldProps {
+interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
     icon: ReactNode;
-    placeholder: string;
-    type?: string;
-    value: string;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    // placeholder, value, onChange are covered by InputHTMLAttributes but we can keep them explicit if we want to enforce them
+    // but typically extending covers it.
+    // Let's keep them explicit if they were required, but InputHTMLAttributes makes them optional.
+    // So let's just add the specific ones we need or make the interface extend it.
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
     icon,
-    placeholder,
-    type = "text",
-    value,
-    onChange,
+    type = "text", // defaulting type here
+    className, // explicit extraction if needed, though usually passed in rest
+    ...props
 }) => {
     // 4. State to manage password visibility (only relevant if type is 'password')
     const isPasswordField = type === "password";
@@ -69,10 +68,7 @@ export const InputField: React.FC<InputFieldProps> = ({
             <input
                 // 8. Use the actualInputType
                 type={actualInputType}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-                required
+                {...props}
                 // All input styling converted to Tailwind. Added 'pr-12' for space for the toggle icon.
                 className={`
                     w-full py-3 pl-10 ${isPasswordField ? 'pr-12' : 'pr-4'} bg-white/90 border border-gray-300 rounded-lg text-sm text-gray-900 
