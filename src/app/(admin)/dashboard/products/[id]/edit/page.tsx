@@ -1,8 +1,14 @@
 import ProductForm from "@/components/admin/ProductForm";
 import { getProductById } from "@/data-access/admin/products";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
-    const { id } = await params;
+// 1. Define interface without Promise
+interface EditProductPageProps {
+    params: Promise<{ id: string }>;
+}
+
+export default async function EditProductPage({ params }: EditProductPageProps) {
+    // 2. Access id directly (no await)
+    const { id } = await params; 
 
     const product = await getProductById(id);
 
