@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
     domains: [
+      "erkcsjwoangcyeznhpcg.supabase.co",
       "lh3.googleusercontent.com",
       "drive.google.com",
       "png.pngtree.com",
