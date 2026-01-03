@@ -35,6 +35,12 @@ export async function uploadImage(
     fileBuffer = fileData;
   }
 
+  // 2. Validate file size (protection even if client compression is bypassed)
+  // 1MB = 1,048,576 bytes
+  if (fileBuffer.length > 1048576) {
+    throw new Error("File too large. Maximum allowed size is 1MB.");
+  }
+
   // Upload to Supabase Storage
   const { data, error } = await supabase.storage
     .from(bucket)

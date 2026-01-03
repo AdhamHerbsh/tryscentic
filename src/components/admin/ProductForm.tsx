@@ -10,6 +10,7 @@ import { Plus, X, Upload, ArrowLeft, ImageIcon, Loader2, Trash2, Edit2 } from 'l
 import Link from 'next/link';
 import Image from 'next/image';
 import { InputField } from '../ui/Forms/InputField';
+import { compressImage } from '@/lib/utils/image-compression';
 
 interface VariantFormData {
     id?: string;
@@ -161,9 +162,10 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
             const fileArray = Array.from(files);
             const filesToUpload = await Promise.all(
                 fileArray.map(async (file) => {
-                    const base64 = await fileToBase64(file);
+                    const compressedFile = await compressImage(file);
+                    const base64 = await fileToBase64(compressedFile);
                     return {
-                        name: file.name,
+                        name: compressedFile.name,
                         data: base64
                     };
                 })
@@ -213,10 +215,11 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
         try {
             setUploading(true);
             const file = files[0];
-            const base64 = await fileToBase64(file);
-            const url = await uploadImage(base64, file.name);
+            const compressedFile = await compressImage(file);
+            const base64 = await fileToBase64(compressedFile);
+            const url = await uploadImage(base64, compressedFile.name);
             setFormData(prev => ({ ...prev, base_image_url: url }));
-            toast.success('Base image uploaded');
+            toast.success('Base image uploaded (compressed)');
         } catch (error) {
             console.error(error);
             toast.error('Upload failed');

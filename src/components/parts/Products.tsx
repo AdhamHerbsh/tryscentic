@@ -79,11 +79,14 @@ export default function Products({
   };
 
   const mapProductToCard = (p: Product) => {
-    const minPrice = p.variants?.length ? Math.min(...p.variants.map(v => v.price)) : 0;
+    const sortedVariants = p.variants ? [...p.variants].sort((a, b) => a.price - b.price) : [];
+    const chosenVariant = sortedVariants.find(v => v.stock_quantity > 0) || sortedVariants[0];
+    const minPrice = chosenVariant?.price || 0;
     const inStock = p.variants?.some(v => v.stock_quantity > 0);
 
     return {
       id: p.id,
+      variantId: chosenVariant?.id,
       title: p.title,
       brand: p.brand?.name || "Brand",
       price: minPrice,

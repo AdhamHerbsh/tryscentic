@@ -571,7 +571,7 @@ export async function getProductById(productId: string) {
       *,
       brand:brands(*),
       category:categories(*),
-      variants:product_variants(*)
+      variants:product_variants(*, images:variant_images(*))
     `
     )
     .eq("id", productId)

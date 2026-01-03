@@ -13,6 +13,8 @@ export async function createOrder(orderData: {
     unit_price_at_purchase: number;
   }[];
   payment_method: string;
+  shipping_method?: "standard" | "express" | "custom";
+  scheduled_delivery_date?: string | null;
 }) {
   const supabase = await createClient();
 
@@ -33,13 +35,15 @@ export async function createOrder(orderData: {
       total_amount: orderData.total_amount,
       shipping_info: orderData.shipping_info,
       status: "pending",
+      shipping_method: orderData.shipping_method || "standard",
+      scheduled_delivery_date: orderData.scheduled_delivery_date,
     })
     .select()
     .single();
 
   if (orderError) {
-    console.error("Order creation error:", orderError);
-    return { error: "Failed to create order." };
+    console.log("Order creation error:", orderError);
+    return { error: "Failed to create order." + orderError.message };
   }
 
   // 3. Insert Order Items
@@ -58,7 +62,7 @@ export async function createOrder(orderData: {
   if (itemsError) {
     console.error("Order items creation error:", itemsError);
     // Note: In a production app, you might want to handle this partial failure (e.g., delete the order)
-    return { error: "Failed to create order items." };
+    return { error: "Failed to create order items." + itemsError.message };
   }
 
   // 4. Handle Wallet Payment if selected

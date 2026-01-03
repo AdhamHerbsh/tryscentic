@@ -31,12 +31,12 @@ export default function Brands({ brands, existingImages }: { brands: Brand[], ex
     if (brandsWithLogos.length === 0) return null;
 
     return (
-        <section className="py-6 bg-gradient-to-t from-secondary/40 to-transparent">
+        <section className="py-6 bg-secondary/40">
             <div className="container mx-auto px-4">
-                <h2 className="text-3xl font-bold text-center mb-8 uppercase tracking-widest text-white">
-                    Shop By Brand
-                </h2>
-
+                <div className="mb-8 text-center lg:mb-12">
+                    <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">Shop By Brand</h2>
+                    <p className="mt-4 text-lg">Shop by brand and find your favorite fragrance</p>
+                </div>
                 <Swiper
                     modules={[Autoplay]}
                     spaceBetween={30}

@@ -1,5 +1,6 @@
 export interface Product {
-  id: string;
+  id: string; // This is the Product ID
+  variantId?: string; // This is the default/lowest-price variant ID for the cart
   title: string;
   brand: string;
   price: number;
@@ -9,8 +10,10 @@ export interface Product {
 }
 
 export interface ProductSizeOption {
+  id: string; // The Variant UUID from the database
   label: string;
   price: number;
+  stock: number;
   images?: string[];
   thumbnail?: string | null;
 }

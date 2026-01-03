@@ -2,11 +2,14 @@
 import Image from "next/image";
 import { useCart } from "@/lib/context/CartContext";
 
-export default function OrderSummary() {
+interface OrderSummaryProps {
+  shippingCost?: number;
+}
+
+export default function OrderSummary({ shippingCost = 0 }: OrderSummaryProps) {
   const { cartItems, subtotal } = useCart();
 
-  const shipping = 5.0;
-  const grandTotal = subtotal + shipping;
+  const grandTotal = subtotal + shippingCost;
   const walletBalance = 50.0;
 
   return (
@@ -57,7 +60,7 @@ export default function OrderSummary() {
 
         <div className="flex justify-between">
           <span>Shipping</span>
-          <span>LE {shipping.toFixed(2)}</span>
+          <span>LE {shippingCost.toFixed(2)}</span>
         </div>
       </div>
 

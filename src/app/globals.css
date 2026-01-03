@@ -151,7 +151,7 @@ body {
   background: #000000;
   background: var(--background-gradient);
   color: var(--foreground);
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
 }
 
 main {

@@ -11,6 +11,8 @@ interface ReviewOrderProps {
         city: string;
         country: string;
         phone: string;
+        deliveryOption: 'standard' | 'express' | 'custom';
+        deliveryDate?: string;
     };
     paymentMethod: string;
     onBack: () => void;
@@ -20,7 +22,9 @@ interface ReviewOrderProps {
 
 export default function ReviewOrder({ shippingData, paymentMethod, onBack, onPlaceOrder, isSubmitting }: ReviewOrderProps) {
     const { cartItems, subtotal } = useCart();
-    const shipping = 5.0;
+
+    // Calculate shipping based on option
+    const shipping = shippingData.deliveryOption === 'express' ? 90.0 : 0.0;
     const grandTotal = subtotal + shipping;
 
     const getPaymentName = (method: string) => {
@@ -32,6 +36,12 @@ export default function ReviewOrder({ shippingData, paymentMethod, onBack, onPla
             default: return method;
         }
     };
+
+    const deliveryLabel = {
+        standard: "Standard Delivery (Free)",
+        express: "Express Delivery (+90 LE)",
+        custom: `Custom Date (${shippingData.deliveryDate})`
+    }[shippingData.deliveryOption];
 
     return (
         <div className="space-y-8">
@@ -49,6 +59,12 @@ export default function ReviewOrder({ shippingData, paymentMethod, onBack, onPla
                         <p>{shippingData.address}</p>
                         <p>{shippingData.city}, {shippingData.country}</p>
                         <p>{shippingData.phone}</p>
+                        <div className="mt-2 pt-2 border-t border-white/5 text-secondary">
+                            <div className="flex items-center gap-2">
+                                <Truck size={16} />
+                                <span className="text-sm font-medium">{deliveryLabel}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

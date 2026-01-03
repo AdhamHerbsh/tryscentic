@@ -364,6 +364,7 @@ export default function Header() {
                 </button>
                 <Link
                   href="/pages/checkout"
+                  onClick={() => setIsCartOpen(false)}
                   className="rounded-md bg-black px-4 py-2 text-sm font-semibold uppercase text-white transition hover:bg-gray-50 hover:text-gray-600"
                 >
                   Checkout

@@ -1,6 +1,7 @@
-import { getProductById } from "@/data-access/products";
-import { isProductFavorite } from "@/data-access/user/favorites";
+import { getProductById, getPublicProducts } from "@/data-access/products";
+import { isProductFavorite, getFavoriteProductIds } from "@/data-access/user/favorites";
 import ProductDetials from "@/components/parts/ProductDetials";
+import RelatedProducts from "@/components/parts/RelatedProducts";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({
@@ -17,6 +18,15 @@ export default async function ProductPage({
       notFound();
     }
 
+    // Fetch related products (same category, excluding current product)
+    const { products: relatedProductsData } = await getPublicProducts({
+      category_id: product.category_id || undefined,
+      limit: 6,
+    });
+
+    const relatedProducts = relatedProductsData.filter(p => p.id !== id).slice(0, 5);
+    const favoriteIds = await getFavoriteProductIds();
+
     // Map Database Product to ProductDetail UI Type
     const mappedProduct = {
       id: product.id,
@@ -26,6 +36,7 @@ export default async function ProductPage({
       images: product.gallery_images || [],
       sizes:
         product.variants?.map((v) => ({
+          id: v.id,
           label: v.size_label,
           price: v.price,
           stock: v.stock_quantity,
@@ -47,17 +58,23 @@ export default async function ProductPage({
       },
     ];
 
-    const isFavorite = await isProductFavorite(id);
+    const isFavorite = favoriteIds.includes(id);
 
     return (
-      <section className="pt-20">
+      <main className="container mx-auto">
+
         <ProductDetials
           product={mappedProduct as any}
           breadcrumbs={breadcrumbs}
           isFavorite={isFavorite}
         />
-      </section>
-    );
+
+        <RelatedProducts
+          products={relatedProducts}
+          favoriteIds={favoriteIds}
+        />
+
+      </main>);
   } catch (error) {
     console.error("Failed to load product:", error);
     notFound();

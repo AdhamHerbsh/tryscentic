@@ -44,9 +44,15 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
   };
 
 
+  const isOutOfStock = product.inStock === false;
+
   const handleAddToCart = () => {
+    if (isOutOfStock || !product.variantId) {
+      if (!product.variantId) toast.error("Unable to add to cart: missing variant information.");
+      return;
+    }
     addToCart({
-      id: product.id,
+      id: product.variantId,
       name: product.title,
       price: product.price,
       image: product.image,
@@ -58,7 +64,7 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
     <article
       className={
         styles.card +
-        ` sm:p-3 shadow-card shadow shadow-white hover:cursor-pointer hover:shadow-md transition-all duration-300 hover:scale-102 hover:rounded-xl hover:border hover:border-white/50 bg-white/5 p-4 `
+        ` sm:p-3 shadow-card shadow shadow-white hover:cursor-pointer hover:shadow-md transition-all duration-300 hover:scale-102 hover:rounded-xl hover:border hover:border-white/50 bg-white/5 p-4 ${isOutOfStock ? 'opacity-75' : ''}`
       }
     >
       <Link href={`/pages/shop/${product.id}`}>
@@ -69,12 +75,20 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
           {/* Ensure the parent element is relatively positioned for `fill` to work */}
 
           <Image
-            className="rounded-2xl object-cover"
+            className={`rounded-2xl object-cover transition-all duration-300 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
             src={product.image}
             alt={product.title}
             fill
             loading="eager"
           />
+
+          {isOutOfStock && (
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <span className="bg-[#511624]/90 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-xl backdrop-blur-sm border border-white/20">
+                Sold Out
+              </span>
+            </div>
+          )}
         </div>
 
         <h4 className="text-white font-semibold mb-1 text-sm sm:text-base line-clamp-1">{product.title}</h4>
@@ -87,9 +101,10 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
       <div className="flex gap-2 sm:gap-3">
         <button
           onClick={handleAddToCart}
-          className="flex-3 btn py-2 sm:py-3 rounded-md font-semibold bg-secondary hover:bg-accent transition text-xs sm:text-sm"
+          disabled={isOutOfStock}
+          className={`flex-3 btn py-2 sm:py-3 rounded-md font-semibold transition text-xs sm:text-sm ${isOutOfStock ? 'bg-gray-500/20 text-white/40 cursor-not-allowed border-white/5' : 'bg-secondary hover:bg-accent text-white'}`}
         >
-          Add to Cart
+          {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
         </button>
         <button
           onClick={handleToggle}

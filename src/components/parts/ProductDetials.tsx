@@ -85,8 +85,10 @@ export default function ProductDetials({
     }
   };
 
+  const isSelectedSizeOutOfStock = selectedSize.stock <= 0;
+
   return (
-    <section className="min-h-screen px-4 py-8  text-white sm:px-6 lg:px-12">
+    <section className="min-h-screen px-4 py-16  text-white sm:px-6 lg:px-12">
       <div className="mx-auto space-y-16">
         <div className="space-y-12">
           <nav className="text-sm text-white/60">
@@ -118,10 +120,17 @@ export default function ProductDetials({
                   src={selectedImage}
                   alt={product.name}
                   fill
-                  className="object-cover"
+                  className={`object-cover transition-all duration-500 ${isSelectedSizeOutOfStock ? 'grayscale opacity-50' : ''}`}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
                 />
+                {isSelectedSizeOutOfStock && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <span className="bg-[#511624]/90 text-white px-8 py-3 rounded-full text-lg font-bold uppercase tracking-[0.2em] shadow-2xl backdrop-blur-md border border-white/20">
+                      Sold Out
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="grid grid-cols-4 gap-4">
                 {currentImages.map((image) => (
@@ -131,7 +140,7 @@ export default function ProductDetials({
                     className={`relative aspect-square overflow-hidden rounded-2xl border transition ${selectedImage === image
                       ? "border-white"
                       : "border-white/10 hover:border-white/40"
-                      }`}
+                      } ${isSelectedSizeOutOfStock ? 'grayscale opacity-75' : ''}`}
                   >
                     <Image
                       src={image}
@@ -150,31 +159,50 @@ export default function ProductDetials({
                 <p className="text-sm uppercase tracking-[0.3em] text-white/60">
                   {product.type}
                 </p>
-                <h1 className="mt-2 text-4xl font-semibold tracking-wide sm:text-5xl">
-                  {product.name}
-                </h1>
-                <p className="mt-2 text-3xl font-semibold text-amber-400">
-                  {priceLabel}
-                </p>
+                <div className="flex flex-wrap items-baseline gap-4 mt-2">
+                  <h1 className="text-4xl font-semibold tracking-wide sm:text-5xl">
+                    {product.name}
+                  </h1>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-6">
+                  <p className="text-3xl font-semibold text-amber-400">
+                    {priceLabel}
+                  </p>
+                  {isSelectedSizeOutOfStock && (
+                    <span className="text-red-500 font-bold uppercase tracking-widest text-sm bg-red-500/10 px-3 py-1 rounded-md border border-red-500/20">
+                      Temporarily Out of Stock
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div>
                 <p className="mb-3 text-sm uppercase tracking-[0.3em] text-white/50">
                   Size
                 </p>
-                <div className="flex gap-3">
-                  {product.sizes.map((size) => (
-                    <button
-                      key={size.label}
-                      onClick={() => setSelectedSize(size)}
-                      className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${selectedSize.label === size.label
-                        ? "border-white bg-white text-black"
-                        : "border-white/30 text-white hover:border-white"
-                        }`}
-                    >
-                      {size.label}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-3">
+                  {product.sizes.map((size) => {
+                    const isOutOfStock = size.stock <= 0;
+                    return (
+                      <button
+                        key={size.label}
+                        onClick={() => setSelectedSize(size)}
+                        className={`rounded-full border px-5 py-2 text-sm font-semibold transition relative overflow-hidden ${selectedSize.label === size.label
+                          ? "border-white bg-white text-black"
+                          : isOutOfStock
+                            ? "border-white/10 text-white/40 cursor-not-allowed bg-white/5"
+                            : "border-white/30 text-white hover:border-white"
+                          }`}
+                      >
+                        {size.label}
+                        {isOutOfStock && (
+                          <div className="absolute inset-0 bg-red-500/10 flex items-center justify-center">
+                            <div className="w-full h-px bg-red-500/40 rotate-12 absolute" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

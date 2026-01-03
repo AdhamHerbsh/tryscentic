@@ -14,15 +14,19 @@ import { createClient } from "@/lib/utils/supabase/client";
 
 type Step = "shipping" | "payment" | "review";
 
+
 interface ShippingData {
   fullName: string;
   address: string;
   city: string;
   country: string;
   phone: string;
+  deliveryOption: 'standard' | 'express' | 'custom';
+  deliveryDate?: string;
 }
 
 export default function CheckoutPage() {
+
   const [currentStep, setCurrentStep] = useState<Step>("shipping");
   const [shippingData, setShippingData] = useState<ShippingData | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("apple_pay");
@@ -73,19 +77,23 @@ export default function CheckoutPage() {
         unit_price_at_purchase: item.price,
       }));
 
+      const shippingCost = shippingData.deliveryOption === 'express' ? 90.0 : 5.0;
+
       const res = await createOrder({
         shipping_info: shippingData,
-        total_amount: subtotal + 5.0, // shipping cost
+        total_amount: subtotal + shippingCost,
         items: orderItems,
         payment_method: paymentMethod,
+        shipping_method: shippingData.deliveryOption,
+        scheduled_delivery_date: shippingData.deliveryDate,
       });
 
       if (res.error) {
         toast.error(res.error);
       } else {
-        toast.success("Order placed successfully!");
+        router.push("/pages/shop");
         clearCart();
-        router.push("/pages/user-dashboard");
+        toast.success("Order placed successfully!");
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -103,6 +111,8 @@ export default function CheckoutPage() {
       default: return "0%";
     }
   };
+
+  const currentShippingCost = shippingData?.deliveryOption === 'express' ? 90.0 : 0.0;
 
   return (
     <div className="flex flex-col min-h-screen bg-primary text-white">
@@ -168,7 +178,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <OrderSummary />
+            <OrderSummary shippingCost={currentShippingCost} />
           </div>
         </div>
       </main>

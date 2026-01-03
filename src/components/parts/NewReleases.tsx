@@ -56,14 +56,25 @@ export default function CardsGrid() {
       try {
         const { data, error } = await supabase
           .from("products")
-          .select("*")
+          .select("*, variants:product_variants(*)")
           .limit(4)
           .order("created_at", { ascending: false });
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          setProducts(data as Product[]);
+          const mapped = data.map(p => {
+            const variant = p.variants?.sort((a: any, b: any) => a.price - b.price)[0];
+            return {
+              id: variant?.id || p.id,
+              title: p.title,
+              image: p.base_image_url || "/placeholder.jpg",
+              price: variant?.price || 0,
+              rating: p.rating || 5,
+              in_stock: p.variants?.some((v: any) => v.stock_quantity > 0)
+            };
+          });
+          setProducts(mapped as any);
         } else {
           // Use fallback if no products found in DB
           setProducts(fallbackProducts as any);
@@ -80,9 +91,9 @@ export default function CardsGrid() {
     fetchProducts();
   }, [supabase]);
 
-  if (loading) {
-    return <div className="py-20 flex justify-center"><SimpleLoader /></div>;
-  }
+  // if (loading) {
+  //   return <div className="py-20 flex justify-center"><SimpleLoader /></div>;
+  // }
 
   return (
     <section className="py-12 px-4 sm:py-16 lg:py-20">

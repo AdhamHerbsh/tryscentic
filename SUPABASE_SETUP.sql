@@ -106,12 +106,16 @@ create table public.favorites (
 );
 
 -- 8. ORDERS
+create type public.shipping_method as enum ('express', 'standard', 'custom');
+
 create table public.orders (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references public.profiles(id),
   status public.order_status default 'pending'::public.order_status,
   total_amount numeric not null,
   shipping_info jsonb,
+  shipping_method public.shipping_method default 'standard'::public.shipping_method,
+  scheduled_delivery_date timestamp with time zone,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
