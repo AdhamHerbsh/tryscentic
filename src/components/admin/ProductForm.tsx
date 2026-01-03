@@ -498,7 +498,7 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
 
                 <div className="space-y-4">
                     {formData.variants.map((variant, index) => (
-                        <div key={index} className="flex gap-4 items-start p-5 bg-gray-50 rounded-xl border border-gray-100 shadow-sm relative group">
+                        <div key={index} className="p-5 bg-gray-50 rounded-xl border border-gray-100 shadow-sm relative group">
                             <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-gray-300 group-hover:bg-[#511624] transition-colors" />
                             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
@@ -565,46 +565,44 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
                                         />
                                     </label>
                                 </div>
-                                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 gap-3">
-                                        {variant.images.map((img, imgIdx) => (
-                                            <div
-                                                key={imgIdx}
-                                                className={`group relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${variant.thumbnail_image === img.image_url ? 'border-[#511624] ring-2 ring-[#511624]/20 scale-95' : 'border-gray-200 hover:border-gray-300'}`}
-                                            >
-                                                <Image src={img.image_url} alt="Variant" fill className="object-cover" />
-                                                {variant.thumbnail_image === img.image_url && (
-                                                    <div className="absolute top-1 left-1 bg-[#511624] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10">
-                                                        THUMBNAIL
-                                                    </div>
-                                                )}
-                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 z-20">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleSetVariantThumbnail(index, img.image_url)}
-                                                        title="Set as Thumbnail"
-                                                        className={`p-1.5 rounded-md transition-colors ${variant.thumbnail_image === img.image_url ? 'bg-[#511624] text-white' : 'bg-white text-[#511624] hover:bg-[#511624] hover:text-white'}`}
-                                                    >
-                                                        <ImageIcon size={14} />
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleRemoveVariantImage(index, imgIdx)}
-                                                        title="Remove Image"
-                                                        className="p-1.5 bg-white text-red-600 rounded-md hover:bg-red-600 hover:text-white transition-colors"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
+                                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 gap-3">
+                                    {variant.images.map((img, imgIdx) => (
+                                        <div
+                                            key={imgIdx}
+                                            className={`group relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${variant.thumbnail_image === img.image_url ? 'border-[#511624] ring-2 ring-[#511624]/20 scale-95' : 'border-gray-200 hover:border-gray-300'}`}
+                                        >
+                                            <Image src={img.image_url} alt="Variant" fill className="object-cover" />
+                                            {variant.thumbnail_image === img.image_url && (
+                                                <div className="absolute top-1 left-1 bg-[#511624] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10">
+                                                    THUMBNAIL
                                                 </div>
+                                            )}
+                                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 z-20">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleSetVariantThumbnail(index, img.image_url)}
+                                                    title="Set as Thumbnail"
+                                                    className={`p-1.5 rounded-md transition-colors ${variant.thumbnail_image === img.image_url ? 'bg-[#511624] text-white' : 'bg-white text-[#511624] hover:bg-[#511624] hover:text-white'}`}
+                                                >
+                                                    <ImageIcon size={14} />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveVariantImage(index, imgIdx)}
+                                                    title="Remove Image"
+                                                    className="p-1.5 bg-white text-red-600 rounded-md hover:bg-red-600 hover:text-white transition-colors"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
                                             </div>
-                                        ))}
-                                        {variant.images.length === 0 && (
-                                            <div className="col-span-full py-6 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl text-gray-400 bg-white/50">
-                                                <ImageIcon size={24} className="mb-2 opacity-50" />
-                                                <span className="text-xs font-medium">No images for this variant yet</span>
-                                            </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    ))}
+                                    {variant.images.length === 0 && (
+                                        <div className="col-span-full py-6 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl text-gray-400 bg-white/50">
+                                            <ImageIcon size={24} className="mb-2 opacity-50" />
+                                            <span className="text-xs font-medium">No images for this variant yet</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
