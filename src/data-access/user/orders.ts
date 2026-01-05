@@ -115,36 +115,39 @@ export async function createOrder(input: CreateOrderInput) {
     }
 
     // Decrement Stock
-    // Using an RPC or direct update?
-    // Direct update is risky for concurrency but fine for now.
-    // Ideally use: update product_variants set stock_quantity = stock_quantity - Q where id = ...
-    const { error: stockError } = await supabase
-      .rpc("decrement_stock", {
-        row_id: item.variantId,
-        amount: item.quantity,
-      })
-      .catch(async () => {
-        // Fallback if RPC doesn't exist (I didn't see it in setup)
-        // We'll simple update.
-        // We can fetch current, substract, update.
-        const { data: variant } = await supabase
+    // Try using RPC first, fallback to direct update if RPC doesn't exist
+    let stockUpdateSuccess = false;
+
+    // Attempt RPC call
+    const { error: stockError } = await supabase.rpc("decrement_stock", {
+      row_id: item.variantId,
+      amount: item.quantity,
+    });
+
+    if (!stockError) {
+      stockUpdateSuccess = true;
+    } else {
+      // Fallback if RPC doesn't exist or fails
+      // Direct update: fetch current stock, subtract, and update
+      const { data: variant } = await supabase
+        .from("product_variants")
+        .select("stock_quantity")
+        .eq("id", item.variantId)
+        .single();
+
+      if (variant) {
+        const { error: updateError } = await supabase
           .from("product_variants")
-          .select("stock_quantity")
-          .eq("id", item.variantId)
-          .single();
-        if (variant) {
-          await supabase
-            .from("product_variants")
-            .update({
-              stock_quantity: Math.max(
-                0,
-                variant.stock_quantity - item.quantity
-              ),
-            })
-            .eq("id", item.variantId);
+          .update({
+            stock_quantity: Math.max(0, variant.stock_quantity - item.quantity),
+          })
+          .eq("id", item.variantId);
+
+        if (!updateError) {
+          stockUpdateSuccess = true;
         }
-        return { error: null };
-      });
+      }
+    }
   }
 
   // 4. Handle Payment (Wallet)
@@ -165,22 +168,26 @@ export async function createOrder(input: CreateOrderInput) {
 
   // 5. Promo Code Usage
   if (input.promoCode) {
-    // Increment usage
-    await supabase
-      .rpc("increment_promo_usage", { code_input: input.promoCode })
-      .catch(async () => {
-        const { data: pc } = await supabase
+    // Increment usage - try RPC first, fallback to direct update
+    const { error: promoError } = await supabase.rpc("increment_promo_usage", {
+      code_input: input.promoCode,
+    });
+
+    if (promoError) {
+      // Fallback if RPC doesn't exist
+      const { data: pc } = await supabase
+        .from("promo_codes")
+        .select("times_used, id")
+        .eq("code", input.promoCode)
+        .single();
+
+      if (pc) {
+        await supabase
           .from("promo_codes")
-          .select("times_used, id")
-          .eq("code", input.promoCode)
-          .single();
-        if (pc) {
-          await supabase
-            .from("promo_codes")
-            .update({ times_used: (pc.times_used || 0) + 1 })
-            .eq("id", pc.id);
-        }
-      });
+          .update({ times_used: (pc.times_used || 0) + 1 })
+          .eq("id", pc.id);
+      }
+    }
   }
 
   revalidatePath("/pages/user-dashboard");

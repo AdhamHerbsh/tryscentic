@@ -4,11 +4,12 @@ import ProductDetials from "@/components/parts/ProductDetials";
 import RelatedProducts from "@/components/parts/RelatedProducts";
 import { notFound } from "next/navigation";
 
-export default async function ProductPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+interface ProductPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
+
   const { id } = await params;
 
   try {

@@ -5,9 +5,7 @@ import { getBrandById } from "@/data-access/admin/products";
 import { notFound } from "next/navigation";
 
 interface EditBrandPageProps {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>;
 }
 
 export default async function EditBrandPage({ params }: EditBrandPageProps) {

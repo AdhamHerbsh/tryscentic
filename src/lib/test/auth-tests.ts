@@ -12,7 +12,7 @@ async function testSupabaseConnection() {
   console.log("🔍 Testing Supabase connection...");
 
   try {
-    const { createClient } = await import("./src/lib/utils/supabase/client");
+    const { createClient } = await import("@/lib/utils/supabase/client");
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.getSession();
@@ -34,11 +34,11 @@ async function testSupabaseConnection() {
   }
 }
 
-async function testSignUp(email, password, name) {
+async function testSignUp(email: string, password: string, name: string) {
   console.log(`🔐 Testing signup for: ${email}`);
 
   try {
-    const { createClient } = await import("./src/lib/utils/supabase/client");
+    const { createClient } = await import("@/lib/utils/supabase/client");
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.signUp({
@@ -66,11 +66,11 @@ async function testSignUp(email, password, name) {
   }
 }
 
-async function testLogin(email, password) {
+async function testLogin(email: string, password: string) {
   console.log(`🔐 Testing login for: ${email}`);
 
   try {
-    const { createClient } = await import("./src/lib/utils/supabase/client");
+    const { createClient } = await import("@/lib/utils/supabase/client");
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -96,11 +96,11 @@ async function testLogin(email, password) {
   }
 }
 
-async function testPasswordReset(email) {
+async function testPasswordReset(email: string) {
   console.log(`📧 Sending password reset to: ${email}`);
 
   try {
-    const { createClient } = await import("./src/lib/utils/supabase/client");
+    const { createClient } = await import("@/lib/utils/supabase/client");
     const supabase = createClient();
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -125,7 +125,7 @@ async function testLogout() {
   console.log("🚪 Testing logout...");
 
   try {
-    const { createClient } = await import("./src/lib/utils/supabase/client");
+    const { createClient } = await import("@/lib/utils/supabase/client");
     const supabase = createClient();
 
     const { error } = await supabase.auth.signOut();
@@ -147,7 +147,7 @@ async function testGetProfile() {
   console.log("👤 Fetching user profile...");
 
   try {
-    const { createClient } = await import("./src/lib/utils/supabase/client");
+    const { createClient } = await import("@/lib/utils/supabase/client");
     const supabase = createClient();
 
     const {
