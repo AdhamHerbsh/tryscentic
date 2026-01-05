@@ -10,7 +10,7 @@ export async function compressImage(file: File): Promise<File> {
     maxSizeMB: 1, // Target size < 1MB
     maxWidthOrHeight: 1920, // Max dimension
     useWebWorker: true,
-    initialQuality: 0.8,
+    initialQuality: 0.9, // Higher quality for logos
     fileType: "image/webp", // Convert to WebP for best compression
   };
 

@@ -286,8 +286,8 @@ export async function getTopProducts(limit = 5) {
       variant_id,
       quantity,
       unit_price_at_purchase,
-      variant:product_variants(
-        product:products(id, title)
+      variant:product_variants!variant_id(
+        product:products!product_id(id, title)
       )
     `);
 

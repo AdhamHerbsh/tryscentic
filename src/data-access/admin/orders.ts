@@ -25,7 +25,7 @@ export async function getOrders(params?: {
       user:profiles(*),
       items:order_items(
         *,
-        variant:product_variants(*)
+        variant:product_variants!variant_id(*)
       )
     `,
     { count: "exact" }
@@ -69,9 +69,9 @@ export async function getOrderDetails(orderId: string) {
       user:profiles(*),
       items:order_items(
         *,
-        variant:product_variants(
+        variant:product_variants!variant_id(
           *,
-          product:products(*)
+          product:products!product_id(*)
         )
       )
     `
@@ -105,7 +105,7 @@ export async function updateOrderStatus(input: {
       *,
       items:order_items(
         *,
-        variant:product_variants(*)
+        variant:product_variants!variant_id(*)
       )
     `
     )
