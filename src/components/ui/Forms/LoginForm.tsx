@@ -109,6 +109,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
                             placeholder="Email"
                             type="email"
                             value={email}
+                            autoComplete="email"
                             onChange={(e) => setEmail(e.target.value)}
                         />
 
@@ -118,6 +119,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
                             placeholder="Password"
                             type="password"
                             value={password}
+                            autoComplete="current-password"
                             onChange={(e) => setPassword(e.target.value)}
                         />
 
