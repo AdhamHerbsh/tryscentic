@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import FacebookIcon from "/public/assets/images/icons/facebook.svg"
-import InstagramIcon from "/public/assets/images/icons/instagram.svg"
-import WhatsappIcon from "/public/assets/images/icons/whatsapp-business.svg"
-import TiktokIcon from "/public/assets/images/icons/tiktok.svg"
+import FacebookIcon from "@/assets/images/icons/facebook.png"
+import InstagramIcon from "@/assets/images/icons/instagram.png"
+import WhatsappIcon from "@/assets/images/icons/whatsapp-business.png"
+import TiktokIcon from "@/assets/images/icons/tiktok.png"
 
 
 export default function SocialIcons() {
