@@ -12,15 +12,37 @@ export default function Icons() {
             <div className="max-w-6xl mx-auto px-6 text-white">
 
                 <div className="flex justify-center gap-4">
-                    <Image className="footer-icons" src={FacebookIcon} alt="Facebook" />
+                    <Link href="https://www.facebook.com/tryscentic/" target="_blank">
+                        <Image
+                            src={FacebookIcon}
+                            alt="Facebook"
+                            fill
+                            className="object-cover footer-icons"
+                        />
+                    </Link>
                     <Link href="https://www.instagram.com/tryscentic/" target="_blank">
-                        <Image className="footer-icons" src={InstagramIcon} alt="Instagram" />
+                        <Image
+                            src={InstagramIcon}
+                            alt="Instagram"
+                            fill
+                            className="object-cover footer-icons"
+                        />
                     </Link>
                     <Link href="https://wa.me/+201090767839" target="_blank">
-                        <Image className="footer-icons" src={WhatsappIcon} alt="Whatsapp" />
+                        <Image
+                            src={WhatsappIcon}
+                            alt="Whatsapp"
+                            fill
+                            className="object-cover footer-icons"
+                        />
                     </Link>
                     <Link href="https://www.tiktok.com/@tryscentic" target="_blank">
-                        <Image className="footer-icons" src={TiktokIcon} alt="Tiktok" />
+                        <Image
+                            src={TiktokIcon}
+                            alt="Tiktok"
+                            fill
+                            className="object-cover footer-icons"
+                        />
                     </Link>
                 </div>
 

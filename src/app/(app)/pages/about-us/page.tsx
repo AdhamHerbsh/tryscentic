@@ -36,11 +36,11 @@ export default function page() {
         </div>
       </section>
 
-      {/* <section className="px-auto py-8">
+      <section className="px-auto py-8">
         <div className="subtitle" data-swiper-parallax="-200">
           <Icons />
         </div>
-      </section> */}
+      </section>
 
     </>
   )
