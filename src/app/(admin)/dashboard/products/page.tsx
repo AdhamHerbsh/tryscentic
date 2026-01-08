@@ -221,7 +221,7 @@ export default function ProductsManage() {
                                     <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                                                <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
                                                     {product.base_image_url ? (
                                                         <Image
                                                             src={product.base_image_url}
