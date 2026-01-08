@@ -43,3 +43,6 @@ client_secret.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Docomentation
+PROJECT_AUDIT.md
