@@ -77,7 +77,6 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
             src={product.image}
             alt={product.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className={` w-full h-full object-cover rounded-2xl transition-all duration-300 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
           />
 
@@ -119,3 +118,4 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
     </article>
   );
 }
+
