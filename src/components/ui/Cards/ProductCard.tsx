@@ -73,12 +73,11 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
         {/* Aspect Ratio Wrapper for Responsive Image */}
         <div className="rounded-md mb-2 sm:mb-4 relative aspect-square">
           {/* Ensure the parent element is relatively positioned for `fill` to work */}
-
           <Image
             src={product.image}
             alt={product.title}
             fill
-            className={`rounded-2xl object-cover transition-all duration-300 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
+            className={` w-full h-full object-cover rounded-2xl transition-all duration-300 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
           />
 
           {isOutOfStock && (
