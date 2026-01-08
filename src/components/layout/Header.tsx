@@ -88,7 +88,7 @@ export default function Header() {
   return (
     <>
       <header
-        className="fixed bg-accent backdrop-blur-sm text-white font-bold z-999 w-full">
+        className="fixed bg-accent backdrop-blur-sm text-white font-bold z-50 w-full">
         <div className="mx-auto max-w-9xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             {/* Logo */}
@@ -285,7 +285,7 @@ export default function Header() {
               onClick={() => setIsCartOpen(false)}
             />
             <aside
-              className="fixed right-0 top-0 z-150 flex h-screen w-full max-w-md flex-col bg-white text-black shadow-2xl"
+              className="fixed right-0 top-0 z-100 flex h-screen w-full max-w-md flex-col bg-white text-black shadow-2xl"
               data-aos="slide-left"
             >
               <header className="flex items-center justify-between border-b px-6 py-4">

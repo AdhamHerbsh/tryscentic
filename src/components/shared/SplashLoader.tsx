@@ -9,7 +9,7 @@ export default function SplashLoader() {
     if (!show) return null;
 
     return (
-        <div className="fixed inset-0 z-[9999]">
+        <div className="fixed inset-0 z-50">
             <Loader onComplete={() => setShow(false)} />
         </div>
     );

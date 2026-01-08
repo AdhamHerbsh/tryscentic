@@ -5,7 +5,7 @@ import Video from "@/components/ui/Videos/Video";
 export default function RegisterPage() {
   return (
     // Equivalent to .pageContainer for structural layout (bg gradient is kept in CSS module, but min-h-screen and flex are here)
-    <main className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a0a0a] to-[#1a1a2e]">
+    <main className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-linear-to-br from-[#0a0a0a] to-[#1a1a2e]">
       <AnimatedBackground />
       {/* Equivalent to .contentContainer: relative, z-10, flex, gap-6/8, max-w-7xl, mx-auto, padding, and responsive stacking (lg:flex-row) */}
       <div className="relative z-10 flex flex-col lg:flex-row gap-6 lg:gap-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

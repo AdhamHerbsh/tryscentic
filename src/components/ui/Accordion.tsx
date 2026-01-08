@@ -36,7 +36,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, children, isOpen, 
                 }}
                 className="overflow-hidden transition-all duration-300 ease-in-out"
             >
-                <div className="pb-5 text-sm text-slate-500">
+                <div className="pb-5 text-sm text-slate-200">
                     {children}
                 </div>
             </div>

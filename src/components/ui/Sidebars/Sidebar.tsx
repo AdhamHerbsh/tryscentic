@@ -46,6 +46,7 @@ export default function Sidebar({
   if (type === "shop") {
     // ... same ...
     return (
+
       <div
         className={
           styles.sidebar +
@@ -153,6 +154,7 @@ export default function Sidebar({
           Clear All
         </button>
       </div>
+
     );
   }
 
@@ -162,14 +164,13 @@ export default function Sidebar({
       {/* Overlay - Mobile Only */}
       {type === "user" && isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-100 lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 lg:hidden transition-opacity duration-300"
           onClick={onClose}
         />
       )}
-
       <aside
         className={`
-          fixed inset-y-0 left-0 z-100 bg-white/5 border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out
+          fixed inset-y-0 left-0 z-20 bg-white/5 border-r border-white/10 flex flex-col transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0 lg:static lg:h-[calc(100vh-5rem)] lg:w-80 lg:bg-transparent lg:border-none lg:p-6
         `}
