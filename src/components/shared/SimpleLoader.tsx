@@ -7,7 +7,7 @@ export default function SimpleLoader() {
                 {/* Spinner */}
                 <div className="simple-loader-spinner border-primary"></div>
                 {/* Loading text */}
-                <p className="simple-loader-text text-primary">
+                <p className="simple-loader-text text-secondary">
                     Loading...
                 </p>
             </div>

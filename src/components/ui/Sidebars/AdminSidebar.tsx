@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, PackagePlus, LogOut, LockKeyhole, Users, ShieldQuestionMark } from "lucide-react";
+import { Home, LayoutDashboard, PackagePlus, LogOut, LockKeyhole, Users, ShieldQuestionMark, Banknote, ShoppingBag, Ticket, Gift } from "lucide-react";
 import { createClient } from "@/lib/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -24,6 +24,26 @@ export default function AdminSidebar() {
             icon: <LayoutDashboard size={20} />,
         },
         {
+            name: "Transactions",
+            href: "/dashboard/transactions",
+            icon: <Banknote size={20} />,
+        },
+        {
+            name: "Orders",
+            href: "/dashboard/orders",
+            icon: <ShoppingBag size={20} />,
+        },
+        {
+            name: "Promo Codes",
+            href: "/dashboard/promo-codes",
+            icon: <Ticket size={20} />,
+        },
+        {
+            name: "Gifts",
+            href: "/dashboard/gifts",
+            icon: <Gift size={20} />,
+        },
+        {
             name: "Products",
             href: "/dashboard/products",
             icon: <PackagePlus size={20} />,
@@ -41,7 +61,7 @@ export default function AdminSidebar() {
     ];
 
     return (
-        <aside className="w-75 text-white min-h-screen flex flex-col bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-br-3xl rounded-tr-3xl p-6">
+        <aside className="w-75 text-white min-h-screen flex flex-col bg-linear-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-br-3xl rounded-tr-3xl p-6">
 
             <div className="flex gap-4 p-6 border-b border-gray-800 text-secondary">
                 <LockKeyhole size={32} />
@@ -55,6 +75,7 @@ export default function AdminSidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            prefetch={false}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
                                 ? "bg-amber-600 text-white"
                                 : "text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -67,7 +88,14 @@ export default function AdminSidebar() {
                 })}
             </nav>
 
-            <div className="p-4 border-t border-gray-800">
+            <div className="p-4 border-t border-gray-800 gap-4">
+                <Link
+                    href="/"
+                    className="flex items-center gap-3 px-4 py-3 w-full text-left text-green-400 hover:bg-green-500/20 rounded-lg transition-colors"
+                >
+                    <Home size={20} />
+                    <span>Home</span>
+                </Link>
                 <button
                     onClick={handleLogout}
                     className="flex items-center gap-3 px-4 py-3 w-full text-left text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"

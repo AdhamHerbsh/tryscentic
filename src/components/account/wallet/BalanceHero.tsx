@@ -3,7 +3,11 @@ import { TrendingUp, Wallet } from "lucide-react";
 import { useState } from "react";
 import TopUpModal from "./TopUpModal";
 
-export default function BalanceHero() {
+interface BalanceHeroProps {
+    balance: number;
+}
+
+export default function BalanceHero({ balance }: BalanceHeroProps) {
     const [isTopUpOpen, setIsTopUpOpen] = useState(false);
 
     return (
@@ -22,7 +26,7 @@ export default function BalanceHero() {
                         </div>
 
                         <div className="flex items-baseline gap-4">
-                            <h1 className="text-5xl sm:text-6xl font-bold text-white mb-2">LE 500.00</h1>
+                            <h1 className="text-5xl sm:text-6xl font-bold text-white mb-2">LE {balance.toFixed(2)}</h1>
                         </div>
 
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium font-[system-ui]">

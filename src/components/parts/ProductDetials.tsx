@@ -247,7 +247,20 @@ export default function ProductDetials({
                     <Heart className="h-6 w-6" />
                   )}
                 </button>
-                <button className="rounded-full  border border-white/30 p-3 text-white transition hover:border-white hover:bg-white/10">
+                <button
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: product.name,
+                        text: product.baseDescription,
+                        url: window.location.href,
+                      }).catch(() => { });
+                    } else {
+                      navigator.clipboard.writeText(window.location.href);
+                    }
+                  }}
+                  className="rounded-full border border-white/30 p-3 text-white transition hover:border-white hover:bg-white/10"
+                >
                   <Share2 className="h-6 w-6" />
                 </button>
               </div>

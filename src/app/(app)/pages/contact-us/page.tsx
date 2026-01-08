@@ -1,4 +1,19 @@
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+
 export default function ContactPage() {
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleSubmit = () => {
+    // Handle form submission
+    console.log(formData);
+  };
 
 
   return (
@@ -19,24 +34,27 @@ export default function ContactPage() {
             <div className="space-y-6">
               <input
                 type="text"
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Full Name"
                 className="w-full p-3 rounded border border-secondary outline-none"
               />
               <input
                 type="email"
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="Email"
                 className="w-full p-3 rounded border border-secondary outline-none"
               />
               <textarea
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Message"
                 className="w-full p-3 rounded border border-secondary h-35 max-h-70 outline-none"
               />
 
               <div className="flex space-x-6 pt-4">
-                <button className="bg-green-500 px-6 py-3 rounded font-semibold hover:bg-green-600 transition">
+                <Link href={`https://wa.me/+201090767839?text=${formData.name}:%0A${formData.email}:%0A${formData.message}`} className="bg-green-500 px-6 py-3 rounded font-semibold hover:bg-green-600 transition">
                   Send WhatsApp
-                </button>
-                <button className="bg-secondary px-6 py-3 rounded font-semibold hover:bg-amber-700 transition">
+                </Link>
+                <button onClick={handleSubmit} className="bg-secondary px-6 py-3 rounded font-semibold hover:bg-amber-700 transition">
                   Send Message
                 </button>
               </div>

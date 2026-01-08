@@ -10,6 +10,7 @@ interface Transaction {
   amount: number;
   description: string;
   created_at: string;
+  status: string;
 }
 
 export default function WalletSection() {
@@ -136,9 +137,17 @@ export default function WalletSection() {
                     {tx.type === 'deposit' ? <Plus size={16} /> : <CreditCard size={16} />}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 capitalize">{tx.type}</p>
-                    <p className="text-xs text-gray-500">{new Date(tx.created_at).toLocaleDateString()}</p>
-                    <p className="text-xs text-gray-400">{tx.description}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-gray-900 capitalize">{tx.type}</p>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full border border-opacity-20 capitalize font-medium ${tx.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500' :
+                        tx.status === 'rejected' ? 'bg-rose-500/10 text-rose-500 border-rose-500' :
+                          'bg-amber-500/10 text-amber-500 border-amber-500'
+                        }`}>
+                        {tx.status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-800">{new Date(tx.created_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-700">{tx.description}</p>
                   </div>
                 </div>
                 <span className={`font-bold ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'

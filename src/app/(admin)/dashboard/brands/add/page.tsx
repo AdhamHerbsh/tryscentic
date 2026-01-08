@@ -1,4 +1,4 @@
-import BrandForm from "@/components/admin/BrandForm";
+import BrandForm from "@/components/admin/brands/BrandForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 

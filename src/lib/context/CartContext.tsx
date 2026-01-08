@@ -18,6 +18,7 @@ type CartContextValue = {
   cartItems: CartItem[];
   totalItems: number;
   subtotal: number;
+  isInitialized: boolean;
   addToCart: (item: AddCartItemInput) => void;
   updateQuantity: (id: string, delta: number) => void;
   removeItem: (id: string) => void;
@@ -134,6 +135,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         cartItems,
         totalItems: totals.totalItems,
         subtotal: totals.subtotal,
+        isInitialized,
         addToCart,
         updateQuantity,
         removeItem,

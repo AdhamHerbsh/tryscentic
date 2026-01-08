@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/utils/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp, Package, Calendar, CreditCard, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 interface OrderItem {
@@ -21,6 +21,7 @@ interface Order {
 export default function OrderHistorySection() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -76,7 +77,12 @@ export default function OrderHistorySection() {
 
   return (
     <section className="mb-10">
-      <h2 className="text-xl font-semibold mb-4 text-white">Order History</h2>
+      <div className="flex justify-between py-2">
+        <h2 className="text-xl font-semibold mb-4 text-white">Order History</h2>
+        <Link href="/pages/account/orders" className="bg-secondary rounded-lg px-4 py-2 text-white font-semibold hover:bg-secondary/80 transition-colors">
+          Track Orders
+        </Link>
+      </div>
 
       {orders.length === 0 ? (
         <div className="p-12 bg-white/5 rounded-3xl border border-white/10 text-center animate-in fade-in duration-500">
@@ -108,38 +114,112 @@ export default function OrderHistorySection() {
             <div className="text-right sm:col-span-1">Action</div>
           </div>
 
-          {orders.map((item, index) => (
-            <div
-              key={item.id}
-              className="grid grid-cols-2 sm:grid-cols-5 px-4 py-4 text-sm text-white border-b border-white/5 items-center gap-y-2 hover:bg-white/5 transition-colors"
-            >
-              <div className="font-mono text-xs opacity-70 truncate pr-2" title={item.id}>
-                {item.id.slice(0, 8)}...
-              </div>
-              <div className="hidden sm:block text-gray-400">
-                {new Date(item.created_at).toLocaleDateString()}
-              </div>
-              <div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide ${getStatusColor(
-                    item.status || "pending"
-                  )}`}
-                >
-                  {item.status || "Pending"}
-                </span>
-              </div>
-              <div className="hidden sm:block font-semibold">
-                LE {item.total_amount.toFixed(2)}
-              </div>
-              <div className="text-right col-span-2 sm:col-span-1">
-                <button className="text-amber-500 font-semibold hover:text-amber-400 transition-colors text-xs uppercase tracking-wider">
-                  View Details
-                </button>
-                {/* Mobile-only Date/Total */}
-                <div className="sm:hidden text-xs text-gray-500 mt-1">
-                  {new Date(item.created_at).toLocaleDateString()} • LE {item.total_amount.toFixed(2)}
+          {orders.map((item: Order) => (
+            <div key={item.id} className="border-b border-white/5 last:border-0">
+              <div
+                className={`grid grid-cols-2 sm:grid-cols-5 px-4 py-4 text-sm text-white items-center gap-y-2 hover:bg-white/5 transition-colors cursor-pointer ${expandedOrderId === item.id ? "bg-white/5" : ""
+                  }`}
+                onClick={() => setExpandedOrderId(expandedOrderId === item.id ? null : item.id)}
+              >
+                <div className="font-mono text-xs opacity-70 truncate pr-2" title={item.id}>
+                  {item.id.slice(0, 8)}...
+                </div>
+                <div className="hidden sm:block text-gray-400">
+                  {new Date(item.created_at).toLocaleDateString()}
+                </div>
+                <div>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getStatusColor(
+                      item.status || "pending"
+                    )}`}
+                  >
+                    {item.status || "Pending"}
+                  </span>
+                </div>
+                <div className="hidden sm:block font-semibold">
+                  LE {item.total_amount.toFixed(2)}
+                </div>
+                <div className="text-right col-span-2 sm:col-span-1 flex items-center justify-end gap-2">
+                  <button
+                    className="text-amber-500 font-semibold hover:text-amber-400 transition-colors text-xs uppercase tracking-wider flex items-center gap-1"
+                  >
+                    {expandedOrderId === item.id ? "Close" : "View Details"}
+                    {expandedOrderId === item.id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </button>
+                  {/* Mobile-only Date/Total */}
+                  <div className="sm:hidden text-[10px] text-gray-200 mt-1 block">
+                    {new Date(item.created_at).toLocaleDateString()} • LE {item.total_amount.toFixed(2)}
+                  </div>
                 </div>
               </div>
+
+              {/* Expanded Details */}
+              {expandedOrderId === item.id && (
+                <div className="px-4 py-6 bg-white/2 border-t border-white/5 animate-in slide-in-from-top-2 duration-300">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Order Info Summary */}
+                    <div className="space-y-4">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-amber-500/80 mb-3 flex items-center gap-2">
+                        <Package size={14} /> Order Summary
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-gray-100">
+                          <Calendar size={14} className="text-gray-200" />
+                          <div>
+                            <p className="text-[10px] uppercase tracking-tighter text-gray-200">Ordered On</p>
+                            <p className="text-sm text-gray-200">{new Date(item.created_at).toLocaleString()}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 text-gray-100">
+                          <CreditCard size={14} className="text-gray-200" />
+                          <div>
+                            <p className="text-[10px] uppercase tracking-tighter text-gray-200">Total Paid</p>
+                            <p className="text-sm font-bold text-white">LE {item.total_amount.toFixed(2)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Order Items */}
+                    <div className="md:col-span-2">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-amber-500/80 mb-4 flex items-center gap-2">
+                        <ShoppingBag size={14} /> Order Items
+                      </h4>
+                      <div className="space-y-3">
+                        {item.items && item.items.length > 0 ? (
+                          item.items.map((orderItem: OrderItem) => (
+                            <div key={orderItem.id} className="flex justify-between items-center bg-white/5 rounded-lg p-3 border border-white/5 group hover:border-amber-500/30 transition-all">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-lg">
+                                  ✨
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-white group-hover:text-amber-400 transition-colors">
+                                    {orderItem.product_name_snapshot}
+                                  </p>
+                                  <p className="text-xs text-gray-100 italic">
+                                    Qty: {orderItem.quantity} units
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm font-semibold text-white">
+                                  LE {(orderItem.quantity * orderItem.unit_price_at_purchase).toFixed(2)}
+                                </p>
+                                <p className="text-[10px] text-gray-200 uppercase tracking-tighter">
+                                  LE {orderItem.unit_price_at_purchase.toFixed(2)} / unit
+                                </p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-xs text-gray-200 italic">No item details available.</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

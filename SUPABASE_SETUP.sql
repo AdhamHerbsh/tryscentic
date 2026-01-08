@@ -18,6 +18,9 @@ create extension if not exists "uuid-ossp";
 create type public.user_role as enum ('admin', 'customer');
 create type public.order_status as enum ('pending', 'shipped', 'delivered', 'cancelled');
 create type public.transaction_type as enum ('deposit', 'purchase', 'refund');
+create type public.shipping_method as enum ('express', 'standard', 'custom');
+create type public.payment_status as enum ('unpaid', 'paid', 'awaiting_verification', 'failed', 'refunded');
+create type public.payment_method as enum ('wallet', 'vodafone_cash', 'instapay', 'cod');
 
 -- 3. BRANDS
 create table public.brands (
@@ -106,8 +109,6 @@ create table public.favorites (
 );
 
 -- 8. ORDERS
-create type public.shipping_method as enum ('express', 'standard', 'custom');
-
 create table public.orders (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references public.profiles(id),
@@ -115,6 +116,9 @@ create table public.orders (
   total_amount numeric not null,
   shipping_info jsonb,
   shipping_method public.shipping_method default 'standard'::public.shipping_method,
+  payment_status public.payment_status default 'unpaid'::public.payment_status,
+  payment_method public.payment_method,
+  proof_url text, -- For manual payment verification
   scheduled_delivery_date timestamp with time zone,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -153,7 +157,11 @@ create table public.gift_codes (
   amount numeric not null,
   is_active boolean default true,
   created_by uuid references public.profiles(id),
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  redeemed_by uuid references public.profiles(id),
+  recipient_email text,
+  redeemed_at timestamp with time zone,
+  status text default 'active'
 );
 
 -- 11.1. PROMO CODES (Discounts)
@@ -255,6 +263,24 @@ create policy "Admin manage promo codes" on public.promo_codes for all using (
   exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
 );
 
+-- Transaction Policies
+create policy "User view own transactions" on public.transactions for select using (auth.uid() = user_id);
+create policy "User create transactions" on public.transactions for insert with check (auth.uid() = user_id);
+create policy "Admin manage transactions" on public.transactions for all using (
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- Gift Code Policies
+create policy "User view own gift codes" on public.gift_codes for select using (
+  auth.uid() = created_by or auth.uid() = redeemed_by
+);
+create policy "User create gift codes" on public.gift_codes for insert with check (
+  auth.uid() = created_by
+);
+create policy "Admin manage gift codes" on public.gift_codes for all using (
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
 -- 13. TRIGGERS & FUNCTIONS
 
 -- Handle New User Signup
@@ -327,35 +353,41 @@ language plpgsql
 security definer
 as $$
 declare
-  gift_amount numeric;
-  curr_user_id uuid;
+  v_amount numeric;
+  v_user_id uuid;
 begin
-  curr_user_id := auth.uid();
-  
-  -- Check validity
-  select amount into gift_amount
-  from public.gift_codes
-  where code = code_input and is_active = true;
-  
-  if gift_amount is null then
+  select auth.uid() into v_user_id;
+  if v_user_id is null then
+    raise exception 'Unauthorized';
+  end if;
+
+  select amount into v_amount 
+  from public.gift_codes 
+  where code = code_input and is_active = true
+  for update;
+
+  if not found then
     raise exception 'Invalid or expired gift code';
   end if;
 
-  -- Deactivate code
-  update public.gift_codes
-  set is_active = false
+  -- 1. Update gift code status
+  update public.gift_codes 
+  set is_active = false,
+      redeemed_by = v_user_id,
+      redeemed_at = timezone('utc'::text, now()),
+      status = 'redeemed'
   where code = code_input;
 
-  -- Update user balance
-  update public.profiles
-  set wallet_balance = wallet_balance + gift_amount
-  where id = curr_user_id;
+  -- 2. Add to user balance
+  update public.profiles 
+  set wallet_balance = wallet_balance + v_amount 
+  where id = v_user_id;
 
-  -- Record transaction
-  insert into public.transactions (user_id, type, amount, description)
-  values (curr_user_id, 'deposit', gift_amount, 'Gift Code Redemption: ' || code_input);
+  -- 3. Record transaction
+  insert into public.transactions (user_id, type, amount, description, status)
+  values (v_user_id, 'deposit', v_amount, 'Gift code redemption: ' || code_input, 'confirmed');
 
-  return gift_amount;
+  return v_amount;
 end;
 $$;
 
@@ -456,6 +488,129 @@ create index if not exists idx_favorites_user_id on public.favorites(user_id);
 create index if not exists idx_favorites_product_id on public.favorites(product_id);
 
 -- ==========================================
+-- Confirm Top Up Function
+create or replace function public.confirm_topup(transaction_id uuid, admin_note_input text default null)
+returns boolean
+language plpgsql
+security definer
+as $$
+declare
+  tx_record record;
+begin
+  -- Get transaction
+  select * into tx_record from public.transactions where id = transaction_id;
+  
+  if tx_record is null or tx_record.status != 'pending' then
+    raise exception 'Transaction not found or not pending';
+  end if;
+
+  -- Update Balance
+  update public.profiles
+  set wallet_balance = wallet_balance + tx_record.amount
+  where id = tx_record.user_id;
+
+  -- Update Transaction
+  update public.transactions
+  set status = 'confirmed', admin_note = admin_note_input
+  where id = transaction_id;
+
+  return true;
+end;
+$$;
+
+-- Unified Place Order Function
+create or replace function public.place_order(
+  p_user_id uuid,
+  p_total_amount numeric,
+  p_shipping_info jsonb,
+  p_shipping_method public.shipping_method,
+  p_payment_method public.payment_method,
+  p_items jsonb,
+  p_proof_url text default null,
+  p_scheduled_delivery_date timestamp with time zone default null,
+  p_promo_code text default null,
+  p_wallet_deduction numeric default 0
+)
+returns uuid
+language plpgsql
+security definer
+as $$
+declare
+  v_order_id uuid;
+  v_item jsonb;
+  v_variant_id uuid;
+  v_quantity int;
+  v_price numeric;
+  v_stock int;
+  v_new_payment_status public.payment_status;
+  v_user_balance numeric;
+  v_remaining_to_pay numeric;
+begin
+  -- 1. Validate Wallet Deduction if any
+  if p_wallet_deduction > 0 then
+    select wallet_balance into v_user_balance from public.profiles where id = p_user_id;
+    if v_user_balance < p_wallet_deduction then
+      raise exception 'Insufficient wallet balance for deduction';
+    end if;
+    
+    -- Deduct balance
+    update public.profiles set wallet_balance = wallet_balance - p_wallet_deduction where id = p_user_id;
+    
+    -- Record Transaction
+    insert into public.transactions (user_id, type, amount, description, status)
+    values (p_user_id, 'purchase', -p_wallet_deduction, 'Order Wallet Deduction', 'confirmed');
+  end if;
+
+  -- 2. Validate Promo Code if any
+  if p_promo_code is not null then
+    update public.promo_codes 
+    set times_used = times_used + 1 
+    where code = p_promo_code and is_active = true;
+  end if;
+
+  -- 3. Determine Payment Status
+  v_remaining_to_pay := p_total_amount - p_wallet_deduction;
+  
+  if v_remaining_to_pay <= 0 then
+    v_new_payment_status := 'paid';
+  elseif p_payment_method in ('vodafone_cash', 'instapay') then
+    if p_proof_url is null then
+      raise exception 'Payment proof is required for manual payment';
+    end if;
+    v_new_payment_status := 'awaiting_verification';
+  else
+    v_new_payment_status := 'unpaid'; 
+  end if;
+
+  -- 4. Create Order
+  insert into public.orders (
+    user_id, status, total_amount, payment_status, payment_method, shipping_info, shipping_method, scheduled_delivery_date, proof_url
+  ) values (
+    p_user_id, 'pending', p_total_amount, v_new_payment_status, p_payment_method, p_shipping_info, p_shipping_method, p_scheduled_delivery_date, p_proof_url
+  ) returning id into v_order_id;
+
+  -- 5. Process Items
+  for v_item in select * from jsonb_array_elements(p_items)
+  loop
+    v_variant_id := (v_item->>'variant_id')::uuid;
+    v_quantity := (v_item->>'quantity')::int;
+    v_price := (v_item->>'unit_price')::numeric;
+
+    select stock_quantity into v_stock from public.product_variants where id = v_variant_id;
+    if v_stock < v_quantity then
+      raise exception 'Insufficient stock for variant %', v_variant_id;
+    end if;
+
+    update public.product_variants set stock_quantity = stock_quantity - v_quantity where id = v_variant_id;
+
+    insert into public.order_items (order_id, variant_id, quantity, unit_price_at_purchase)
+    values (v_order_id, v_variant_id, v_quantity, v_price);
+  end loop;
+
+  return v_order_id;
+end;
+$$;
+
 -- 14. STORAGE SETUP
 -- ==========================================
 
@@ -477,16 +632,27 @@ using ( bucket_id = 'products' );
 create policy "Admin Management"
 on storage.objects for all
 using (
-  bucket_id = 'products' 
   AND (exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'))
-)
-with check (
-  bucket_id = 'products' 
-  AND (exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'))
+);
+
+-- 3. Transaction Receipts Bucket
+insert into storage.buckets (id, name, public)
+values ('transaction_receipts', 'transaction_receipts', false)
+on conflict (id) do nothing;
+
+create policy "User upload receipt" on storage.objects for insert with check (
+  bucket_id = 'transaction_receipts' and auth.uid()::text = (storage.foldername(name))[1]
+);
+
+create policy "User view own receipt" on storage.objects for select using (
+  bucket_id = 'transaction_receipts' and auth.uid()::text = (storage.foldername(name))[1]
+);
+
+create policy "Admin manage receipts" on storage.objects for all using (
+  bucket_id = 'transaction_receipts' and exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
 );
 
 -- ==========================================
 -- COMPLETION MESSAGE
 -- ==========================================
 -- ... (rest of the completion message)
-

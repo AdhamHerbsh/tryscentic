@@ -128,44 +128,31 @@ export async function updateOrderStatus(input: {
     throw new Error(`Failed to update order: ${updateError.message}`);
   }
 
-  // If confirming order (moving from pending to shipped), deduct inventory
-  if (previousStatus === "pending" && validatedInput.status === "shipped") {
+  // If cancelling order, restore inventory (since stock is deducted at creation)
+  if (validatedInput.status === "cancelled" && previousStatus !== "cancelled") {
     const items = order.items as any[];
 
     for (const item of items) {
-      const currentStock = item.variant?.stock_quantity || 0;
-      const newStock = currentStock - item.quantity;
-
-      if (newStock < 0) {
-        throw new Error(`Insufficient stock for variant ${item.variant_id}`);
-      }
-
-      const { error: stockError } = await supabase
+      // Fetch current stock
+      const { data: variant } = await supabase
         .from("product_variants")
-        .update({ stock_quantity: newStock })
-        .eq("id", item.variant_id);
+        .select("stock_quantity")
+        .eq("id", item.variant_id)
+        .single();
 
-      if (stockError) {
-        throw new Error(`Failed to update stock: ${stockError.message}`);
-      }
-    }
-  }
+      if (variant) {
+        const newStock = variant.stock_quantity + item.quantity;
 
-  // If cancelling order that was already shipped, restore inventory
-  if (previousStatus === "shipped" && validatedInput.status === "cancelled") {
-    const items = order.items as any[];
+        const { error: stockError } = await supabase
+          .from("product_variants")
+          .update({ stock_quantity: newStock })
+          .eq("id", item.variant_id);
 
-    for (const item of items) {
-      const currentStock = item.variant?.stock_quantity || 0;
-      const newStock = currentStock + item.quantity;
-
-      const { error: stockError } = await supabase
-        .from("product_variants")
-        .update({ stock_quantity: newStock })
-        .eq("id", item.variant_id);
-
-      if (stockError) {
-        console.error(`Failed to restore stock: ${stockError.message}`);
+        if (stockError) {
+          console.error(
+            `Failed to restore stock for variant ${item.variant_id}: ${stockError.message}`
+          );
+        }
       }
     }
   }
@@ -201,4 +188,176 @@ export async function getOrderStats() {
     pendingOrders: pendingResult.count || 0,
     totalRevenue,
   };
+}
+
+/**
+ * Get pending orders for payment verification
+ */
+export async function getPendingOrders() {
+  const { supabase } = await verifyAdmin();
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select(
+      `
+      *,
+      user:profiles(full_name, email),
+      items:order_items(
+        quantity,
+        unit_price_at_purchase,
+        variant:product_variants(
+          size_label,
+          product:products(title)
+        )
+      )
+    `
+    )
+    .eq("payment_status", "awaiting_verification")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching pending orders:", error);
+    return [];
+  }
+
+  // Generate signed URLs for proofs
+  const ordersWithProof = await Promise.all(
+    data.map(async (order) => {
+      let proof_url = order.proof_url;
+      if (proof_url && !proof_url.startsWith("http")) {
+        const { data: signed } = await supabase.storage
+          .from("transaction_receipts")
+          .createSignedUrl(proof_url, 3600);
+        proof_url = signed?.signedUrl || null;
+      }
+
+      const user = Array.isArray(order.user) ? order.user[0] : order.user;
+
+      return { ...order, proof_url, user };
+    })
+  );
+
+  return ordersWithProof;
+}
+
+/**
+ * Verify manual payment order
+ */
+export async function verifyOrder(
+  orderId: string,
+  action: "approve" | "reject",
+  adminNote?: string
+) {
+  const { supabase } = await verifyAdmin();
+
+  if (action === "approve") {
+    // Approve: Set payment_status='paid', status='pending' (processing)
+    const { error } = await supabase
+      .from("orders")
+      .update({
+        payment_status: "paid",
+        status: "pending",
+        updated_at: new Date().toISOString(),
+      } as any)
+      .eq("id", orderId);
+
+    if (error) throw new Error(error.message);
+  } else {
+    // Reject: Set payment_status='failed', status='cancelled'
+    const { error } = await supabase
+      .from("orders")
+      .update({
+        payment_status: "failed",
+        status: "cancelled",
+        updated_at: new Date().toISOString(),
+      } as any)
+      .eq("id", orderId);
+
+    if (error) throw new Error(error.message);
+
+    // Restore stock since order is cancelled
+    const { data: items } = await supabase
+      .from("order_items")
+      .select("variant_id, quantity")
+      .eq("order_id", orderId);
+
+    if (items) {
+      for (const item of items) {
+        // Fetch current stock first to ensure accuracy
+        const { data: variant } = await supabase
+          .from("product_variants")
+          .select("stock_quantity")
+          .eq("id", item.variant_id)
+          .single();
+
+        if (variant) {
+          const newStock = variant.stock_quantity + item.quantity;
+
+          const { error: stockError } = await supabase
+            .from("product_variants")
+            .update({ stock_quantity: newStock })
+            .eq("id", item.variant_id);
+
+          if (stockError) {
+            console.error(
+              `Failed to restore stock for variant ${item.variant_id}: ${stockError.message}`
+            );
+          }
+        }
+      }
+    }
+  }
+
+  revalidateAdminPaths();
+  return { success: true };
+}
+
+/**
+ * Get active orders for tracking management
+ */
+export async function getActiveOrders() {
+  const { supabase } = await verifyAdmin();
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select(
+      `
+      *,
+      user:profiles(full_name, email),
+      items:order_items(
+        quantity,
+        unit_price_at_purchase,
+        variant:product_variants(
+          size_label,
+          product:products(title)
+        )
+      )
+    `
+    )
+    .neq("payment_status", "awaiting_verification")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching active orders:", error);
+    return [];
+  }
+
+  // Generate signed URLs for proofs (admin might want to see them even after approval)
+  const ordersWithProof = await Promise.all(
+    data.map(async (order) => {
+      let proof_url = order.proof_url;
+      if (proof_url && !proof_url.startsWith("http")) {
+        const { data: signed } = await supabase.storage
+          .from("transaction_receipts")
+          .createSignedUrl(proof_url, 3600);
+        proof_url = signed?.signedUrl || null;
+      }
+
+      const user = Array.isArray(order.user) ? order.user[0] : order.user;
+
+      return { ...order, proof_url, user };
+    })
+  );
+
+  return ordersWithProof;
 }

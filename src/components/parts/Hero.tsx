@@ -62,6 +62,7 @@ export function AboutHero({ bgimage }: { bgimage: string }) {
         src={bgimage}
         alt="About Hero Image"
         fill
+        sizes="100vw"
         className="object-cover"
       />
 

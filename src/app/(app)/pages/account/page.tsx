@@ -8,6 +8,7 @@ import OrderHistorySection from "@/components/parts/OrderHistorySection";
 import PromoCodesSection from "@/components/parts/PromoCodesSection";
 import FavoritesSection from "@/components/parts/FavoritesSection";
 import PersonalInfoSection from "@/components/parts/PersonalInfoSection";
+import MyGiftsSection from "@/components/parts/MyGiftsSection";
 import EditProfileModal from "@/components/ui/Modals/EditProfileModal";
 import { toast } from "sonner";
 import { Loader, ShieldAlert, Menu } from "lucide-react";
@@ -165,10 +166,11 @@ export default function AccountPage() {
                 </button>
                 <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                   {activeTab === 'personal-info' && 'Personal Info'}
-                  {activeTab === 'orders'}
-                  {activeTab === 'wallet'}
-                  {activeTab === 'promo-codes'}
-                  {activeTab === 'favorites'}
+                  {activeTab === 'orders' && 'Order History'}
+                  {activeTab === 'wallet' && 'My Wallet'}
+                  {activeTab === 'promo-codes' && 'Promo Codes'}
+                  {activeTab === 'gifts' && 'My Gifts'}
+                  {activeTab === 'favorites' && 'Favorites'}
                 </h1>
               </div>
 
@@ -184,6 +186,7 @@ export default function AccountPage() {
               {activeTab === 'wallet' && <WalletSection />}
               {activeTab === 'orders' && <OrderHistorySection />}
               {activeTab === 'promo-codes' && <PromoCodesSection />}
+              {activeTab === 'gifts' && <MyGiftsSection />}
               {activeTab === 'favorites' && <FavoritesSection />}
             </div>
           </main>

@@ -2,15 +2,21 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import ShippingForm from "@/components/parts/ShippingForm";
-import PaymentForm, { PaymentMethod } from "@/components/parts/PaymentForm";
+import ShippingForm from "@/components/ui/Forms/ShippingForm";
+import PaymentForm, { PaymentMethod } from "@/components/ui/Forms/PaymentForm";
 import ReviewOrder from "@/components/parts/ReviewOrder";
 import OrderSummary from "@/components/parts/OrderSummary";
+import PromoCodeInput from "@/components/parts/PromoCodeInput";
+import WalletBalanceSection from "@/components/parts/WalletBalanceSection";
 import { useCart } from "@/lib/context/CartContext";
 import { createOrder } from "@/actions/order-actions";
+import { validatePromoCode } from "@/actions/promo-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/utils/supabase/client";
+import ProcessingOverlay from "@/components/ui/ProcessingOverlay";
+import FailureModal from "@/components/ui/Modals/FailureModal";
+import { AnimatePresence } from "framer-motion";
 
 type Step = "shipping" | "payment" | "review";
 
@@ -30,12 +36,25 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState<Step>("shipping");
   const [shippingData, setShippingData] = useState<ShippingData | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("apple_pay");
+  const [proofFile, setProofFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
+  const [useWallet, setUseWallet] = useState(false);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const [orderError, setOrderError] = useState<string | null>(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
-  const { cartItems, subtotal, clearCart } = useCart();
+  const { cartItems, subtotal, clearCart, isInitialized } = useCart();
   const router = useRouter();
   const supabase = createClient();
+
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (isInitialized && cartItems.length === 0) {
+      router.push("/pages/shop");
+    }
+  }, [isInitialized, cartItems, router]);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -52,8 +71,6 @@ export default function CheckoutPage() {
     fetchBalance();
   }, [supabase]);
 
-  // ارتفاع الهيدر الافتراضي
-  const HEADER_HEIGHT_CLASS = "mt-20"; // mt-20 ≈ 80px
 
   const handleShippingNext = (data: ShippingData) => {
     setShippingData(data);
@@ -65,6 +82,23 @@ export default function CheckoutPage() {
     setCurrentStep("review");
   };
 
+  const handleApplyPromo = async (code: string) => {
+    const res = await validatePromoCode(code, subtotal);
+    if (res.success) {
+      setDiscountAmount(res.discount || 0);
+      setAppliedPromo(res.code || code);
+      toast.success(res.message);
+      return { success: true, message: res.message };
+    }
+    return { success: false, message: res.message };
+  };
+
+  const handleRemovePromo = () => {
+    setDiscountAmount(0);
+    setAppliedPromo(null);
+    toast.info("Promo code removed");
+  };
+
   const handlePlaceOrder = async () => {
     if (!shippingData) return;
 
@@ -72,31 +106,50 @@ export default function CheckoutPage() {
     try {
       const orderItems = cartItems.map(item => ({
         variant_id: item.id,
-        product_name_snapshot: item.name,
         quantity: item.quantity,
-        unit_price_at_purchase: item.price,
+        unit_price: item.price,
       }));
 
-      const shippingCost = shippingData.deliveryOption === 'express' ? 90.0 : 5.0;
+      const realShippingCost = shippingData.deliveryOption === 'express' ? 90.0 : 0.0;
+      const finalWalletDeduction = useWallet ? Math.min(walletBalance, subtotal + realShippingCost - discountAmount) : 0;
 
-      const res = await createOrder({
-        shipping_info: shippingData,
-        total_amount: subtotal + shippingCost,
-        items: orderItems,
-        payment_method: paymentMethod,
-        shipping_method: shippingData.deliveryOption,
-        scheduled_delivery_date: shippingData.deliveryDate,
-      });
+      const formData = new FormData();
+      formData.append("shipping_info", JSON.stringify(shippingData));
+      formData.append("total_amount", String(subtotal + realShippingCost - discountAmount));
+      formData.append("payment_method", paymentMethod);
+      formData.append("shipping_method", shippingData.deliveryOption);
+      formData.append("items", JSON.stringify(orderItems));
 
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        router.push("/pages/shop");
-        clearCart();
-        toast.success("Order placed successfully!");
+      if (appliedPromo) {
+        formData.append("promo_code", appliedPromo);
       }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+
+      if (useWallet) {
+        formData.append("wallet_deduction", String(finalWalletDeduction));
+      }
+
+      if (shippingData.deliveryDate) {
+        formData.append("scheduled_delivery_date", shippingData.deliveryDate);
+      }
+
+      if (proofFile) {
+        formData.append("proof_file", proofFile);
+      }
+
+      // @ts-ignore - Action logic will be updated to handle promo/wallet
+      const res = await createOrder(formData);
+
+      if (!res.success) {
+        setOrderError(res.message || "Failed to place order");
+        setShowErrorModal(true);
+      } else {
+        clearCart();
+        const status = (paymentMethod === "vodafone_cash" || paymentMethod === "instapay") ? "pending" : "instant";
+        router.push(`/pages/checkout/success/${res.orderId}?status=${status}`);
+      }
+    } catch (error: any) {
+      setOrderError(error.message || "Something went wrong. Please try again.");
+      setShowErrorModal(true);
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -117,7 +170,7 @@ export default function CheckoutPage() {
   return (
     <div className="flex flex-col min-h-screen bg-primary text-white">
       {/* Main content */}
-      <main className={`flex-1 px-4 lg:px-10 ${HEADER_HEIGHT_CLASS}`}>
+      <main className={"flex-1 px-4 lg:px-10 mt-20"}>
         <div className="max-w-7xl mx-auto relative">
 
           {/* رابط Back to Shop */}
@@ -163,6 +216,7 @@ export default function CheckoutPage() {
                     onBack={() => setCurrentStep("shipping")}
                     initialMethod={paymentMethod}
                     walletBalance={walletBalance}
+                    onFileChange={setProofFile}
                   />
                 )}
 
@@ -178,10 +232,39 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <OrderSummary shippingCost={currentShippingCost} />
+            <div className="space-y-6">
+              <OrderSummary
+                shippingCost={currentShippingCost}
+                discountAmount={discountAmount}
+                walletDeduction={useWallet ? Math.min(walletBalance, subtotal + currentShippingCost - discountAmount) : 0}
+              />
+
+              <PromoCodeInput
+                onApply={handleApplyPromo}
+                onRemove={handleRemovePromo}
+                appliedCode={appliedPromo}
+              />
+
+              <WalletBalanceSection
+                balance={walletBalance}
+                isUsing={useWallet}
+                onToggle={() => setUseWallet(!useWallet)}
+              />
+            </div>
           </div>
         </div>
       </main>
+
+      {/* Overlays & Modals */}
+      <AnimatePresence>
+        {isSubmitting && <ProcessingOverlay message={proofFile ? "Uploading receipt & crafting order..." : "Finalizing your fragrance order..."} />}
+      </AnimatePresence>
+
+      <FailureModal
+        isOpen={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        error={orderError || ""}
+      />
     </div>
   );
 }

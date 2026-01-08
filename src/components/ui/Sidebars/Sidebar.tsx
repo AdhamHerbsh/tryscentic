@@ -207,6 +207,7 @@ export default function Sidebar({
               { id: "orders", label: "Order History" },
               { id: "wallet", label: "Wallet" },
               { id: "promo-codes", label: "Promo Codes" },
+              { id: "gifts", label: "Gifts" },
               { id: "favorites", label: "Favorites" },
             ].map((item) => (
               <button

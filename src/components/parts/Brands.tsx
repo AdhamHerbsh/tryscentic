@@ -1,22 +1,30 @@
-"use client";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import "swiper/css";
-import Image from "next/image";
-import Link from "next/link";
+import { getPublicBrands } from "@/data-access/products";
 import type { Brand } from "@/types/database";
+import { readdir } from "fs/promises";
+import { join } from "path";
+import { cwd } from "process";
+import BrandsSwiper from "./BrandsSwiper";
 
-export default function Brands({ brands, existingImages }: { brands: Brand[], existingImages: string[] }) {
+export default async function Brands() {
+    const brands = (await getPublicBrands()) as Brand[] | null;
+
+    if (!brands || brands.length === 0) return null;
+
+    // Get list of existing brand images
+    let brandImages: string[] = [];
+    try {
+        const brandsDir = join(cwd(), "public", "assets", "images", "brands");
+        brandImages = await readdir(brandsDir);
+    } catch (error) {
+        brandImages = [];
+    }
+
     // Helper to find image for a brand
     const getBrandImage = (brandName: string) => {
         const validExtensions = ['.svg', '.png', '.jpg', '.jpeg', '.webp'];
-        const imageFile = existingImages.find(file => {
+        const imageFile = brandImages.find(file => {
             const ext = '.' + file.split('.').pop()?.toLowerCase();
-            const name = file.substring(0, file.lastIndexOf('.')); // Remove extension
-            // Compare case-insensitive? The user asked for "brand name" matching.
-            // Filesystem is case-insensitive on Windows but sensitive on Linux.
-            // Assuming user names the file exactly as the brand name for safety.
+            const name = file.substring(0, file.lastIndexOf('.'));
             return name === brandName && validExtensions.includes(ext);
         });
         return imageFile ? `/assets/images/brands/${imageFile}` : null;
@@ -31,52 +39,13 @@ export default function Brands({ brands, existingImages }: { brands: Brand[], ex
     if (brandsWithLogos.length === 0) return null;
 
     return (
-        <section className="py-6 bg-secondary/40">
+        <section className="py-6 bg-linear-to-b from-secondary/10 to-secondary/40">
             <div className="container mx-auto px-4">
                 <div className="mb-8 text-center lg:mb-12">
                     <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">Shop By Brand</h2>
                     <p className="mt-4 text-lg">Shop by brand and find your favorite fragrance</p>
                 </div>
-                <Swiper
-                    modules={[Autoplay]}
-                    spaceBetween={30}
-                    slidesPerView={2}
-                    loop={true}
-                    autoplay={{
-                        delay: 2500,
-                        disableOnInteraction: false,
-                    }}
-                    breakpoints={{
-                        640: {
-                            slidesPerView: 3,
-                        },
-                        768: {
-                            slidesPerView: 4,
-                        },
-                        1024: {
-                            slidesPerView: 5,
-                        },
-                    }}
-                    className="brands-swiper"
-                >
-                    {brandsWithLogos.map((brand) => (
-                        <SwiperSlide key={brand.id} className="flex items-center justify-center py-2 px-4 rounded-3xl bg-white border border-secondary">
-                            <Link
-                                href={`/pages/shop?brand_id=${brand.id}`}
-                                className="group flex flex-col items-center justify-center p-4 transition-transform hover:scale-105"
-                            >
-                                <div className="relative w-32 h-20 md:w-40 md:h-24">
-                                    <Image
-                                        src={brand.logoUrl!}
-                                        alt={brand.name}
-                                        fill
-                                        className="object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
-                                    />
-                                </div>
-                            </Link>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+                <BrandsSwiper brandsWithLogos={brandsWithLogos as any} />
             </div>
         </section>
     );

@@ -86,8 +86,8 @@ export default function ReviewOrder({ shippingData, paymentMethod, onBack, onPla
                     <div className="space-y-4">
                         {cartItems.map((item) => (
                             <div key={item.id} className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1">
-                                    <Image src={item.image} alt={item.name} width={40} height={40} className="object-contain" />
+                                <div className="w-12 h-12 shrink-0 bg-white rounded-lg flex items-center justify-center p-1 relative border border-white/10">
+                                    <Image src={item.image} alt={item.name} fill sizes="48px" className="object-contain p-1" />
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-sm font-medium text-white">{item.name}</p>

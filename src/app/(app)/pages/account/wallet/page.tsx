@@ -2,9 +2,13 @@ import Link from "next/link";
 import BalanceHero from "@/components/account/wallet/BalanceHero";
 import QuickActions from "@/components/account/wallet/QuickActions";
 import TransactionHistory from "@/components/account/wallet/TransactionHistory";
-import PaymentMethods from "@/components/account/wallet/PaymentMethods";
+// import PaymentMethods from "@/components/account/wallet/PaymentMethods";
+import { getUserTransactions, getUserBalance } from "@/data-access/user/wallet";
 
-export default function WalletPage() {
+export default async function WalletPage() {
+    const transactions = await getUserTransactions();
+    const balance = await getUserBalance();
+
     return (
         <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto space-y-8">
@@ -25,19 +29,19 @@ export default function WalletPage() {
                 </div>
 
                 {/* Balance Hero */}
-                <BalanceHero />
+                <BalanceHero balance={balance} />
 
                 {/* Quick Actions */}
-                <QuickActions />
+                <QuickActions transactions={transactions} />
 
                 {/* Bottom Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 h-full">
-                        <TransactionHistory />
+                    <div className="lg:col-span-3 h-full">
+                        <TransactionHistory transactions={transactions} />
                     </div>
-                    <div className="lg:col-span-1 h-full">
+                    {/* <div className="lg:col-span-1 h-full">
                         <PaymentMethods />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

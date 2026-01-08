@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Sidebar from "@/components/ui/Sidebars/Sidebar";
 import ProductCard from "@/components/ui/Cards/ProductCard";
 import Pagination from "@/components/ui/Pagination/Pagination";
+import CartFloatingBar from "@/components/parts/CartFloatingBar";
 import { Product, Brand, Category } from "@/types/database";
 import { toggleFavorite } from "@/data-access/user/favorites";
 import { toast } from "sonner";
@@ -101,7 +102,7 @@ export default function Products({
       {/* Filter Toggle Button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-[#511624] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#511624]/90 transition-all text-sm sm:text-base border border-white/10"
+        className="fixed bottom-6 right-6 z-50 bg-secondary text-white px-2 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#511624]/90 transition-all text-sm sm:text-base border border-white/10"
         aria-label={sidebarOpen ? "Close filters" : "Open filters"}
       >
         <svg
@@ -143,7 +144,7 @@ export default function Products({
 
         {/* Products Section */}
         <div className={`transition-all duration-300 ${sidebarOpen ? "lg:col-start-2 lg:col-span-3" : "col-span-1"}`}>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/5 border border-white/10 rounded-2xl p-4">
+          <div className="flex flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8 bg-white/5 border border-white/10 rounded-2xl p-4">
             <div className="text-sm sm:text-base text-white/60">
               Showing <span className="text-white font-semibold">{Math.min((currentPage - 1) * 12 + 1, totalCount)}</span> -{" "}
               <span className="text-white font-semibold">{Math.min(currentPage * 12, totalCount)}</span> of <span className="text-white font-semibold">{totalCount}</span>{" "}
@@ -191,6 +192,8 @@ export default function Products({
           )}
         </div>
       </div>
+
+      <CartFloatingBar />
     </section>
   );
 }

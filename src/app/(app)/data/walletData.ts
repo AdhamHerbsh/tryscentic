@@ -73,35 +73,14 @@ export const mockTransactions: Transaction[] = [
   },
 ];
 
-export const mockPaymentMethods: PaymentMethod[] = [
-  {
-    id: "1",
-    type: "Visa",
-    last4: "4242",
-    expiry: "12/25",
-  },
-  {
-    id: "2",
-    type: "Mastercard",
-    last4: "8839",
-    expiry: "09/24",
-  },
-  {
-    id: "3",
-    type: "Bank",
-    last4: "9921",
-    label: "Chase Checking",
-  },
-];
+export const mockPaymentMethods: PaymentMethod[] = [];
 
 export const topUpMethods: TopUpMethod[] = [
+  { id: "vodafone", label: "Vodafone Cash", sub: "010XXXXXXXX", icon: Wallet },
   {
-    id: "visa",
-    label: "Visa ending in 4242",
-    sub: "Expires 12/25",
-    icon: CreditCard,
+    id: "instapay",
+    label: "Insta Pay",
+    sub: "username@instapay",
+    icon: QrCode,
   },
-  { id: "apple", label: "Apple Pay", sub: "Connected", icon: Smartphone },
-  { id: "instapay", label: "Insta Pay", sub: "Instant Transfer", icon: QrCode },
-  { id: "vodafone", label: "Vodafone Cash", sub: "e-Wallet", icon: Wallet },
 ];

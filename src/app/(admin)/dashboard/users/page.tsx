@@ -69,8 +69,10 @@ export default function UserManagementPage() {
     return (
         <div>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-gray-200">User Management</h1>
-
+                <div className="">
+                    <h1 className="text-3xl font-bold text-gray-200">User Management</h1>
+                    <p className="text-gray-400 mt-1">Manage user roles and permissions</p>
+                </div>
                 <div className="relative w-full sm:w-64">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <input

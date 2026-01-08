@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { Plus, X, Upload, ArrowLeft, ImageIcon, Loader2, Trash2, Edit2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { InputField } from '../ui/Forms/InputField';
+import { InputField } from '../../ui/Forms/InputField';
 import { compressImage } from '@/lib/utils/image-compression';
 
 interface VariantFormData {

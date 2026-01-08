@@ -3,86 +3,38 @@
 import { createClient } from "@/lib/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export async function createOrder(orderData: {
-  shipping_info: any;
-  total_amount: number;
-  items: {
-    variant_id: string;
-    product_name_snapshot: string;
-    quantity: number;
-    unit_price_at_purchase: number;
-  }[];
-  payment_method: string;
-  shipping_method?: "standard" | "express" | "custom";
-  scheduled_delivery_date?: string | null;
-}) {
-  const supabase = await createClient();
+import { createOrder as dalCreateOrder } from "@/data-access/orders";
 
-  // 1. Get current user
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-  if (userError || !user) {
-    return { error: "You must be logged in to place an order." };
+export async function createOrder(formData: FormData) {
+  const shipping_info = JSON.parse(formData.get("shipping_info") as string);
+  const total_amount = parseFloat(formData.get("total_amount") as string);
+  const items = JSON.parse(formData.get("items") as string);
+  const payment_method = formData.get("payment_method") as any;
+  const shipping_method = formData.get("shipping_method") as any;
+  const scheduled_delivery_date = formData.get(
+    "scheduled_delivery_date"
+  ) as string;
+  const proof_file = formData.get("proof_file") as File;
+  const promo_code = formData.get("promo_code") as string;
+  const wallet_deduction =
+    parseFloat(formData.get("wallet_deduction") as string) || 0;
+
+  const result = await dalCreateOrder({
+    total_amount,
+    shipping_info,
+    shipping_method,
+    payment_method,
+    items,
+    proof_file,
+    scheduled_delivery_date,
+    promo_code,
+    wallet_deduction,
+  });
+
+  if (result.success) {
+    revalidatePath("/pages/user-dashboard");
+    revalidatePath("/pages/checkout");
   }
 
-  // 2. Insert Order
-  const { data: order, error: orderError } = await supabase
-    .from("orders")
-    .insert({
-      user_id: user.id,
-      total_amount: orderData.total_amount,
-      shipping_info: orderData.shipping_info,
-      status: "pending",
-      shipping_method: orderData.shipping_method || "standard",
-      scheduled_delivery_date: orderData.scheduled_delivery_date,
-    })
-    .select()
-    .single();
-
-  if (orderError) {
-    console.log("Order creation error:", orderError);
-    return { error: "Failed to create order." + orderError.message };
-  }
-
-  // 3. Insert Order Items
-  const orderItems = orderData.items.map((item) => ({
-    order_id: order.id,
-    variant_id: item.variant_id,
-    product_name_snapshot: item.product_name_snapshot,
-    quantity: item.quantity,
-    unit_price_at_purchase: item.unit_price_at_purchase,
-  }));
-
-  const { error: itemsError } = await supabase
-    .from("order_items")
-    .insert(orderItems);
-
-  if (itemsError) {
-    console.error("Order items creation error:", itemsError);
-    // Note: In a production app, you might want to handle this partial failure (e.g., delete the order)
-    return { error: "Failed to create order items." + itemsError.message };
-  }
-
-  // 4. Handle Wallet Payment if selected
-  if (orderData.payment_method === "wallet") {
-    const { data: success, error: walletError } = await supabase.rpc(
-      "pay_with_wallet",
-      {
-        order_total: orderData.total_amount,
-        order_id_input: order.id,
-      }
-    );
-
-    if (walletError || !success) {
-      console.error("Wallet payment error:", walletError);
-      return { error: walletError?.message || "Insufficient wallet balance." };
-    }
-  }
-
-  revalidatePath("/pages/user-dashboard");
-  revalidatePath("/pages/checkout");
-
-  return { success: true, orderId: order.id };
+  return result;
 }

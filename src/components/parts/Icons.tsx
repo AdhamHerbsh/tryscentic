@@ -13,11 +13,15 @@ export default function Icons() {
 
                 <div className="flex justify-center gap-4">
                     <Image className="footer-icons" src={FacebookIcon} alt="Facebook" />
-                    <Image className="footer-icons" src={InstagramIcon} alt="Instagram" />
+                    <Link href="https://www.instagram.com/tryscentic/" target="_blank">
+                        <Image className="footer-icons" src={InstagramIcon} alt="Instagram" />
+                    </Link>
                     <Link href="https://wa.me/+201090767839" target="_blank">
                         <Image className="footer-icons" src={WhatsappIcon} alt="Whatsapp" />
                     </Link>
-                    <Image className="footer-icons" src={TiktokIcon} alt="Tiktok" />
+                    <Link href="https://www.tiktok.com/@tryscentic" target="_blank">
+                        <Image className="footer-icons" src={TiktokIcon} alt="Tiktok" />
+                    </Link>
                 </div>
 
             </div>

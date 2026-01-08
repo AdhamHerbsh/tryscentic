@@ -1,7 +1,7 @@
 "use client";
 
 import { Building2, Calendar, Globe, Home, Phone, User } from "lucide-react";
-import { InputField } from "../ui/Forms/InputField";
+import { InputField } from "./InputField";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -150,28 +150,7 @@ export default function ShippingForm({ onNext, initialData }: ShippingFormProps)
         <div className="space-y-3 pt-4 border-t border-white/10">
           <h3 className="text-lg font-medium text-white mb-2">Delivery Options</h3>
 
-          {/* Standard */}
-          <label
-            className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${formData.deliveryOption === 'standard'
-              ? 'bg-secondary/10 border-secondary ring-1 ring-secondary'
-              : 'bg-white/5 border-white/10 hover:bg-white/10'
-              }`}
-          >
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="delivery"
-                className="accent-secondary"
-                checked={formData.deliveryOption === 'standard'}
-                onChange={() => handleOptionChange('standard')}
-              />
-              <div>
-                <p className="font-semibold text-white">Standard Delivery</p>
-                <p className="text-sm text-gray-400">Within 24 hours</p>
-              </div>
-            </div>
-            <span className="text-amber-400 font-bold">Free</span>
-          </label>
+
 
           {/* Express */}
           <label
@@ -195,7 +174,28 @@ export default function ShippingForm({ onNext, initialData }: ShippingFormProps)
             </div>
             <span className="text-amber-400 font-bold">+90 LE</span>
           </label>
-
+          {/* Standard */}
+          <label
+            className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${formData.deliveryOption === 'standard'
+              ? 'bg-secondary/10 border-secondary ring-1 ring-secondary'
+              : 'bg-white/5 border-white/10 hover:bg-white/10'
+              }`}
+          >
+            <div className="flex items-center gap-3">
+              <input
+                type="radio"
+                name="delivery"
+                className="accent-secondary"
+                checked={formData.deliveryOption === 'standard'}
+                onChange={() => handleOptionChange('standard')}
+              />
+              <div>
+                <p className="font-semibold text-white">Standard Delivery</p>
+                <p className="text-sm text-gray-400">Within 24 hours</p>
+              </div>
+            </div>
+            <span className="text-amber-400 font-bold">Free</span>
+          </label>
           {/* Custom */}
           <label
             className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${formData.deliveryOption === 'custom'

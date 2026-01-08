@@ -322,8 +322,8 @@ export default function Reviews({
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="block text-[10px] uppercase tracking-widest text-amber-400/60 font-medium">Verified Buyer</span>
-                  <span className="text-[11px] text-white/30 font-medium tracking-tighter">
+                  <span className="block uppercase tracking-widest text-amber-400 font-medium">Verified Buyer</span>
+                  <span className="text-sm text-white/80 font-medium tracking-tighter">
                     {new Date(review.created_at).toLocaleDateString(undefined, {
                       month: 'short',
                       day: 'numeric',

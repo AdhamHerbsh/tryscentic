@@ -5,7 +5,7 @@ import { readdir } from "fs/promises";
 import { join } from "path";
 import { cwd } from "process";
 import { Plus, Edit2 } from "lucide-react";
-import DeleteBrandButton from "@/components/admin/DeleteBrandButton";
+import DeleteBrandButton from "@/components/admin/brands/DeleteBrandButton";
 
 export default async function BrandsPage() {
     const brands = await getBrands();
@@ -36,8 +36,7 @@ export default async function BrandsPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-white font-serif">Brands</h1>
-                    <p className="text-gray-200 mt-1">Manage product brands</p>
-                </div>
+                    <p className="text-gray-400 mt-1">Manage product brands</p>                </div>
                 <Link
                     href="/dashboard/brands/add"
                     className="flex items-center gap-2 px-4 py-2 bg-[#511624] text-white rounded-lg hover:bg-[#511624]/90 transition-colors font-medium shadow-sm"
