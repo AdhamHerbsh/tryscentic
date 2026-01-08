@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Icons from "@/components/parts/Icons";
+import SocialIcons from "@/components/parts/SocialIcons";
 
 
 // Import Swiper React components
@@ -94,7 +94,7 @@ export default function Gallery() {
                         Our Social Media Links <i className="lucide-"></i>
                     </div>
                     <div className="subtitle" data-swiper-parallax="-200">
-                        <Icons />
+                        <SocialIcons />
                     </div>
                 </SwiperSlide>
             </Swiper>        </>

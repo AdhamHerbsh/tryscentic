@@ -1,4 +1,4 @@
-import Icons from "@/components/parts/Icons";
+import SocialIcons from "@/components/parts/SocialIcons";
 
 export default function Footer() {
   const shopLinks = [
@@ -96,7 +96,7 @@ export default function Footer() {
           </div>
 
           {/* Social Media Icons */}
-          <Icons />
+          <SocialIcons />
         </div>
       </div>
     </footer>

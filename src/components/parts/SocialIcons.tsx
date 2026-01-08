@@ -1,12 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 import FacebookIcon from "@/assets/images/icons/facebook.svg"
 import InstagramIcon from "@/assets/images/icons/instagram.svg"
 import WhatsappIcon from "@/assets/images/icons/whatsapp-business.svg"
 import TiktokIcon from "@/assets/images/icons/tiktok.svg"
-import Link from "next/link";
 
 
-export default function Icons() {
+export default function SocialIcons() {
     return (
         <div>
             <div className="max-w-6xl mx-auto px-6 text-white">

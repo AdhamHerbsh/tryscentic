@@ -1,8 +1,5 @@
-// import Gallery from "@/app/parts/Gallery";
 import Hero from "@/components/parts/Hero";
-import Gallery from "@/components/parts/Gallery";
-import { Facebook, Instagram } from "lucide-react";
-import Icons from "@/components/parts/Icons";
+import SocialIcons from "@/components/parts/SocialIcons";
 
 
 export default function page() {
@@ -38,7 +35,7 @@ export default function page() {
 
       <section className="px-auto py-8">
         <div className="subtitle" data-swiper-parallax="-200">
-          <Icons />
+          <SocialIcons />
         </div>
       </section>
 
