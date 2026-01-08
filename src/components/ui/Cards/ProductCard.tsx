@@ -75,11 +75,10 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
           {/* Ensure the parent element is relatively positioned for `fill` to work */}
 
           <Image
-            className={`rounded-2xl object-cover transition-all duration-300 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
             src={product.image}
             alt={product.title}
             fill
-            loading="eager"
+            className={`rounded-2xl object-cover transition-all duration-300 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
           />
 
           {isOutOfStock && (
