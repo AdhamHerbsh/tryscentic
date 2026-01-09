@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Star, StarHalf, User, Send, Loader2, X } from "lucide-react";
+import { useUser } from "@/lib/context/UserContext";
 import { createClient } from "@/lib/utils/supabase/client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,14 +35,9 @@ export default function Reviews({
   const [newComment, setNewComment] = useState("");
   const [avgRating, setAvgRating] = useState(initialRating);
   const [totalReviews, setTotalReviews] = useState(initialReviewCount);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const { user, profile, isLoading: authLoading } = useUser();
+  const isLoggedIn = !!user;
   const supabase = createClient();
-
-  const checkAuth = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    setIsLoggedIn(!!session);
-  }, [supabase.auth]);
 
   const fetchReviews = useCallback(async () => {
     try {
@@ -56,7 +52,7 @@ export default function Reviews({
       setReviews(data || []);
 
       if (data && data.length > 0) {
-        const total = data.reduce((acc, r) => acc + r.rating, 0);
+        const total = data.reduce((acc: number, r: Review) => acc + r.rating, 0);
         setAvgRating(total / data.length);
         setTotalReviews(data.length);
       }
@@ -69,8 +65,7 @@ export default function Reviews({
 
   useEffect(() => {
     fetchReviews();
-    checkAuth();
-  }, [fetchReviews, checkAuth]);
+  }, [fetchReviews]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,19 +80,12 @@ export default function Reviews({
 
     setSubmitting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast.error("You must be logged in to review");
         return;
       }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-
-      const authorName = profile?.full_name || user.email?.split("@")[0] || "Anonymous";
+      const authorName = profile?.full_name || user.user_metadata?.full_name || user.email?.split("@")[0] || "Anonymous";
 
       const newReview = {
         product_id: productId,

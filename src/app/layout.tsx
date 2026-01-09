@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cinzel, cinzelDecorative } from "@/lib/fonts";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/utils/constants";
 import { Toaster } from 'sonner';
+import { UserProvider } from "@/lib/context/UserContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -43,8 +44,10 @@ export default function RootLayout({
       <body
         className={`${cinzel.variable} ${cinzelDecorative.variable} antialiased bg-primary`}
       >
-        {children}
-        <Toaster position="bottom-center" richColors />
+        <UserProvider>
+          {children}
+          <Toaster position="bottom-center" richColors />
+        </UserProvider>
       </body>
     </html>
   );

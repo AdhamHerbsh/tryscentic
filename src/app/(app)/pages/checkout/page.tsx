@@ -17,6 +17,7 @@ import { createClient } from "@/lib/utils/supabase/client";
 import ProcessingOverlay from "@/components/ui/ProcessingOverlay";
 import FailureModal from "@/components/ui/Modals/FailureModal";
 import { AnimatePresence } from "framer-motion";
+import { useUser } from "@/lib/context/UserContext";
 
 type Step = "shipping" | "payment" | "review";
 
@@ -38,7 +39,9 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("apple_pay");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [walletBalance, setWalletBalance] = useState(0);
+  const { profile } = useUser();
+  const walletBalance = profile?.wallet_balance || 0;
+
   const [useWallet, setUseWallet] = useState(false);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
@@ -55,21 +58,6 @@ export default function CheckoutPage() {
       router.push("/pages/shop");
     }
   }, [isInitialized, cartItems, router]);
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("wallet_balance")
-          .eq("id", user.id)
-          .single();
-        if (profile) setWalletBalance(profile.wallet_balance);
-      }
-    };
-    fetchBalance();
-  }, [supabase]);
 
 
   const handleShippingNext = (data: ShippingData) => {

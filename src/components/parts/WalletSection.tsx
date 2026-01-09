@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Plus, History, Wallet, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/utils/supabase/client";
+import { useUser } from "@/lib/context/UserContext";
 
 interface Transaction {
   id: string;
@@ -14,7 +15,8 @@ interface Transaction {
 }
 
 export default function WalletSection() {
-  const [balance, setBalance] = useState(0);
+  const { profile, refreshProfile } = useUser();
+  const balance = profile?.wallet_balance || 0;
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [giftCode, setGiftCode] = useState("");
@@ -22,19 +24,10 @@ export default function WalletSection() {
 
   const supabase = createClient();
 
-  const fetchData = async () => {
+  const fetchTransactions = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-
-      // Get Balance
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("wallet_balance")
-        .eq("id", user.id)
-        .single();
-
-      if (profile) setBalance(profile.wallet_balance);
 
       // Get Transactions
       const { data: txs } = await supabase
@@ -45,14 +38,14 @@ export default function WalletSection() {
 
       if (txs) setTransactions(txs);
     } catch (error) {
-      console.error("Error fetching wallet data", error);
+      console.error("Error fetching transactions", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -68,7 +61,8 @@ export default function WalletSection() {
 
       toast.success(`Successfully added LE ${data} to your wallet!`);
       setGiftCode("");
-      fetchData(); // Refresh balance
+      await refreshProfile();
+      fetchTransactions();
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(error.message);

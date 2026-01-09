@@ -42,6 +42,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         setIsLoading(true);
 
         try {
@@ -59,7 +60,6 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
                     onSuccess();
                 }
                 router.push('/');
-                router.refresh();
             }
 
         } catch (error) {

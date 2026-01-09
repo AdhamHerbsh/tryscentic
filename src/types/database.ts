@@ -43,8 +43,9 @@ export interface ProductVariant {
 
 export interface Profile {
   id: string;
-  email: string | null;
   full_name: string | null;
+  bio?: string | null;
+  email: string | null;
   phone: string | null;
   avatar_url: string | null;
   wallet_balance: number;

@@ -4,9 +4,7 @@ import { Search, ShoppingCart, Menu, X, SquareArrowUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/lib/context/CartContext";
-import { createClient } from "@/lib/utils/supabase/client";
-import { User } from "@supabase/supabase-js";
-import { useEffect } from "react";
+import { useUser } from "@/lib/context/UserContext";
 import TopUpModal from "@/components/account/wallet/TopUpModal";
 import LoginModal from "@/components/ui/Modals/LoginModal";
 
@@ -26,55 +24,9 @@ export default function Header() {
     clearCart,
   } = useCart();
 
-  // Auth State
-  const [user, setUser] = useState<User | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
-
-  const supabase = createClient();
-
-  useEffect(() => {
-
-
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('avatar_url, role')
-          .eq('id', user.id)
-          .single();
-        if (profile) {
-          setAvatarUrl(profile?.avatar_url || user.user_metadata?.avatar_url,);
-          setUserRole(profile.role);
-        }
-      }
-    };
-
-    getUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('avatar_url, role')
-          .eq('id', session.user.id)
-          .single();
-        if (profile) {
-          setAvatarUrl(profile.avatar_url);
-          setUserRole(profile.role);
-        }
-      } else {
-        setAvatarUrl(null);
-        setUserRole(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [supabase]);
+  const { user, profile, signOut } = useUser();
+  const userRole = profile?.role;
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url;
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -173,6 +125,7 @@ export default function Header() {
                 <div className="flex items-center gap-3">
                   <Link
                     href="/pages/account"
+                    prefetch={false}
                     className="flex items-center gap-2 rounded-full border-2 border-amber-600 p-1 transition-all hover:bg-amber-600/10"
                     title="User Dashboard"
                   >

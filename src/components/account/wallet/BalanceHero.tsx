@@ -2,12 +2,15 @@
 import { TrendingUp, Wallet } from "lucide-react";
 import { useState } from "react";
 import TopUpModal from "./TopUpModal";
+import { useUser } from "@/lib/context/UserContext";
 
 interface BalanceHeroProps {
-    balance: number;
+    balance: number; // Server-side initial balance
 }
 
-export default function BalanceHero({ balance }: BalanceHeroProps) {
+export default function BalanceHero({ balance: initialBalance }: BalanceHeroProps) {
+    const { profile } = useUser();
+    const balance = profile?.wallet_balance ?? initialBalance;
     const [isTopUpOpen, setIsTopUpOpen] = useState(false);
 
     return (

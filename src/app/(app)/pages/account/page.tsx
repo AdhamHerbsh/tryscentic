@@ -12,6 +12,7 @@ import MyGiftsSection from "@/components/parts/MyGiftsSection";
 import EditProfileModal from "@/components/ui/Modals/EditProfileModal";
 import { toast } from "sonner";
 import { Loader, ShieldAlert, Menu } from "lucide-react";
+import { useUser } from "@/lib/context/UserContext";
 
 interface DashboardUser {
   id: string;
@@ -28,59 +29,12 @@ interface DashboardUser {
 
 
 export default function AccountPage() {
-  const [user, setUser] = useState<DashboardUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, profile, isLoading, refreshProfile, signOut } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("personal-info");
   const router = useRouter();
   const supabase = createClient();
-
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const {
-          data: { user: authUser },
-          error: authError,
-        } = await supabase.auth.getUser();
-
-        if (authError || !authUser) {
-          setIsLoading(false);
-          return;
-        }
-
-        // Fetch additional profile data
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", authUser.id)
-          .single();
-
-        if (profileError && profileError.code !== "PGRST116") {
-          console.log("Error fetching profile:", profileError);
-        }
-
-        // Merge auth user and profile data
-        setUser({
-          ...authUser,
-          ...(profile || {}),
-          // Ensure we have displayable fields
-          full_name: profile?.full_name || authUser.user_metadata?.full_name || authUser.email?.split("@")[0] || "User",
-          email: authUser.email,
-          avatar_url: profile?.avatar_url || authUser.user_metadata?.avatar_url,
-          bio: profile?.bio || "",
-          created_at: profile?.created_at || authUser.created_at,
-        });
-      } catch (error) {
-        console.log("Unexpected error in auth check:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [router, supabase]);
 
   const handleUpdateProfile = async (updatedData: {
     full_name: string;
@@ -97,15 +51,16 @@ export default function AccountPage() {
 
       if (error) throw error;
 
-      setUser((prev) => (prev ? { ...prev, ...updatedData } : null));
+      await refreshProfile();
+      toast.success("Profile updated successfully");
     } catch (error) {
       console.log("Error updating profile:", error);
-      throw error; // Re-throw for the modal to handle/display error
+      throw error;
     }
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     toast.success("Signed out successfully");
     router.push("/login");
   };
@@ -143,8 +98,8 @@ export default function AccountPage() {
           <Sidebar
             type="user"
             user={{
-              full_name: user.full_name || "",
-              image: user.avatar_url,
+              full_name: profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User",
+              image: profile?.avatar_url || user?.user_metadata?.avatar_url,
             }}
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
@@ -197,9 +152,9 @@ export default function AccountPage() {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         user={{
-          full_name: user?.full_name || "",
-          bio: user?.bio || "",
-          avatar_url: user?.avatar_url || "",
+          full_name: profile?.full_name || user?.user_metadata?.full_name || "",
+          bio: profile?.bio || "",
+          avatar_url: profile?.avatar_url || user?.user_metadata?.avatar_url || "",
         }}
         onSave={handleUpdateProfile}
       />
