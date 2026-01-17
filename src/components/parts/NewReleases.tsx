@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import NewReleaseCard from "@/components/ui/Cards/NewReleaseCard";
 import { createClient } from "@/lib/utils/supabase/client";
 import SimpleLoader from "@/components/shared/SimpleLoader";
+import { Product as DBProduct, ProductVariant } from "@/types/database";
 
 // Define Product type locally or import if available
 interface Product {
@@ -20,13 +21,14 @@ export default function CardsGrid() {
   const supabase = createClient();
 
   // Mock data to fall back on if DB is empty (for demo purposes)
-  const fallbackProducts = [
+  const fallbackProducts: Product[] = [
     {
       id: "1",
       title: "Chanel No. 5",
       image: "/assets/images/p-1.png",
       price: 145,
       rating: 5,
+      in_stock: true,
     },
     {
       id: "2",
@@ -34,6 +36,7 @@ export default function CardsGrid() {
       image: "/assets/images/p-2.png",
       price: 95,
       rating: 4,
+      in_stock: true,
     },
     {
       id: "3",
@@ -41,6 +44,7 @@ export default function CardsGrid() {
       image: "/assets/images/p-3.png",
       price: 325,
       rating: 5,
+      in_stock: true,
     },
     {
       id: "4",
@@ -48,6 +52,7 @@ export default function CardsGrid() {
       image: "/assets/images/p-4.png",
       price: 112,
       rating: 4,
+      in_stock: true,
     }
   ];
 
@@ -63,26 +68,29 @@ export default function CardsGrid() {
         if (error) throw error;
 
         if (data && data.length > 0) {
-          const mapped = data.map(p => {
-            const variant = p.variants?.sort((a: any, b: any) => a.price - b.price)[0];
+          const mapped = (data as unknown as DBProduct[]).map((p) => {
+            const variants = p.variants || [];
+            const sortedVariants = [...variants].sort((a, b) => a.price - b.price);
+            const variant = sortedVariants[0];
+
             return {
               id: variant?.id || p.id,
               title: p.title,
               image: p.base_image_url || "/placeholder.jpg",
               price: variant?.price || 0,
               rating: p.rating || 5,
-              in_stock: p.variants?.some((v: any) => v.stock_quantity > 0)
+              in_stock: variants.some((v) => v.stock_quantity > 0)
             };
           });
-          setProducts(mapped as any);
+          setProducts(mapped);
         } else {
           // Use fallback if no products found in DB
-          setProducts(fallbackProducts as any);
+          setProducts(fallbackProducts);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
         // Fallback on error too
-        setProducts(fallbackProducts as any);
+        setProducts(fallbackProducts);
       } finally {
         setLoading(false);
       }
@@ -104,16 +112,29 @@ export default function CardsGrid() {
         </div>
 
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          {fallbackProducts.map((product) => (
-            <NewReleaseCard
-              key={product.id}
-              id={product.id}
-              title={product.title}
-              image={product.image}
-              price={product.price}
-              rating={product.rating || 5} // Default to 5 stars if not set
-            />
-          ))}
+          {products.length > 0 ? (
+            products.map((product) => (
+              <NewReleaseCard
+                key={product.id}
+                id={product.id}
+                title={product.title}
+                image={product.image}
+                price={product.price}
+                rating={product.rating || 5}
+              />
+            ))
+          ) : (
+            fallbackProducts.map((product) => (
+              <NewReleaseCard
+                key={product.id}
+                id={product.id}
+                title={product.title}
+                image={product.image}
+                price={product.price}
+                rating={product.rating || 5}
+              />
+            ))
+          )}
         </div>
       </div>
     </section>
