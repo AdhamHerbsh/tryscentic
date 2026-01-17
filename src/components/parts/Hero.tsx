@@ -1,7 +1,14 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useSiteSettingsContext } from "@/providers/SiteSettingsProvider";
 
-export function IndexHero({ bgimage }: { bgimage: string }) {
+export function IndexHero() {
+  const { hero } = useSiteSettingsContext();
+  const bgImage = hero?.backgroundImageUrl || "/assets/images/hero.jpg";
+  const title = hero?.title || "Discover Your Signature Scent";
+  const subtitle = hero?.subtitle || "Authentic perfumes delivered to your door.";
+
   return (
     <section id="hero" className="pt-10">
       <div className="relative h-80 lg:h-screen w-full overflow-hidden">
@@ -9,7 +16,7 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
         <div
           className="hero-img absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${bgimage})`,
+            backgroundImage: `url(${bgImage})`,
           }}
         ></div>
 
@@ -20,8 +27,7 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
             className="mb-4 text-2xl font-bold text-white md:text-6xl"
             data-aos="fade-up"
           >
-            Discover Your Signature
-            <span> Scent</span>
+            {title}
           </h1>
 
           {/* Subheading */}
@@ -30,7 +36,7 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
             data-aos="fade-up"
             data-aos-delay="500"
           >
-            Authentic perfumes delivered to your door.
+            {subtitle}
           </p>
 
           {/* Call-to-Action Buttons */}
@@ -45,9 +51,6 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
             >
               Shop Now
             </Link>
-            <button className="rounded-md border-2 border-white bg-transparent px-6 py-2 text-base font-semibold text-white transition-all hover:bg-white hover:text-gray-900 sm:px-8 sm:py-3 sm:text-lg">
-              Explore Brands
-            </button>
           </div>
         </div>
       </div>
@@ -55,9 +58,11 @@ export function IndexHero({ bgimage }: { bgimage: string }) {
   );
 }
 
-export function AboutHero({ bgimage }: { bgimage: string }) {
+export function OurHero({ bgimage }: { bgimage: string }) {
+  const { content } = useSiteSettingsContext();
+
   return (
-    <section className="relative w-full h-[800px] flex items-center justify-center overflow-hidden" >
+    <section className="relative w-full h-screen flex items-center justify-center overflow-hidden" >
       <Image
         src={bgimage}
         alt="About Hero Image"
@@ -82,10 +87,10 @@ export function AboutHero({ bgimage }: { bgimage: string }) {
 
         <div className="max-w-xl">
           <h1 className="text-5xl font-bold text-white tracking-wide">
-            About US
+            Our Story
           </h1>
           <p className="mt-3 text-lg text-gray-300">
-            Authentic perfumes delivered to your door
+            {content?.ourStory?.substring(0, 150) || "Authentic perfumes delivered to your door"}...
           </p>
 
           <Link
@@ -107,9 +112,9 @@ function Hero({ kind }: { kind: string }) {
       {
 
         kind === "index" ?
-          <IndexHero bgimage="/assets/images/hero.jpg" />
+          <IndexHero />
           :
-          <AboutHero bgimage="/assets/images/leiada-krozjhen.jpg" />
+          <OurHero bgimage="/assets/images/leiada-krozjhen.jpg" />
       }
     </>
   );

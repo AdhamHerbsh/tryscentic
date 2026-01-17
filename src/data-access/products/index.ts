@@ -12,6 +12,8 @@ export async function getPublicProducts(params?: {
   limit?: number;
   category_id?: string;
   brand_id?: string;
+  min_price?: number;
+  max_price?: number;
 }) {
   const supabase = await createClient();
 
@@ -21,21 +23,23 @@ export async function getPublicProducts(params?: {
     limit = 12,
     category_id,
     brand_id,
+    min_price,
+    max_price,
   } = params || {};
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
+  // We use !inner on product_variants to filter the main products list by variant prices
+  let selectString = `
+    *,
+    brand:brands(*),
+    category:categories(*),
+    variants:product_variants!inner(*, images:variant_images(*))
+  `;
+
   let query = supabase
     .from("products")
-    .select(
-      `
-      *,
-      brand:brands(*),
-      category:categories(*),
-      variants:product_variants(*, images:variant_images(*))
-    `,
-      { count: "exact" }
-    )
+    .select(selectString, { count: "exact" })
     .eq("is_active", true); // Only active products
 
   if (search) {
@@ -50,6 +54,14 @@ export async function getPublicProducts(params?: {
     query = query.eq("brand_id", brand_id);
   }
 
+  if (min_price !== undefined) {
+    query = query.gte("product_variants.price", min_price);
+  }
+
+  if (max_price !== undefined) {
+    query = query.lte("product_variants.price", max_price);
+  }
+
   query = query.order("created_at", { ascending: false }).range(from, to);
 
   const { data, error, count } = await query;
@@ -59,7 +71,7 @@ export async function getPublicProducts(params?: {
   }
 
   return {
-    products: data as Product[],
+    products: data as unknown as Product[],
     total: count || 0,
     page,
     totalPages: Math.ceil((count || 0) / limit),

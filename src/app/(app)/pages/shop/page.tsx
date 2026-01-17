@@ -14,6 +14,8 @@ export default async function ShopPage({
   const page = Number(params.page) || 1;
   const brand_id = (params.brand_id as string) || "";
   const category_id = (params.category_id as string) || "";
+  const min_price = params.min_price ? Number(params.min_price) : undefined;
+  const max_price = params.max_price ? Number(params.max_price) : undefined;
 
   // Fetch all data on the server
   const [productsData, brands, categories, favoriteIds] = await Promise.all([
@@ -23,6 +25,8 @@ export default async function ShopPage({
       limit: 12,
       brand_id,
       category_id,
+      min_price,
+      max_price,
     }),
     getPublicBrands(),
     getPublicCategories(),

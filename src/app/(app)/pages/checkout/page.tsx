@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import ShippingForm from "@/components/ui/Forms/ShippingForm";
+import ShippingForm, { ShippingData } from "@/components/ui/Forms/ShippingForm";
 import PaymentForm, { PaymentMethod } from "@/components/ui/Forms/PaymentForm";
 import ReviewOrder from "@/components/parts/ReviewOrder";
 import OrderSummary from "@/components/parts/OrderSummary";
@@ -22,15 +22,7 @@ import { useUser } from "@/lib/context/UserContext";
 type Step = "shipping" | "payment" | "review";
 
 
-interface ShippingData {
-  fullName: string;
-  address: string;
-  city: string;
-  country: string;
-  phone: string;
-  deliveryOption: 'standard' | 'express' | 'custom';
-  deliveryDate?: string;
-}
+
 
 export default function CheckoutPage() {
 
@@ -39,7 +31,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("apple_pay");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { profile } = useUser();
+  const { user, profile, isLoading } = useUser();
   const walletBalance = profile?.wallet_balance || 0;
 
   const [useWallet, setUseWallet] = useState(false);
@@ -58,6 +50,14 @@ export default function CheckoutPage() {
       router.push("/pages/shop");
     }
   }, [isInitialized, cartItems, router]);
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!isLoading && !user) {
+      toast.error("Please sign in to access checkout");
+      router.push("/login");
+    }
+  }, [isLoading, user, router]);
 
 
   const handleShippingNext = (data: ShippingData) => {
@@ -154,6 +154,37 @@ export default function CheckoutPage() {
   };
 
   const currentShippingCost = shippingData?.deliveryOption === 'express' ? 90.0 : 0.0;
+
+  // Show loading or protected state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary mb-4"></div>
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
+  // Don't render checkout if not authenticated
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-white">
+        <div className="max-w-md text-center space-y-6 p-8">
+          <div className="text-6xl mb-4">🔒</div>
+          <h1 className="text-3xl font-bold text-secondary">Protected Content</h1>
+          <p className="text-gray-400">
+            You need to be signed in to access the checkout page.
+          </p>
+          <Link
+            href="/login"
+            className="inline-block bg-secondary px-8 py-3 text-white font-bold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-amber-600/20"
+          >
+            Sign In to Continue
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-primary text-white">

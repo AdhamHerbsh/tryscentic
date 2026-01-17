@@ -23,6 +23,7 @@ export interface TopUpMethod {
   label: string;
   sub: string;
   icon: any; // Lucide icon
+  link: string; // Lucide icon
 }
 
 export const mockTransactions: Transaction[] = [
@@ -76,11 +77,18 @@ export const mockTransactions: Transaction[] = [
 export const mockPaymentMethods: PaymentMethod[] = [];
 
 export const topUpMethods: TopUpMethod[] = [
-  { id: "vodafone", label: "Vodafone Cash", sub: "010XXXXXXXX", icon: Wallet },
+  {
+    id: "vodafone",
+    label: "Vodafone Cash",
+    sub: "010XXXXXXXX",
+    icon: Wallet,
+    link: "http://vf.eg/vfcash?id=mt&qrId=0rWzo7",
+  },
   {
     id: "instapay",
     label: "Insta Pay",
     sub: "username@instapay",
     icon: QrCode,
+    link: "https://ipn.eg/S/ibrahimali123/instapay/7s3MST",
   },
 ];

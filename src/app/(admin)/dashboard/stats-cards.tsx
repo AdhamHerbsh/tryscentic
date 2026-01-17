@@ -32,23 +32,23 @@ interface StatsCardsProps {
 }
 
 const StatCard = ({ title, value, subtitle, icon: Icon, color, bgColor, trend, alert }: any) => (
-    <div className={`bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-xl p-5 hover:border-${color}-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-${color}-500/10`}>
+    <div className={`bg-linear-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-xl p-5 hover:border-${color}-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-${color}-500/10`}>
         <div className="flex items-start justify-between mb-3">
             <div className={`${bgColor} ${color} p-3 rounded-lg`}>
                 <Icon className="w-5 h-5" />
             </div>
             {trend && (
-                <div className={`flex items-center gap-1 text-sm ${trend > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                <div className={`flex items-center gap-1 ${trend > 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {trend > 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                     <span>{Math.abs(trend)}%</span>
                 </div>
             )}
         </div>
-        <h3 className="text-gray-400 text-sm font-medium mb-1">{title}</h3>
+        <h3 className="text-gray-400 font-bold mb-1">{title}</h3>
         <p className="text-2xl font-bold text-white mb-1">{value}</p>
-        {subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
+        {subtitle && <p className="font-semibold text-gray-200">{subtitle}</p>}
         {alert && (
-            <div className="mt-3 px-2 py-1 bg-amber-500/10 border border-amber-500/30 rounded text-xs text-amber-400 flex items-center gap-1">
+            <div className="mt-3 px-2 py-1 bg-amber-500/10 border border-amber-500/30 rounded text-sm text-amber-400 flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3" />
                 Requires attention
             </div>
@@ -148,7 +148,7 @@ const OverviewTab = ({ stats, recentActivity, topProducts }: StatsCardsProps) =>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-xl p-6 max-h-[680px] overflow-y-auto">
+            <div className="bg-linear-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-xl p-6 max-h-[680px] overflow-y-auto">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                         <Activity className="w-5 h-5 text-blue-400" />
@@ -171,16 +171,16 @@ const OverviewTab = ({ stats, recentActivity, topProducts }: StatsCardsProps) =>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm text-white">{activity.description}</p>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-sm text-gray-200">
                                         {new Date(activity.timestamp).toLocaleTimeString()}
                                     </p>
                                     {activity.amount && (
-                                        <span className="text-xs text-green-400">LE {activity.amount}</span>
+                                        <span className="text-sm text-green-400">LE {activity.amount}</span>
                                     )}
                                 </div>
                             </div>
                             {activity.status && (
-                                <span className={`text-xs px-2 py-1 rounded-full ${activity.status === 'pending' ? 'bg-yellow-500/10 text-yellow-400' :
+                                <span className={`text-sm px-2 py-1 rounded-full ${activity.status === 'pending' ? 'bg-yellow-500/10 text-yellow-400' :
                                     activity.status === 'shipped' ? 'bg-blue-500/10 text-blue-400' :
                                         'bg-green-500/10 text-green-400'
                                     }`}>
@@ -192,7 +192,7 @@ const OverviewTab = ({ stats, recentActivity, topProducts }: StatsCardsProps) =>
                 </div>
             </div>
 
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-xl p-6">
+            <div className="bg-linear-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-xl p-6">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-emerald-400" />
@@ -202,14 +202,14 @@ const OverviewTab = ({ stats, recentActivity, topProducts }: StatsCardsProps) =>
                 <div className="space-y-3">
                     {topProducts.map((product, index) => (
                         <div key={product.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                            <div className="shrink-0 w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                                 {index + 1}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-white truncate">{product.name}</p>
                                 <div className="flex items-center gap-3 mt-1">
-                                    <span className="text-xs text-gray-500">{product.sales} sales</span>
-                                    <span className="text-xs text-emerald-400">LE {product.revenue.toLocaleString()}</span>
+                                    <span className="text-sm text-gray-200">{product.sales} sales</span>
+                                    <span className="text-sm text-emerald-400">LE {product.revenue.toLocaleString()}</span>
                                 </div>
                             </div>
                         </div>

@@ -52,7 +52,7 @@ export default function Features() {
                                 {feature.title}
                             </h3>
 
-                            <p className="text-white/60 text-sm leading-relaxed">
+                            <p className="text-white/60 leading-relaxed">
                                 {feature.description}
                             </p>
                         </div>

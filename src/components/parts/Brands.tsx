@@ -39,7 +39,7 @@ export default async function Brands() {
     if (brandsWithLogos.length === 0) return null;
 
     return (
-        <section className="py-6 bg-linear-to-b from-secondary/10 to-secondary/40">
+        <section className="py-6 bg-linear-to-b from-secondary/5 to-primary/20">
             <div className="container mx-auto px-4">
                 <div className="mb-8 text-center lg:mb-12">
                     <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">Shop By Brand</h2>

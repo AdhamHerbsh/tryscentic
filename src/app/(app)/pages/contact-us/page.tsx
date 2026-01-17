@@ -1,6 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { submitContactForm } from "@/actions/contact-actions";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function ContactPage() {
 
@@ -9,10 +12,24 @@ export default function ContactPage() {
     email: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log(formData);
+  const handleSubmit = async () => {
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await submitContactForm(formData);
+      toast.success("Message sent successfully! We'll get back to you soon.");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -34,28 +51,38 @@ export default function ContactPage() {
             <div className="space-y-6">
               <input
                 type="text"
+                value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Full Name"
-                className="w-full p-3 rounded border border-secondary outline-none"
+                className="w-full p-3 rounded border border-secondary outline-none bg-transparent"
+                disabled={loading}
               />
               <input
                 type="email"
+                value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="Email"
-                className="w-full p-3 rounded border border-secondary outline-none"
+                className="w-full p-3 rounded border border-secondary outline-none bg-transparent"
+                disabled={loading}
               />
               <textarea
+                value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Message"
-                className="w-full p-3 rounded border border-secondary h-35 max-h-70 outline-none"
+                className="w-full p-3 rounded border border-secondary h-35 max-h-70 outline-none bg-transparent"
+                disabled={loading}
               />
 
               <div className="flex space-x-6 pt-4">
-                <Link href={`https://wa.me/+201090767839?text=${formData.name}:%0A${formData.email}:%0A${formData.message}`} className="bg-green-500 px-6 py-3 rounded font-semibold hover:bg-green-600 transition">
+                <Link href={`https://wa.me/+201090767839?text=${formData.name}:%0A${formData.email}:%0A${formData.message}`} className="bg-green-500 px-6 py-3 rounded font-semibold hover:bg-green-600 transition flex items-center justify-center">
                   Send WhatsApp
                 </Link>
-                <button onClick={handleSubmit} className="bg-secondary px-6 py-3 rounded font-semibold hover:bg-amber-700 transition">
-                  Send Message
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="bg-secondary px-6 py-3 rounded font-semibold hover:bg-amber-700 transition flex items-center justify-center min-w-[140px]"
+                >
+                  {loading ? <Loader2 className="animate-spin" size={20} /> : "Send Message"}
                 </button>
               </div>
             </div>

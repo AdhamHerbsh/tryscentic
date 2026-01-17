@@ -9,9 +9,9 @@ interface GiftCardProps {
 
 export default function GiftCard({ amount, currency, image, onPurchase }: GiftCardProps) {
   return (
-    <div className="w-full sm:w-72 bg-transparent rounded-xl flex flex-col items-center">
+    <div className="w-full bg-transparent rounded-xl flex flex-col items-center">
       {/* صورة البطاقة */}
-      <div className="w-full h-48 relative overflow-hidden rounded-xl shadow-2xl">
+      <div className="w-full md:w-80 h-48 relative overflow-hidden rounded-xl shadow-2xl">
         <Image
           src={image}
           alt={`${currency} ${amount} Gift Card`}
@@ -27,7 +27,7 @@ export default function GiftCard({ amount, currency, image, onPurchase }: GiftCa
       {/* زر الإرسال */}
       <button
         onClick={() => onPurchase?.(amount)}
-        className="w-full mt-4 bg-secondary py-3 rounded-xl font-semibold hover:bg-amber-700 transition shadow-lg text-white"
+        className="w-full mt-4 bg-secondary py-3 rounded-xl font-semibold hover:bg-amber-700 transition shadow-lg text-white px-2"
       >
         Send as a Gift
       </button>

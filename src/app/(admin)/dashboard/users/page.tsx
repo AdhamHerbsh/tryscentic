@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createClient } from "@/lib/utils/supabase/client";
 import { toast } from "sonner";
 import { Search, Shield, User as UserIcon, Wallet, MessageCircle } from "lucide-react";
+import { useUsers } from "@/lib/react-query/hooks";
 
 interface UserProfile {
     id: string;
@@ -15,36 +16,14 @@ interface UserProfile {
 }
 
 export default function UserManagementPage() {
-    const [users, setUsers] = useState<UserProfile[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const supabase = createClient();
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from("profiles")
-                    .select("*")
-                    .order("created_at", { ascending: false });
-
-                if (error) throw error;
-                setUsers(data as UserProfile[]);
-            } catch (error: unknown) {
-                toast.error("Failed to fetch users");
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUsers();
-    }, [supabase]);
+    // Use React Query hook for data fetching
+    const { data: users = [], isLoading } = useUsers();
 
     const toggleRole = async (userId: string, currentRole: string) => {
         const newRole = currentRole === "admin" ? "user" : "admin";
-
-        // Optimistic update
-        setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
 
         try {
             const { error } = await supabase
@@ -54,9 +33,9 @@ export default function UserManagementPage() {
 
             if (error) throw error;
             toast.success(`User role updated to ${newRole}`);
+
+            // The mutation will automatically refetch the data
         } catch {
-            // Revert on error
-            setUsers(users.map(u => u.id === userId ? { ...u, role: currentRole as "user" | "admin" } : u));
             toast.error("Failed to update role");
         }
     };
@@ -98,7 +77,15 @@ export default function UserManagementPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {filteredUsers.length === 0 ? (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                                        <div className="flex items-center justify-center">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : filteredUsers.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
                                         No users found matching &quot;{searchTerm}&quot;

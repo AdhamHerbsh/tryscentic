@@ -96,14 +96,14 @@ export default function CardsGrid() {
   // }
 
   return (
-    <section className="py-12 px-4 sm:py-16 lg:py-20">
+    <section id="new-releases" className="py-12 px-4 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-3/4">
         <div className="mb-8 text-center lg:mb-12">
           <h2 className="text-3xl font-bold sm:text-4xl lg:text-5xl">Featured Fragrances</h2>
           <p className="mt-4 text-lg">Discover our most popular signature scents</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {fallbackProducts.map((product) => (
             <NewReleaseCard
               key={product.id}

@@ -6,6 +6,7 @@ import { submitTopUpRequest } from "@/actions/wallet-actions";
 import { toast } from "sonner";
 
 import { compressImage } from "@/lib/utils/image-compression";
+import Link from "next/link";
 
 interface TopUpModalProps {
     isOpen: boolean;
@@ -190,6 +191,12 @@ export default function TopUpModal({ isOpen, onClose }: TopUpModalProps) {
                                                 <p className={`font-bold ${isActive ? "text-white" : "text-gray-300"}`}>{method.label}</p>
                                                 <p className="text-xs text-gray-500">Manual Transfer</p>
                                             </div>
+                                            <Link
+                                                className="bg-secondary p-2 rounded text-center  text-white/80 hover:text-white font-bold"
+                                                href={method.link}
+                                            >
+                                                Pay Now
+                                            </Link>
                                         </div>
                                         {isActive && <CheckCircle2 className="text-amber-500" size={20} />}
                                     </button>

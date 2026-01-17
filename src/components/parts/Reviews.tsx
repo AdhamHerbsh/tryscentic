@@ -37,11 +37,11 @@ export default function Reviews({
   const [totalReviews, setTotalReviews] = useState(initialReviewCount);
   const { user, profile, isLoading: authLoading } = useUser();
   const isLoggedIn = !!user;
-  const supabase = createClient();
 
   const fetchReviews = useCallback(async () => {
     try {
       setLoading(true);
+      const supabase = createClient();
       const { data, error } = await supabase
         .from("reviews")
         .select("*")
@@ -61,7 +61,7 @@ export default function Reviews({
     } finally {
       setLoading(false);
     }
-  }, [productId, supabase]);
+  }, [productId]);
 
   useEffect(() => {
     fetchReviews();
@@ -95,6 +95,7 @@ export default function Reviews({
         author_name: authorName,
       };
 
+      const supabase = createClient();
       const { data, error } = await supabase
         .from("reviews")
         .insert(newReview)

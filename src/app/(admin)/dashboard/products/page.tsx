@@ -1,69 +1,51 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getProducts, getBrands, getCategories, deleteProduct } from '@/data-access/admin/products';
-import { Product, Brand, Category } from '@/types/database';
-import { toast } from 'sonner';
+import { useState } from 'react';
+import { Product } from '@/types/database';
 import { Plus, Search, Edit, Trash2, Package, Eye } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { InputField } from '@/components/ui/Forms/InputField';
+import {
+    useProducts,
+    useBrands,
+    useCategories,
+    useDeleteProduct,
+    useToggleProductStatus
+} from '@/lib/react-query/hooks';
 
 export default function ProductsManage() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [brands, setBrands] = useState<Brand[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
     const [filters, setFilters] = useState({
         brand_id: '',
         category_id: '',
         is_active: undefined as boolean | undefined,
     });
 
-    useEffect(() => {
-        loadData();
-    }, [page, search, filters]);
+    // Use React Query hooks
+    const { data: productsData, isLoading } = useProducts({
+        search,
+        page,
+        limit: 10,
+        ...filters
+    });
+    const { data: brands = [] } = useBrands();
+    const { data: categories = [] } = useCategories();
+    const deleteProductMutation = useDeleteProduct();
+    const toggleStatusMutation = useToggleProductStatus();
 
-    const loadData = async () => {
-        try {
-            setLoading(true);
-            const [productsData, brandsData, categoriesData] = await Promise.all([
-                getProducts({
-                    search,
-                    page,
-                    limit: 10,
-                    ...filters
-                }),
-                getBrands(),
-                getCategories(),
-            ]);
-
-            setProducts(productsData.products);
-            setTotalPages(productsData.totalPages);
-            setBrands(brandsData);
-            setCategories(categoriesData);
-        } catch (error) {
-            console.error('Failed to load data:', error);
-            toast.error('Failed to load products');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const products = productsData?.products || [];
+    const totalPages = productsData?.totalPages || 1;
 
     const handleDelete = async (id: string) => {
         if (!window.confirm('Are you sure you want to delete this product?')) return;
+        deleteProductMutation.mutate(id);
+    };
 
-        try {
-            await deleteProduct(id);
-            toast.success('Product deleted successfully');
-            loadData();
-        } catch (error) {
-            console.error('Failed to delete product:', error);
-            toast.error('Failed to delete product');
-        }
+    const handleToggleStatus = async (productId: string, currentStatus: boolean) => {
+        const newStatus = !currentStatus;
+        toggleStatusMutation.mutate({ productId, newStatus });
     };
 
     const getTotalStock = (product: Product) => {
@@ -201,7 +183,7 @@ export default function ProductsManage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {loading ? (
+                            {isLoading ? (
                                 <tr>
                                     <td colSpan={7} className="px-6 py-12 text-center">
                                         <div className="flex items-center justify-center">
@@ -265,26 +247,7 @@ export default function ProductsManage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <button
-                                                onClick={async () => {
-                                                    try {
-                                                        const newStatus = !product.is_active;
-                                                        // Optimistic update
-                                                        setProducts(products.map(p =>
-                                                            p.id === product.id ? { ...p, is_active: newStatus } : p
-                                                        ));
-
-                                                        const { toggleProductStatus } = await import('@/data-access/admin/products');
-                                                        await toggleProductStatus(product.id, newStatus);
-                                                        toast.success(`Product ${newStatus ? 'activated' : 'deactivated'}`);
-                                                    } catch (error) {
-                                                        // Revert on error
-                                                        setProducts(products.map(p =>
-                                                            p.id === product.id ? { ...p, is_active: !product.is_active } : p
-                                                        ));
-                                                        toast.error('Failed to update status');
-                                                        console.error(error);
-                                                    }
-                                                }}
+                                                onClick={() => handleToggleStatus(product.id, product.is_active)}
                                                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${product.is_active ? 'bg-purple-600' : 'bg-gray-200'
                                                     }`}
                                             >

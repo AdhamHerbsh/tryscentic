@@ -1,18 +1,18 @@
 import SocialIcons from "@/components/parts/SocialIcons";
+import NewsletterForm from "@/components/parts/NewsletterForm";
 
 export default function Footer() {
   const shopLinks = [
-    { name: "Fragrances", href: "#fragrances" },
-    { name: "New Arrivals", href: "#new-arrivals" },
+    { name: "New Arrivals", href: "/#new-releases" },
+    { name: "Fragrances", href: "/pagas/shop" },
     { name: "Best Sellers", href: "#best-sellers" },
-    { name: "Gift Sets", href: "#gift-sets" },
+    { name: "Gifts", href: "/pages/gifts" },
   ];
 
   const supportLinks = [
-    { name: "Contact Us", href: "#contact" },
-    { name: "FAQ", href: "#faq" },
-    { name: "Shipping & Returns", href: "#shipping" },
-    { name: "Track Order", href: "#track" },
+    { name: "Track Order", href: "/pages/account/orders" },
+    { name: "Contact Us", href: "/pages/contact-us" },
+    { name: "FAQ", href: "/#faq" },
   ];
 
 
@@ -64,16 +64,7 @@ export default function Footer() {
             <p className="mb-4 text-sm text-gray-400">
               Subscribe to our newsletter for exclusive offers.
             </p>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="flex-1 rounded-l-md bg-white px-4 py-2.5 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <button className="rounded-r-md bg-orange-500 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600">
-                Subscribe
-              </button>
-            </div>
+            <NewsletterForm />
           </div>
         </div>
 

@@ -1,62 +1,39 @@
 "use client";
 
-import { getPendingOrders, verifyOrder, getActiveOrders, updateOrderStatus } from "@/data-access/admin/orders";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Check, X, Eye, FileText, Calendar, Truck, Package, ShoppingBag } from "lucide-react";
-import { toast } from "sonner";
 import Image from "next/image";
+import {
+    usePendingOrders,
+    useActiveOrders,
+    useVerifyOrder,
+    useUpdateOrderStatus
+} from "@/lib/react-query/hooks";
 
 type Tab = 'pending' | 'active';
 
 // Client Component to handle interactive verification & management
 export default function AdminOrdersPage() {
     const [activeTab, setActiveTab] = useState<Tab>('pending');
-    const [orders, setOrders] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
 
-    const fetchOrders = async () => {
-        setIsLoading(true);
-        setSelectedOrder(null);
-        try {
-            if (activeTab === 'pending') {
-                const data = await getPendingOrders();
-                setOrders(data);
-            } else {
-                const data = await getActiveOrders();
-                setOrders(data);
-            }
-        } catch (error) {
-            toast.error("Failed to fetch orders");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    // Use React Query hooks
+    const { data: pendingOrders = [], isLoading: pendingLoading } = usePendingOrders();
+    const { data: activeOrders = [], isLoading: activeLoading } = useActiveOrders();
+    const verifyOrderMutation = useVerifyOrder();
+    const updateOrderStatusMutation = useUpdateOrderStatus();
 
-    useEffect(() => {
-        fetchOrders();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab]);
+    // Determine which data to show
+    const orders = activeTab === 'pending' ? pendingOrders : activeOrders;
+    const isLoading = activeTab === 'pending' ? pendingLoading : activeLoading;
 
     const handleVerify = async (orderId: string, action: 'approve' | 'reject') => {
-        try {
-            await verifyOrder(orderId, action);
-            toast.success(`Order ${action}d successfully`);
-            fetchOrders();
-        } catch (error) {
-            toast.error("Failed to update order" + error);
-        }
+        verifyOrderMutation.mutate({ orderId, action });
+        setSelectedOrder(null);
     };
 
     const handleStatusUpdate = async (orderId: string, newStatus: string) => {
-        try {
-            await updateOrderStatus({ order_id: orderId, status: newStatus as any });
-            toast.success(`Order status updated to ${newStatus}`);
-            fetchOrders();
-            // Update local selected state to reflect change immediately if needed, or just re-fetch
-        } catch (error) {
-            toast.error("Failed to update status");
-        }
+        updateOrderStatusMutation.mutate({ order_id: orderId, status: newStatus });
     };
 
     const getStatusColor = (status: string) => {
@@ -65,14 +42,14 @@ export default function AdminOrdersPage() {
             case 'shipped': return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
             case 'delivered': return 'text-green-500 bg-green-500/10 border-green-500/20';
             case 'cancelled': return 'text-red-500 bg-red-500/10 border-red-500/20';
-            default: return 'text-gray-500 bg-gray-500/10 border-gray-500/20';
+            default: return 'text-gray-200 bg-gray-500/10 border-gray-500/20';
         }
     };
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h1 className="text-3xl font-bold bg-linear-to-r from-amber-200 to-amber-500 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold bg-linear-to-r from-amber-200 to-amber-500 bg-clip-text">
                     {activeTab === 'pending' ? 'Payment Verification' : 'Order Management'}
                 </h1>
 
@@ -118,24 +95,24 @@ export default function AdminOrdersPage() {
                                         <div className="flex items-center gap-2">
                                             <p className="font-bold text-white">#{order.id.slice(0, 8)}</p>
                                             {activeTab === 'active' && (
-                                                <span className={`text-[10px] px-1.5 py-0.5 rounded border uppercase ${getStatusColor(order.status)}`}>
+                                                <span className={`text-xs px-1.5 py-0.5 rounded border uppercase ${getStatusColor(order.status)}`}>
                                                     {order.status}
                                                 </span>
                                             )}
                                         </div>
                                         <p className="text-sm text-gray-400">{order.user?.email || order.shipping_info?.email || 'Unknown User'}</p>
                                         <div className="flex items-center gap-2 mt-1">
-                                            <span className="text-xs bg-white/5 text-gray-400 px-2 py-0.5 rounded capitalize border border-white/5">
+                                            <span className="text-sm bg-white/5 text-gray-200 px-2 py-0.5 rounded capitalize border border-white/5">
                                                 {order.payment_method?.replace('_', ' ')}
                                             </span>
-                                            <span className="text-xs text-gray-500 flex items-center gap-1">
+                                            <span className="text-gray-200 flex items-center gap-1">
                                                 <Calendar size={10} /> {new Date(order.created_at).toLocaleDateString()}
                                             </span>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-lg text-white">LE {order.total_amount}</p>
-                                        <button className="text-xs text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 ml-auto">
+                                        <button className="text-sm text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 ml-auto">
                                             View <Eye size={12} />
                                         </button>
                                     </div>
@@ -154,10 +131,10 @@ export default function AdminOrdersPage() {
                                     <h2 className="text-2xl font-bold text-white">Order Details</h2>
                                     <p className="text-gray-200 text-sm font-mono">ID: {selectedOrder.id}</p>
                                     <div className="flex gap-2 mt-2">
-                                        <span className={`text-xs px-2 py-1 rounded border capitalize ${getStatusColor(selectedOrder.status)}`}>
+                                        <span className={`text-sm px-2 py-1 rounded border capitalize ${getStatusColor(selectedOrder.status)}`}>
                                             Status: {selectedOrder.status}
                                         </span>
-                                        <span className={`text-xs px-2 py-1 rounded border capitalize ${selectedOrder.payment_status === 'paid' ? 'text-green-400 border-green-400/20 bg-green-400/10' : 'text-amber-400 border-amber-400/20 bg-amber-400/10'}`}>
+                                        <span className={`text-sm px-2 py-1 rounded border capitalize ${selectedOrder.payment_status === 'paid' ? 'text-green-400 border-green-400/20 bg-green-400/10' : 'text-amber-400 border-amber-400/20 bg-amber-400/10'}`}>
                                             Payment: {selectedOrder.payment_status?.replace('_', ' ')}
                                         </span>
                                     </div>
@@ -184,7 +161,7 @@ export default function AdminOrdersPage() {
                                         </>
                                     ) : (
                                         <div className="flex flex-col gap-4">
-                                            <label className="text-xs text-gray-400 uppercase font-bold">Update Status</label>
+                                            <label className="text-sm text-gray-400 uppercase font-bold">Update Status</label>
                                             <select
                                                 value={selectedOrder.status}
                                                 onChange={(e) => handleStatusUpdate(selectedOrder.id, e.target.value)}
@@ -200,17 +177,44 @@ export default function AdminOrdersPage() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-4">
                                 <div className="p-4 bg-white/5 rounded-xl border border-white/5">
-                                    <p className="text-xs text-gray-500 uppercase mb-1">Customer Info</p>
-                                    <p className="font-medium text-white">{selectedOrder.shipping_info?.fullName || selectedOrder.user?.full_name}</p>
-                                    <p className="text-sm text-gray-400">{selectedOrder.shipping_info?.phone || 'No phone'}</p>
-                                    <p className="text-xs text-gray-500 mt-1">{selectedOrder.shipping_info?.address}, {selectedOrder.shipping_info?.city}</p>
+                                    <p className="text-2xl font-bold text-white uppercase mb-1">Customer Info</p>
+                                    <p className="font-bold text-white">{selectedOrder.shipping_info?.fullName || selectedOrder.user?.full_name}</p>
+                                    <p className="text-sm text-gray-400 mb-2">{selectedOrder.shipping_info?.phone || 'No phone'}</p>
+
+                                    <div className="text-sm text-gray-200 space-y-1 border-t border-white/5 pt-2">
+                                        {selectedOrder.shipping_info?.streetName ? (
+                                            <>
+                                                <p className="text-gray-300">{selectedOrder.shipping_info.streetName}</p>
+                                                <p>
+                                                    Bldg {selectedOrder.shipping_info.buildingNumber}
+                                                    {selectedOrder.shipping_info.floorNumber && `, Floor ${selectedOrder.shipping_info.floorNumber}`}
+                                                    {selectedOrder.shipping_info.apartmentNumber && `, Apt ${selectedOrder.shipping_info.apartmentNumber}`}
+                                                </p>
+                                                {selectedOrder.shipping_info.specialMarque && <p className="text-amber-500/80 italic">Note: {selectedOrder.shipping_info.specialMarque}</p>}
+                                                <p>{selectedOrder.shipping_info.city}, {selectedOrder.shipping_info.country || 'Egypt'}</p>
+                                            </>
+                                        ) : (
+                                            <p>{selectedOrder.shipping_info?.address}, {selectedOrder.shipping_info?.city}</p>
+                                        )}
+
+                                        {(selectedOrder.shipping_info?.locationLink || (selectedOrder.shipping_info?.latitude && selectedOrder.shipping_info?.longitude)) && (
+                                            <a
+                                                href={selectedOrder.shipping_info.locationLink || `https://maps.google.com/?q=${selectedOrder.shipping_info.latitude},${selectedOrder.shipping_info.longitude}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-2 text-secondary hover:text-secondary/80 mt-2 p-2 bg-secondary/10 rounded-lg border border-secondary/20 transition-colors"
+                                            >
+                                                <Truck size={14} /> View Location on Map
+                                            </a>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="p-4 bg-white/5 rounded-xl border border-white/5">
-                                    <p className="text-xs text-gray-500 uppercase mb-1">Financials</p>
+                                    <p className="text-sm text-gray-200 uppercase mb-1">Financials</p>
                                     <p className="font-bold text-2xl text-white">LE {selectedOrder.total_amount}</p>
-                                    <p className="text-xs text-gray-400 mt-1 capitalize">Method: {selectedOrder.payment_method?.replace('_', ' ')}</p>
+                                    <p className="text-sm text-gray-200 mt-1 capitalize">Method: {selectedOrder.payment_method?.replace('_', ' ')}</p>
                                 </div>
                             </div>
 
@@ -250,7 +254,7 @@ export default function AdminOrdersPage() {
                                                 </div>
                                                 <div>
                                                     <p className="text-white font-medium">{item.variant?.product?.title}</p>
-                                                    <p className="text-xs text-gray-500">{item.variant?.size_label} x {item.quantity}</p>
+                                                    <p className="text-sm text-gray-200">{item.variant?.size_label} x {item.quantity}</p>
                                                 </div>
                                             </div>
                                             <span className="text-white font-medium">LE {item.unit_price_at_purchase}</span>

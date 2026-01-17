@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/utils/supabase/client";
+import type { PromoCode } from "@/types/database";
 
 import PromoCard from "@/components/ui/Cards/PromoCard";
 
 export default function PromoCodesSection() {
     const [activeTab, setActiveTab] = useState<'available' | 'used'>('available');
-    const [promos, setPromos] = useState<{ available: any[], used: any[] }>({ available: [], used: [] });
+    const [promos, setPromos] = useState<{ available: PromoCode[], used: PromoCode[] }>({ available: [], used: [] });
     const [loading, setLoading] = useState(true);
     const supabase = createClient();
 
@@ -21,10 +22,10 @@ export default function PromoCodesSection() {
                 if (error) throw error;
 
                 const now = new Date();
-                const available: any[] = [];
-                const used: any[] = [];
+                const available: PromoCode[] = [];
+                const used: PromoCode[] = [];
 
-                data?.forEach(promo => {
+                data?.forEach((promo: PromoCode) => {
                     const isExpired = promo.expires_at ? new Date(promo.expires_at) < now : false;
                     const isActive = promo.is_active;
                     // Check usage limit if applicable
@@ -68,10 +69,6 @@ export default function PromoCodesSection() {
 
     return (
         <section className="mb-10 text-white">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <span className="text-amber-500">✨</span> Promo Codes
-            </h2>
-
             {/* Tabs */}
             <div className="flex text-sm mb-6 border-b border-white/10">
                 <button

@@ -1,4 +1,4 @@
-"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./sidebars.module.css";
 import { LogOut, UserPen, X } from "lucide-react";
@@ -20,7 +20,10 @@ interface SidebarProps {
   categories?: { id: string; name: string }[];
   selectedBrand?: string;
   selectedCategory?: string;
+  minPrice?: number;
+  maxPrice?: number;
   onFilterChange?: (key: string, value: string) => void;
+  onClearAll?: () => void;
 }
 
 export default function Sidebar({
@@ -37,20 +40,34 @@ export default function Sidebar({
   categories = [],
   selectedBrand,
   selectedCategory,
+  minPrice,
+  maxPrice,
   onFilterChange,
+  onClearAll,
 }: SidebarProps) {
-  // ... (Shop Sidebar logic remains same, skipping for brevity in thought process) ...
-  // actually I need to be careful with the replacement.
+  const [localMin, setLocalMin] = useState(minPrice || 755);
+  const [localMax, setLocalMax] = useState(maxPrice || 20000);
+
+  // Sync with props (e.g. when cleared or URL changed directly)
+  useEffect(() => {
+    setLocalMin(minPrice || 755);
+  }, [minPrice]);
+
+  useEffect(() => {
+    setLocalMax(maxPrice || 20000);
+  }, [maxPrice]);
+
+  const handlePriceCommit = (key: string, value: number) => {
+    onFilterChange?.(key, String(value));
+  };
 
   // ========== Shop Sidebar ==========
   if (type === "shop") {
-    // ... same ...
     return (
-
       <div
         className={
           styles.sidebar +
-          ` p-4 sm:p-6 rounded-md shadow-card h-full overflow-y-auto`
+          ` p-4 sm:p-6 rounded-md shadow-card h-full overflow-y-auto bg-accent`
         }
       >
         {/* Close button - visible on all screen sizes */}
@@ -78,14 +95,14 @@ export default function Sidebar({
         </div>
 
         <div className="mb-6">
-          <label className="block text-white text-sm sm:text-base mb-2">
+          <label className="block text-white text-sm sm:text-base mb-2 font-bold uppercase tracking-wider opacity-90">
             Brand
           </label>
           <div className="grid grid-cols-1 gap-2 sm:gap-3">
             <button
               key="all-brands"
               onClick={() => onFilterChange?.('brand_id', '')}
-              className={`text-xs sm:text-sm py-2 rounded-md transition-colors ${!selectedBrand ? "bg-secondary text-white" : "bg-primary hover:bg-secondary text-white"
+              className={`text-xs sm:text-sm py-2 rounded-md transition-all duration-300 ${!selectedBrand ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "bg-primary/40 hover:bg-secondary/20 text-white/70 border border-white/5"
                 }`}
             >
               All Brands
@@ -94,7 +111,7 @@ export default function Sidebar({
               <button
                 key={b.id}
                 onClick={() => onFilterChange?.('brand_id', b.id)}
-                className={`text-xs sm:text-sm py-2 rounded-md transition-colors ${selectedBrand === b.id ? "bg-secondary text-white" : "bg-primary hover:bg-secondary text-white"
+                className={`text-xs sm:text-sm py-2 rounded-md transition-all duration-300 ${selectedBrand === b.id ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "bg-primary/40 hover:bg-secondary/20 text-white/70 border border-white/5"
                   }`}
               >
                 {b.name}
@@ -104,14 +121,14 @@ export default function Sidebar({
         </div>
 
         <div className="mb-6">
-          <label className="block text-white text-sm sm:text-base mb-2">
+          <label className="block text-white text-sm sm:text-base mb-2 font-bold uppercase tracking-wider opacity-90">
             Category
           </label>
           <div className="grid grid-cols-1 gap-2 sm:gap-3">
             <button
               key="all-cats"
               onClick={() => onFilterChange?.('category_id', '')}
-              className={`text-xs sm:text-sm py-2 rounded-md transition-colors ${!selectedCategory ? "bg-secondary text-white" : "bg-primary hover:bg-secondary text-white"
+              className={`text-xs sm:text-sm py-2 rounded-md transition-all duration-300 ${!selectedCategory ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "bg-primary/40 hover:bg-secondary/20 text-white/70 border border-white/5"
                 }`}
             >
               All Categories
@@ -120,7 +137,7 @@ export default function Sidebar({
               <button
                 key={c.id}
                 onClick={() => onFilterChange?.('category_id', c.id)}
-                className={`text-xs sm:text-sm py-2 rounded-md transition-colors ${selectedCategory === c.id ? "bg-secondary text-white" : "bg-primary hover:bg-secondary text-white"
+                className={`text-xs sm:text-sm py-2 rounded-md transition-all duration-300 ${selectedCategory === c.id ? "bg-secondary text-white shadow-lg shadow-secondary/20" : "bg-primary/40 hover:bg-secondary/20 text-white/70 border border-white/5"
                   }`}
               >
                 {c.name}
@@ -130,27 +147,68 @@ export default function Sidebar({
         </div>
 
         <div className="mb-6">
-          <label className="block text-white text-sm sm:text-base mb-2">
-            Price Range
+          <label className="block text-white text-sm sm:text-base mb-2 font-bold uppercase tracking-wider opacity-90">
+            Price Range (EGP)
           </label>
-          <input type="range" min={0} max={500} className="w-full mt-3" />
-          <div className="flex justify-between text-xs text-white mt-2">
-            <span>$50</span>
-            <span>$250</span>
+          <div className="space-y-4 pt-2">
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <span className="text-[10px] text-white/40 uppercase font-bold">Min</span>
+                <input
+                  type="number"
+                  value={localMin}
+                  onChange={(e) => setLocalMin(Number(e.target.value))}
+                  onBlur={() => handlePriceCommit('min_price', localMin)}
+                  className="w-full bg-primary/40 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:border-secondary outline-none transition-colors"
+                />
+              </div>
+              <div className="flex-1">
+                <span className="text-[10px] text-white/40 uppercase font-bold">Max</span>
+                <input
+                  type="number"
+                  value={localMax}
+                  onChange={(e) => setLocalMax(Number(e.target.value))}
+                  onBlur={() => handlePriceCommit('max_price', localMax)}
+                  className="w-full bg-primary/40 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:border-secondary outline-none transition-colors"
+                />
+              </div>
+            </div>
+
+            <div className="px-2">
+              <input
+                type="range"
+                min={755}
+                max={20000}
+                step={50}
+                value={localMax}
+                onChange={(e) => setLocalMax(Number(e.target.value))}
+                onMouseUp={() => handlePriceCommit('max_price', localMax)}
+                onTouchEnd={() => handlePriceCommit('max_price', localMax)}
+                className="w-full h-1.5 bg-primary/60 rounded-lg appearance-none cursor-pointer accent-secondary transition-all hover:accent-amber-400"
+              />
+            </div>
+
+            <div className="flex justify-between text-[11px] text-white/40 px-1 font-medium italic">
+              <span>{localMin} EGP</span>
+              <span>{localMax} EGP</span>
+            </div>
           </div>
         </div>
 
         <button
-          onClick={() => {
-            onSearch?.("");
-            onClose?.();
-          }}
+          onClick={onClose}
           className="w-full py-2.5 sm:py-3 bg-secondary text-white font-semibold mb-3 rounded-md hover:bg-secondary/90 transition-colors text-sm sm:text-base"
         >
-          Search
+          Show Results
         </button>
 
-        <button className="w-full py-2.5 sm:py-3 border border-white text-white rounded-md hover:bg-white/10 transition-colors text-sm sm:text-base">
+        <button
+          onClick={() => {
+            onClearAll?.();
+            onClose?.();
+          }}
+          className="w-full py-2.5 sm:py-3 border border-white text-white rounded-md hover:bg-white/10 transition-colors text-sm sm:text-base"
+        >
           Clear All
         </button>
       </div>

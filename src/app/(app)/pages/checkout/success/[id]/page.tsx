@@ -1,8 +1,7 @@
 import { getOrderById } from "@/data-access/orders";
-import { CheckCircle, Package, Calendar, CreditCard, ChevronRight, ShoppingBag } from "lucide-react";
+import { CheckCircle, Package, CreditCard, ChevronRight, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import SuccessAnimations from "@/components/ui/SuccessAnimations";
 
 interface SuccessPageProps {
@@ -30,9 +29,9 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                 {/* Animated Success Header */}
                 <div className="text-center mb-12">
                     <div className="relative inline-block mb-6">
-                        <div className="absolute inset-0 bg-secondary/20 blur-2xl rounded-full scale-150 animate-pulse" />
-                        <div className="relative bg-secondary text-primary w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(240,160,32,0.4)] border-4 border-primary">
-                            <CheckCircle size={40} className="animate-in zoom-in duration-700" />
+                        <div className="absolute inset-0 bg-green-700 blur-2xl rounded-full" />
+                        <div className="relative bg-green-700 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-lg border-4 border-primary">
+                            <CheckCircle size={40} />
                         </div>
                     </div>
 
@@ -41,8 +40,8 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                     </h1>
                     <p className="text-gray-400 text-lg max-w-md mx-auto">
                         {isPending
-                            ? "We've received your payment proof. Our specialists are verifying it now."
-                            : "Your Grand Edition journey begins. Your order is confirmed and being prepared."}
+                            ? "We've received your payment proof. Our specialists are verifying it now"
+                            : "Your Grand Edition journey begins. Your order is confirmed and being prepared"}
                     </p>
                 </div>
 
@@ -55,11 +54,11 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                     <div className="relative p-8 md:p-12">
                         <div className="flex justify-between items-start mb-10 border-b border-white/10 pb-8">
                             <div>
-                                <p className="text-[10px] uppercase tracking-[0.3em] text-secondary font-bold mb-2">Registration ID</p>
+                                <p className=" uppercase tracking-[0.3em] text-secondary font-bold mb-2">Registration ID</p>
                                 <h2 className="text-2xl font-mono text-white tracking-tighter">#{order.id.slice(0, 12)}</h2>
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] uppercase tracking-[0.3em] text-secondary font-bold mb-2">Issue Date</p>
+                                <p className=" uppercase tracking-[0.3em] text-secondary font-bold mb-2">Issue Date</p>
                                 <p className="text-white font-serif">{new Date(order.created_at).toLocaleDateString(undefined, { dateStyle: 'long' })}</p>
                             </div>
                         </div>
@@ -71,8 +70,8 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                                         <Package size={18} className="text-secondary" />
                                     </div>
                                     <div>
-                                        <p className="text-xs text-secondary/60 uppercase tracking-widest font-bold mb-1">Shipping Designation</p>
-                                        <p className="text-white text-sm leading-relaxed">
+                                        <p className="text-sm text-secondary/60 uppercase tracking-widest font-bold mb-1">Shipping Designation</p>
+                                        <p className="text-white  leading-relaxed">
                                             {order.shipping_info.fullName}<br />
                                             {order.shipping_info.address}<br />
                                             {order.shipping_info.city}, {order.shipping_info.country}
@@ -85,10 +84,10 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                                         <ShoppingBag size={18} className="text-secondary" />
                                     </div>
                                     <div>
-                                        <p className="text-xs text-secondary/60 uppercase tracking-widest font-bold mb-1">Composition</p>
+                                        <p className="text-sm text-secondary/60 uppercase tracking-widest font-bold mb-1">Composition</p>
                                         <div className="space-y-2">
                                             {order.items?.map((item: any) => (
-                                                <p key={item.id} className="text-white text-sm">
+                                                <p key={item.id} className="text-white ">
                                                     {item.variant.product.title} <span className="text-secondary/60 ml-1">× {item.quantity}</span>
                                                 </p>
                                             ))}
@@ -103,15 +102,15 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                                         <CreditCard size={18} className="text-secondary" />
                                     </div>
                                     <div>
-                                        <p className="text-xs text-secondary/60 uppercase tracking-widest font-bold mb-1">Financial Value</p>
+                                        <p className="text-sm text-secondary/60 uppercase tracking-widest font-bold mb-1">Financial Value</p>
                                         <p className="text-2xl font-bold text-white">LE {order.total_amount.toFixed(2)}</p>
-                                        <p className="text-[10px] text-secondary font-bold uppercase tracking-widest mt-1">Paid via {order.payment_method.replace('_', ' ')}</p>
+                                        <p className=" text-secondary font-bold uppercase tracking-widest mt-1">Paid via {order.payment_method.replace('_', ' ')}</p>
                                     </div>
                                 </div>
 
                                 <div className="bg-secondary/5 rounded-2xl p-4 border border-secondary/10">
-                                    <p className="text-[10px] text-secondary font-bold uppercase tracking-widest mb-2">Next Steps</p>
-                                    <p className="text-xs text-gray-400 leading-relaxed italic">
+                                    <p className="text-secondary font-bold uppercase tracking-widest mb-2">Next Steps</p>
+                                    <p className="text-sm text-gray-400 leading-relaxed italic">
                                         {isPending
                                             ? "A specialist is assigned to verify your payment. Expect a confirmation within 1-2 hours."
                                             : "Your fragrances are currently being curated and packaged with the utmost care."}
@@ -121,7 +120,7 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                         </div>
 
                         <div className="pt-8 border-t border-white/10 text-center">
-                            <p className="text-[10px] uppercase tracking-[0.5em] text-white/30 font-bold">Tryscentic • Grand Edition Collection</p>
+                            <p className=" uppercase tracking-[0.5em] text-white/30 font-bold">Tryscentic • Grand Edition Collection</p>
                         </div>
                     </div>
                 </div>

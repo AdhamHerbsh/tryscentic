@@ -39,6 +39,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         product.variants?.map((v) => ({
           id: v.id,
           label: v.size_label,
+          color: v.color || undefined,
           price: v.price,
           stock: v.stock_quantity,
           thumbnail: v.thumbnail_image,

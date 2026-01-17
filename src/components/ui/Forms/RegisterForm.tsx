@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { User, Mail, Lock, RotateCcw } from "lucide-react";
+import { User, Mail, Lock, RotateCcw, PhoneCall } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 
 import { InputField } from "./InputField";
@@ -19,9 +19,27 @@ export const RegisterForm: React.FC = () => {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    const validateEgyptianPhone = (num: string) => {
+        // Regex for Egyptian numbers: starts with +201, 01, or 1 followed by 0,1,2,5 and then 8 digits
+        const regex = /^(\+201|01|1)[0125][0-9]{8}$/;
+        return regex.test(num.replace(/\s/g, ''));
+    };
+
+    const formatEgyptianPhone = (num: string) => {
+        let clean = num.replace(/\D/g, ''); // removed all non-digits
+        if (clean.startsWith('20')) {
+            return '+' + clean;
+        }
+        if (clean.startsWith('0')) {
+            return '+20' + clean.slice(1);
+        }
+        return '+20' + clean;
+    };
 
     const handleGoogleLogin = async () => {
         try {
@@ -43,12 +61,19 @@ export const RegisterForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (!validateEgyptianPhone(phone)) {
+            toast.error("Please enter a valid Egyptian phone number (e.g., 01012345678)");
+            return;
+        }
+
         if (password !== confirmPassword) {
             toast.error("Passwords do not match.");
             return;
         }
 
         setIsLoading(true);
+
+        const formattedPhone = formatEgyptianPhone(phone);
 
         try {
             const { error } = await supabase.auth.signUp({
@@ -57,6 +82,7 @@ export const RegisterForm: React.FC = () => {
                 options: {
                     data: {
                         name: name,
+                        phone: formattedPhone,
                     }
                 }
             });
@@ -66,7 +92,6 @@ export const RegisterForm: React.FC = () => {
                 console.error(error);
             } else {
                 toast.success("Registration successful! Check your email to confirm.");
-                // Optionally redirect or wait for verification
                 router.push('/login');
             }
         } catch (error) {
@@ -79,9 +104,9 @@ export const RegisterForm: React.FC = () => {
 
     return (
         // ... container
-        <div className={styles.registerForm + ` relative w-full rounded-xl flex items-center justify-center overflow-hidden`}>
+        <div className={styles.registerForm + ` container relative w-full rounded-xl flex items-center justify-center overflow-hidden`}>
             {/* Equivalent to .formContent: relative, z-20, w-full, padding, flex, flex-col, center content */}
-            <div className="w-full p-8 sm:p-8 flex flex-col justify-center items-center">
+            <div className="w-full flex flex-col justify-center items-center py-8 px-4">
                 <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
                     <InputField
                         icon={<User size={16} />}
@@ -96,6 +121,14 @@ export const RegisterForm: React.FC = () => {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <InputField
+                        icon={<PhoneCall size={16} />}
+                        placeholder="Phone Number"
+                        type="tel"
+                        value={phone}
+                        maxLength={11}
+                        onChange={(e) => setPhone(e.target.value)}
                     />
                     <InputField
                         icon={<Lock size={16} />}

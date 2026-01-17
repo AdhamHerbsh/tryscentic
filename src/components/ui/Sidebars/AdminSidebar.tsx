@@ -1,18 +1,17 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Home, LayoutDashboard, PackagePlus, LogOut, LockKeyhole, Users, ShieldQuestionMark, Banknote, ShoppingBag, Ticket, Gift } from "lucide-react";
-import { createClient } from "@/lib/utils/supabase/client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Home, LayoutDashboard, PackagePlus, LogOut, LockKeyhole, Users, ShieldQuestionMark, Banknote, ShoppingBag, Ticket, Gift, Settings } from "lucide-react";
+import { useUser } from "@/lib/context/UserContext";
 import { toast } from "sonner";
 
 export default function AdminSidebar() {
     const pathname = usePathname();
     const router = useRouter();
-    const supabase = createClient();
+    const { signOut } = useUser();
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
+        await signOut();
         toast.success("Logged out successfully");
         router.push("/login");
     };
@@ -57,6 +56,11 @@ export default function AdminSidebar() {
             name: "Users",
             href: "/dashboard/users",
             icon: <Users size={20} />,
+        },
+        {
+            name: "Settings",
+            href: "/dashboard/settings/hero", // Default to hero
+            icon: <Settings size={20} />,
         },
     ];
 

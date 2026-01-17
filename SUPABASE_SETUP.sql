@@ -45,10 +45,12 @@ create table public.profiles (
   full_name text,
   phone text,
   avatar_url text,
+  bio text,
   wallet_balance numeric default 0,
   role public.user_role default 'customer'::public.user_role,
   is_banned boolean default false,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 -- 6. PRODUCTS (General Details)
@@ -72,6 +74,7 @@ create table public.product_variants (
   id uuid default uuid_generate_v4() primary key,
   product_id uuid references public.products(id) on delete cascade not null,
   size_label text not null, -- e.g. "100ML", "50ML", "Tester"
+  color text not null, -- e.g. "Red", "Blue", "Orange"
   price numeric not null,
   stock_quantity integer not null default 0,
   thumbnail_image text, -- URL to variant-specific thumbnail
@@ -284,6 +287,16 @@ create policy "Admin manage gift codes" on public.gift_codes for all using (
 -- 13. TRIGGERS & FUNCTIONS
 
 -- Handle New User Signup
+create or replace function public.handle_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = timezone('utc'::text, now());
+  return new;
+end;
+$$;
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -652,7 +665,86 @@ create policy "Admin manage receipts" on storage.objects for all using (
   bucket_id = 'transaction_receipts' and exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
 );
 
+-- 14. CONTACT & NEWSLETTER
+-- ==========================================
+
+create table public.contact_submissions (
+  id uuid default uuid_generate_v4() primary key,
+  name text not null,
+  email text not null,
+  message text not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+create table public.newsletter_subscribers (
+  id uuid default uuid_generate_v4() primary key,
+  email text not null unique,
+  subscribed_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Contact & Newsletter RLS
+alter table public.contact_submissions enable row level security;
+alter table public.newsletter_subscribers enable row level security;
+
+-- Storage: Site Assets
+insert into storage.buckets (id, name, public) 
+values ('site_assets', 'site_assets', true)
+on conflict (id) do nothing;
+
+create policy "Site Assets Public Access"
+on storage.objects for select
+using ( bucket_id = 'site_assets' );
+
+create policy "Site Assets Admin Upload"
+on storage.objects for insert
+with check ( bucket_id = 'site_assets' and exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') );
+
+create policy "Site Assets Admin Update"
+on storage.objects for update
+using ( bucket_id = 'site_assets' and exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') );
+
+create policy "Site Assets Admin Delete"
+on storage.objects for delete
+using ( bucket_id = 'site_assets' and exists (select 1 from public.profiles where id = auth.uid() and role = 'admin') );
+
+-- Contact Submissions Policies
+create policy "Public create contact submissions" on public.contact_submissions for insert with check (true);
+create policy "Admin read contact submissions" on public.contact_submissions for select using (
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- Newsletter Policies
+create policy "Public create newsletter" on public.newsletter_subscribers for insert with check (true);
+create policy "Admin read newsletter" on public.newsletter_subscribers for select using (
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- 15. SITE SETTINGS
+-- ==========================================
+
+create table public.site_settings (
+  key text primary key,
+  value jsonb not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Site Settings RLS
+alter table public.site_settings enable row level security;
+
+-- Everyone can read settings
+create policy "Public read site settings" on public.site_settings for select using (true);
+-- Only admins can modify
+create policy "Admin all site settings" on public.site_settings for all using (
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- Function to update updated_at
+create trigger update_site_settings_modtime
+    before update on public.site_settings
+    for each row execute procedure public.handle_updated_at();
+
 -- ==========================================
 -- COMPLETION MESSAGE
 -- ==========================================
--- ... (rest of the completion message)
+-- Schema setup complete.

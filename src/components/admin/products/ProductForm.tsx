@@ -15,6 +15,7 @@ import { compressImage } from '@/lib/utils/image-compression';
 interface VariantFormData {
     id?: string;
     size_label: string;
+    color: string | null;
     price: number;
     stock_quantity: number;
     thumbnail_image: string | null;
@@ -68,6 +69,7 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
         variants: initialData?.variants?.map(v => ({
             id: v.id, // Keep ID for updates
             size_label: v.size_label,
+            color: v.color || null,
             price: v.price,
             stock_quantity: v.stock_quantity,
             thumbnail_image: v.thumbnail_image || null,
@@ -77,7 +79,7 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
                 sort_order: img.sort_order
             })) || []
         })) || [
-                { size_label: '', price: 0, stock_quantity: 0, thumbnail_image: null, images: [] }
+                { size_label: '', color: null, price: 0, stock_quantity: 0, thumbnail_image: null, images: [] as VariantFormData['images'] }
             ]
     });
 
@@ -135,7 +137,7 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
     const handleAddVariant = () => {
         setFormData({
             ...formData,
-            variants: [...formData.variants, { size_label: '', price: 0, stock_quantity: 0, thumbnail_image: null, images: [] }]
+            variants: [...formData.variants, { size_label: '', color: null, price: 0, stock_quantity: 0, thumbnail_image: null, images: [] as VariantFormData['images'] }]
         });
     };
 
@@ -516,6 +518,33 @@ export default function ProductForm({ initialData, mode = 'create' }: ProductFor
                                         placeholder="e.g., 100ML"
                                         required
                                     />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
+                                        Color Value
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={variant.color || ''}
+                                            onChange={(e) => handleVariantChange(index, 'color', e.target.value)}
+                                            className="flex-1 px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#511624] focus:border-transparent text-sm"
+                                            placeholder="e.g., #F79A20"
+                                        />
+                                        <div className="relative w-5 h-5 shrink-0">
+                                            <input
+                                                type="color"
+                                                value={variant.color?.startsWith('#') && variant.color.length === 7 ? variant.color : '#000000'}
+                                                onChange={(e) => handleVariantChange(index, 'color', e.target.value)}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                            />
+                                            <div
+                                                className="w-full h-full rounded-lg border border-gray-300"
+                                                style={{ backgroundColor: variant.color?.startsWith('#') ? variant.color : '#000000' }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 mt-1">Use picker or enter hex code</p>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">

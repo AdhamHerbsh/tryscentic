@@ -1,15 +1,20 @@
-import { getDashboardStats, getRevenueAnalytics, getRecentActivities, getTopProducts } from "@/data-access/admin/dashboard";
+"use client";
 import { StatsCards } from "./stats-cards";
+import {
+    useDashboardStats,
+    useRevenueAnalytics,
+    useRecentActivities,
+    useTopProducts
+} from "@/lib/react-query/hooks";
 // import { RevenueChart } from "./revenue-chart";
 // import { RecentActivity } from "./recent-activity";
 
-export default async function AdminDashboardPage() {
-    const [stats, revenueData, activities, topProducts] = await Promise.all([
-        getDashboardStats(),
-        getRevenueAnalytics(),
-        getRecentActivities(10),
-        getTopProducts(5),
-    ]);
+export default function AdminDashboardPage() {
+    // Use React Query hooks for all data fetching
+    const { data: stats } = useDashboardStats();
+    const { data: revenueData } = useRevenueAnalytics();
+    const { data: activities = [] } = useRecentActivities(10);
+    const { data: topProducts = [] } = useTopProducts(5);
 
     return (
         <div className="space-y-8">
@@ -18,11 +23,13 @@ export default async function AdminDashboardPage() {
                 <p className="text-gray-400">Monitor your perfume store performance</p>
             </div>
 
-            <StatsCards
-                stats={stats}
-                recentActivity={activities}
-                topProducts={topProducts}
-            />
+            {stats && (
+                <StatsCards
+                    stats={stats}
+                    recentActivity={activities}
+                    topProducts={topProducts}
+                />
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">

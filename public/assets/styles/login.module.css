@@ -1,16 +1,16 @@
 .brandTitle {
     /* Tryscentic */
 
-    width: 500px;
     height: 25px;
 
     font-family: 'Cinzel';
     font-style: normal;
     font-weight: 700;
-    font-size: 4.5rem;
+    font-size: 4rem;
     line-height: 24px;
     /* identical to box height, or 30% */
     display: flex;
+    justify-content: center;
     align-items: center;
     text-align: center;
 

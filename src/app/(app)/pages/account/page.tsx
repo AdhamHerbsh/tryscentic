@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/utils/supabase/client";
 import Sidebar from "@/components/ui/Sidebars/Sidebar";
 import WalletSection from "@/components/parts/WalletSection";
 import OrderHistorySection from "@/components/parts/OrderHistorySection";
@@ -11,67 +10,47 @@ import PersonalInfoSection from "@/components/parts/PersonalInfoSection";
 import MyGiftsSection from "@/components/parts/MyGiftsSection";
 import EditProfileModal from "@/components/ui/Modals/EditProfileModal";
 import { toast } from "sonner";
-import { Loader, ShieldAlert, Menu } from "lucide-react";
+import { ShieldAlert, Menu } from "lucide-react";
 import { useUser } from "@/lib/context/UserContext";
 
-interface DashboardUser {
-  id: string;
-  email?: string;
-  full_name?: string;
-  avatar_url?: string;
-  bio?: string;
-  created_at?: string;
-  user_metadata?: {
-    full_name?: string;
-    avatar_url?: string;
-  };
-}
 
+import { updateProfile } from "@/data-access/user/profile";
 
 export default function AccountPage() {
-  const { user, profile, isLoading, refreshProfile, signOut } = useUser();
+  const { user, profile, refreshProfile, signOut } = useUser();
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("personal-info");
   const router = useRouter();
-  const supabase = createClient();
 
   const handleUpdateProfile = async (updatedData: {
     full_name: string;
     bio: string;
     avatar_url: string;
+    phone: string;
   }) => {
     if (!user) return;
     try {
-      const { error } = await supabase.from("profiles").upsert({
-        id: user.id,
-        ...updatedData,
-        updated_at: new Date().toISOString(),
-      });
-
-      if (error) throw error;
-
+      await updateProfile(user.id, updatedData);
       await refreshProfile();
-      toast.success("Profile updated successfully");
     } catch (error) {
-      console.log("Error updating profile:", error);
+      console.error("Error updating profile:", error);
       throw error;
     }
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    toast.success("Signed out successfully");
-    router.push("/login");
+    try {
+      await signOut();
+      toast.success("Signed out successfully");
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center backdrop-blur-3xl">
-        <Loader className="h-10 w-10 animate-spin text-amber-600" />
-      </div>
-    );
-  }
 
   // Auth Guard State
   return (
@@ -128,14 +107,20 @@ export default function AccountPage() {
                   {activeTab === 'favorites' && 'Favorites'}
                 </h1>
               </div>
-
-              {/* Quick Actions / Status could go here if needed */}
             </div>
 
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
               {activeTab === 'personal-info' && (
                 <div className="space-y-8">
-                  <PersonalInfoSection user={user} />
+                  <PersonalInfoSection user={{
+                    id: user.id,
+                    email: user.email || undefined,
+                    phone: (profile?.phone || (user.user_metadata?.phone as string)) ?? undefined,
+                    full_name: (profile?.full_name || (user.user_metadata?.name as string)) ?? undefined,
+                    avatar_url: (profile?.avatar_url || (user.user_metadata?.avatar_url as string)) ?? undefined,
+                    bio: profile?.bio ?? undefined,
+                    created_at: profile?.created_at || user.created_at
+                  }} />
                 </div>
               )}
               {activeTab === 'wallet' && <WalletSection />}
@@ -155,6 +140,7 @@ export default function AccountPage() {
           full_name: profile?.full_name || user?.user_metadata?.full_name || "",
           bio: profile?.bio || "",
           avatar_url: profile?.avatar_url || user?.user_metadata?.avatar_url || "",
+          phone: profile?.phone || user?.user_metadata?.phone || "",
         }}
         onSave={handleUpdateProfile}
       />

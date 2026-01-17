@@ -123,6 +123,7 @@ export default function ProductDetials({
                   className={`object-cover transition-all duration-500 ${isSelectedSizeOutOfStock ? 'grayscale opacity-50' : ''}`}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
+                  loading="eager"
                 />
                 {isSelectedSizeOutOfStock && (
                   <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -148,6 +149,7 @@ export default function ProductDetials({
                       fill
                       className="object-cover"
                       sizes="120px"
+                      loading="lazy"
                     />
                   </button>
                 ))}
@@ -177,7 +179,7 @@ export default function ProductDetials({
               </div>
 
               <div>
-                <p className="mb-3 text-sm uppercase tracking-[0.3em] text-white/50">
+                <p className="mb-3 uppercase">
                   Size
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -206,8 +208,24 @@ export default function ProductDetials({
                 </div>
               </div>
 
+              {selectedSize.color && (
+                <div>
+                  <p className="mb-3 uppercase">
+                    Color
+                  </p>
+                  <div className="flex items-center gap-3 rounded-2xl w-fit">
+                    {selectedSize.color.startsWith('#') && (
+                      <div
+                        className="w-10 h-10 rounded-full border border-white/20 shadow-sm"
+                        style={{ backgroundColor: selectedSize.color }}
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-wrap items-center gap-4">
-                <p className="text-sm uppercase tracking-[0.3em] text-white/50">
+                <p className="uppercase">
                   Quantity
                 </p>
                 <div className="flex items-center rounded-full border border-white/30">

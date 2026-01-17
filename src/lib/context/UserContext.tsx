@@ -1,9 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { User } from "@supabase/supabase-js";
+import { User, RealtimePostgresChangesPayload, AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { createClient } from "@/lib/utils/supabase/client";
 import { Profile } from "@/types/database";
+
+import { getFullProfile } from "@/data-access/user/profile";
 
 interface UserContextType {
     user: User | null;
@@ -15,35 +17,23 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export function UserProvider({ children }: { children: ReactNode }) {
+interface UserProviderProps {
+    children: ReactNode;
+    initialProfile?: Profile | null;
+}
+
+export function UserProvider({ children, initialProfile = null }: UserProviderProps) {
     const [user, setUser] = useState<User | null>(null);
-    const [profile, setProfile] = useState<Profile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [profile, setProfile] = useState<Profile | null>(initialProfile);
+    const [isLoading, setIsLoading] = useState(!initialProfile);
     const supabase = createClient();
-
-    const fetchProfile = async (userId: string) => {
-        try {
-            const { data, error } = await supabase
-                .from("profiles")
-                .select("*")
-                .eq("id", userId)
-                .single();
-
-            if (error) {
-                console.error("Error fetching profile:", error);
-                return null;
-            }
-            return data as Profile;
-        } catch (err) {
-            console.error("Unexpected error fetching profile:", err);
-            return null;
-        }
-    };
 
     const refreshProfile = async () => {
         if (user) {
-            const updatedProfile = await fetchProfile(user.id);
-            setProfile(updatedProfile);
+            const updatedProfile = await getFullProfile(user.id);
+            if (updatedProfile) {
+                setProfile(updatedProfile);
+            }
         }
     };
 
@@ -51,13 +41,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
         let profileSubscription: any = null;
 
         const initializeAuth = async () => {
-            setIsLoading(true);
+            // Start loading only if we define it so. If we have initialProfile, we might still want to check auth consistency
+            if (!initialProfile) setIsLoading(true);
+
             const { data: { user: authUser } } = await supabase.auth.getUser();
             setUser(authUser);
 
             if (authUser) {
-                const userProfile = await fetchProfile(authUser.id);
-                setProfile(userProfile);
+                // If we have initialProfile and it matches user, keep it, otherwise fetch
+                if (!profile || profile.id !== authUser.id) {
+                    const userProfile = await getFullProfile(authUser.id);
+                    setProfile(userProfile);
+                }
 
                 // Set up Realtime listener for this user's profile
                 profileSubscription = supabase
@@ -70,7 +65,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
                             table: "profiles",
                             filter: `id=eq.${authUser.id}`,
                         },
-                        (payload) => {
+                        (payload: RealtimePostgresChangesPayload<Profile>) => {
                             setProfile(payload.new as Profile);
                         }
                     )
@@ -83,38 +78,23 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
         initializeAuth();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
             const newUser = session?.user ?? null;
-            setUser(newUser);
 
-            if (newUser) {
-                const userProfile = await fetchProfile(newUser.id);
-                setProfile(userProfile);
-
-                // Re-subscribe to Realtime if user changed or logged in
-                if (profileSubscription) {
-                    supabase.removeChannel(profileSubscription);
+            // Only update if user actually changed to avoid unnecessary re-renders
+            if (newUser?.id !== user?.id) {
+                setUser(newUser);
+                if (newUser) {
+                    const userProfile = await getFullProfile(newUser.id);
+                    setProfile(userProfile);
+                } else {
+                    setProfile(null);
                 }
-                profileSubscription = supabase
-                    .channel(`profile-${newUser.id}`)
-                    .on(
-                        "postgres_changes",
-                        {
-                            event: "UPDATE",
-                            schema: "public",
-                            table: "profiles",
-                            filter: `id=eq.${newUser.id}`,
-                        },
-                        (payload) => {
-                            setProfile(payload.new as Profile);
-                        }
-                    )
-                    .subscribe();
-            } else {
+            }
+
+            if (event === 'SIGNED_OUT') {
                 setProfile(null);
-                if (profileSubscription) {
-                    supabase.removeChannel(profileSubscription);
-                }
+                setUser(null);
             }
         });
 
@@ -124,12 +104,26 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 supabase.removeChannel(profileSubscription);
             }
         };
-    }, [supabase]);
+    }, [supabase, initialProfile]); // Remove profile from dependency to avoid loop, use ref if needed or rely on internal state
 
     const signOut = async () => {
-        await supabase.auth.signOut();
-        setUser(null);
-        setProfile(null);
+        console.log("Signing out...");
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+
+            // Clear all cookies to ensure session termination
+            document.cookie.split(";").forEach((c) => {
+                document.cookie = c
+                    .replace(/^ +/, "")
+                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+        } catch (error) {
+            console.error("Error signing out:", error);
+        } finally {
+            setUser(null);
+            setProfile(null);
+        }
     };
 
     return (

@@ -12,6 +12,7 @@ export interface Product {
 export interface ProductSizeOption {
   id: string; // The Variant UUID from the database
   label: string;
+  color?: string;
   price: number;
   stock: number;
   images?: string[];

@@ -34,19 +34,37 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+import { getAllSiteSettings } from "@/data-access/settings";
+import { SiteSettingsProvider } from "@/providers/SiteSettingsProvider";
+import { getServerFullProfile } from "@/actions/profile-actions";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [settingsData, userProfile] = await Promise.all([
+    getAllSiteSettings(),
+    getServerFullProfile(),
+  ]);
+
+  const initialSettings = {
+    hero: settingsData.hero_section,
+    content: settingsData.content_settings,
+    socials: settingsData.social_settings,
+  };
+
   return (
     <html lang="en">
       <body
         className={`${cinzel.variable} ${cinzelDecorative.variable} antialiased bg-primary`}
+        suppressHydrationWarning
       >
-        <UserProvider>
-          {children}
-          <Toaster position="bottom-center" richColors />
+        <UserProvider initialProfile={userProfile}>
+          <SiteSettingsProvider initialSettings={initialSettings}>
+            {children}
+            <Toaster position="bottom-center" richColors />
+          </SiteSettingsProvider>
         </UserProvider>
       </body>
     </html>

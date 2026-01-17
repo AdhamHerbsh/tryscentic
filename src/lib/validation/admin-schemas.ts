@@ -13,6 +13,7 @@ export const createProductSchema = z.object({
       z.object({
         id: z.string().optional(),
         size_label: z.string().min(1, "Size label is required"),
+        color: z.string().optional().nullable(),
         price: z.number().min(0.01, "Price must be greater than 0"),
         stock_quantity: z.number().int().min(0, "Stock cannot be negative"),
         thumbnail_image: z

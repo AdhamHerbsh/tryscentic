@@ -28,7 +28,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: "google",
                 options: {
-                    redirectTo: `${window.location.origin}/`,
+                    redirectTo: `${window.location.origin}/callback`,
                 },
             });
             if (error) {
@@ -73,7 +73,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     return (
         <>
             {/* Main Container */}
-            <div className="">
+            <div className="container max-w-lg">
                 {/* Logo */}
                 <div className="mb-8">
                     <h1
@@ -83,7 +83,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
                 </div>
 
                 {/* Login Card */}
-                <div className={styles.loginForm + ` rounded-3xl border-2 border-gray-300 p-8 shadow-2xl`}>
+                <div className={styles.loginForm + ` rounded-3xl border-2 border-gray-300 py-8 px-4 shadow-2xl`}>
                     {/* Google Sign In Button */}
                     {/* Google Sign In Button */}
                     <button

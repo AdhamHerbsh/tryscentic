@@ -7,6 +7,7 @@ interface UserData {
     full_name: string;
     bio: string;
     avatar_url: string;
+    phone: string;
 }
 
 interface EditProfileModalProps {
@@ -26,6 +27,7 @@ export default function EditProfileModal({
         full_name: "",
         bio: "",
         avatar_url: "",
+        phone: "",
     });
     const [loading, setLoading] = useState(false);
 
@@ -35,6 +37,7 @@ export default function EditProfileModal({
                 full_name: user.full_name || "",
                 bio: user.bio || "",
                 avatar_url: user.avatar_url || "",
+                phone: user.phone || "",
             });
         }
     }, [user, isOpen]);
@@ -44,6 +47,19 @@ export default function EditProfileModal({
     ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const validateEgyptianPhone = (num: string) => {
+        // Matches +201xxxxxxxxx or 01xxxxxxxxx where x is [0-9] and the third digit is 0, 1, 2, or 5
+        const regex = /^(?:\+201|01)[0125]\d{8}$/;
+        return regex.test(num.replace(/\s/g, ''));
+    };
+
+    const formatEgyptianPhone = (num: string) => {
+        let clean = num.replace(/\D/g, '');
+        if (clean.startsWith('20')) return '+' + clean;
+        if (clean.startsWith('0')) return '+20' + clean.slice(1);
+        return '+20' + clean;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -57,8 +73,18 @@ export default function EditProfileModal({
             return;
         }
 
+        if (formData.phone && !validateEgyptianPhone(formData.phone)) {
+            toast.error("Please enter a valid Egyptian phone number");
+            setLoading(false);
+            return;
+        }
+
         try {
-            await onSave(formData);
+            const dataToSave = {
+                ...formData,
+                phone: formData.phone ? formatEgyptianPhone(formData.phone) : "",
+            };
+            await onSave(dataToSave);
             toast.success("Profile updated successfully!");
             onClose();
         } catch (error) {
@@ -114,6 +140,24 @@ export default function EditProfileModal({
 
                     <div className="space-y-2">
                         <label
+                            htmlFor="phone"
+                            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                        >
+                            Phone Number
+                        </label>
+                        <input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            placeholder="+20 101 234 5678"
+                            className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label
                             htmlFor="avatar_url"
                             className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
                         >
@@ -140,7 +184,7 @@ export default function EditProfileModal({
                         <textarea
                             id="bio"
                             name="bio"
-                            rows={3}
+                            rows={2}
                             value={formData.bio}
                             onChange={handleChange}
                             placeholder="Tell us a little about yourself..."

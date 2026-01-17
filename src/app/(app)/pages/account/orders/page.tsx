@@ -32,7 +32,7 @@ export default async function OrdersPage() {
     };
 
     return (
-        <section className="py-20">
+        <section className="py-20 px-4">
             <div className="container mx-auto">
                 <header className="flex items-end justify-between border-b border-white/10 py-6 mb-3">
                     <div>

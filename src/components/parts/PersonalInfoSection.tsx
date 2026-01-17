@@ -4,6 +4,7 @@ import { User, Mail, FileText, Calendar, ShieldCheck } from "lucide-react";
 interface UserProfile {
     id: string;
     email?: string;
+    phone?: string;
     full_name?: string;
     avatar_url?: string;
     bio?: string;
@@ -42,14 +43,21 @@ export default function PersonalInfoSection({ user }: PersonalInfoSectionProps) 
 
                     <div className="space-y-6">
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Full Name</label>
+                            <label className="text-sm font-bold uppercase tracking-wider text-gray-200 ml-1">Full Name</label>
                             <div className="flex items-center gap-3 bg-black/20 border border-white/5 p-4 rounded-2xl">
                                 <span className="text-white font-medium">{user.full_name || "Not set"}</span>
                             </div>
                         </div>
 
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Email Address</label>
+                            <label className="text-sm font-bold uppercase tracking-wider text-gray-200 ml-1">Phone Number</label>
+                            <div className="flex items-center gap-3 bg-black/20 border border-white/5 p-4 rounded-2xl">
+                                <span className="text-white font-medium">{user.phone || "Not set"}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm font-bold uppercase tracking-wider text-gray-200 ml-1">Email Address</label>
                             <div className="flex items-center gap-3 bg-black/20 border border-white/5 p-4 rounded-2xl">
                                 <Mail className="h-4 w-4 text-amber-500/50" />
                                 <span className="text-white font-medium">{user.email || "Not set"}</span>
@@ -66,13 +74,13 @@ export default function PersonalInfoSection({ user }: PersonalInfoSectionProps) 
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white">About You</h2>
-                            <p className="text-gray-400 text-sm">Your story and preferences</p>
+                            <p className="text-gray-200 text-sm">Your story and preferences</p>
                         </div>
                     </div>
 
                     <div className="space-y-6">
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Biography</label>
+                            <label className="text-sm font-bold uppercase tracking-wider text-gray-200 ml-1">Biography</label>
                             <div className="min-h-[100px] bg-black/20 border border-white/5 p-4 rounded-2xl">
                                 <p className="text-gray-300 leading-relaxed italic">
                                     {user.bio || "No bio added yet. Tell us about your signature scent!"}
@@ -83,7 +91,7 @@ export default function PersonalInfoSection({ user }: PersonalInfoSectionProps) 
                         <div className="flex items-center justify-between gap-4">
                             <div className="flex items-center gap-2 text-gray-400">
                                 <Calendar className="h-4 w-4" />
-                                <span className="text-xs">Joined {joinDate}</span>
+                                <span className="text-sm">Joined {joinDate}</span>
                             </div>
                             <div className="flex items-center gap-2 text-amber-500/80">
                                 <ShieldCheck className="h-4 w-4" />

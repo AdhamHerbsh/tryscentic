@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
-import { Search, ShoppingCart, Menu, X, SquareArrowUp } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, SquareArrowUp, LogOut, LogOutIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/lib/context/CartContext";
 import { useUser } from "@/lib/context/UserContext";
 import TopUpModal from "@/components/account/wallet/TopUpModal";
 import LoginModal from "@/components/ui/Modals/LoginModal";
+import { redirect } from "next/navigation";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,9 +34,14 @@ export default function Header() {
     { name: "Shop", href: "/pages/shop" },
     { name: "Gifts", href: "/pages/gifts" },
     { name: "Wallet", href: "/pages/account/wallet" },
-    { name: "About Us", href: "/pages/about-us" },
+    { name: "Our Story", href: "/pages/our-story" },
     { name: "Contact Us", href: "/pages/contact-us" },
   ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    redirect("/login");
+  };
 
   return (
     <>
@@ -61,7 +67,7 @@ export default function Header() {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden xl:flex items-center space-x-4">
 
               {userRole === 'admin' && (
                 <Link
@@ -167,7 +173,7 @@ export default function Header() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden rounded-full p-2 transition-colors hover:bg-white hover:bg-opacity-10"
+                className="xl:hidden rounded-full p-2 transition-colors hover:bg-black hover:bg-opacity-10"
               >
                 {isMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -180,8 +186,8 @@ export default function Header() {
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="border-t border-amber-900 py-4 md:hidden">
-              <nav className="flex flex-col space-y-4">
+            <div className="border-t border-amber-900 py-4 xl:hidden">
+              <nav className="flex flex-col space-y-6">
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}
@@ -192,25 +198,38 @@ export default function Header() {
                     {link.name}
                   </Link>
                 ))}
+                {user ? (
+                  <div>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center justify-center gap-2 w-full py-2 rounded-2xl bg-red-600/10 text-red-400 border border-red-600/20 hover:bg-red-600/20 hover:border-red-600/30 transition-all duration-300"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <button
+                      onClick={() => setIsLoginModalOpen(true)}
+                      className="items-center justify-center rounded-md px-4 py-2 text-sm font-semibold text-white transition-colors hover:text-amber-400 cursor-pointer"
+                    >
+                      Log In
+                    </button>
+                    <Link
+                      href="/register"
+                      className="items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-200"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                )
+                }
 
-                <div>
-                  <button
-                    onClick={() => setIsLoginModalOpen(true)}
-                    className="items-center justify-center rounded-md px-4 py-2 text-sm font-semibold text-white transition-colors hover:text-amber-400 cursor-pointer"
-                  >
-                    Log In
-                  </button>
-                  <Link
-                    href="/register"
-                    className="items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-200"
-                  >
-                    Sign Up
-                  </Link>
-                </div>
                 {/* Mobile Top-Up Button */}
                 <button
                   onClick={() => setIsTopUpOpen(true)}
-                  className="flex items-center justify-center gap-2 rounded-md border-2 border-amber-600 bg-amber-600 px-4 py-2 text-sm font-semibold transition-all hover:bg-amber-700">
+                  className="flex items-center justify-center gap-2 rounded-md border-2 border-amber-600 bg-amber-600 px-4 py-2 font-bold transition-all hover:bg-amber-700">
                   <span>Top-Up</span>
                   <SquareArrowUp className="h-4 w-4" />
                 </button>

@@ -89,7 +89,7 @@ export default function FAQ() {
   };
 
   return (
-    <section className="relative min-h-screen px-4 py-16 sm:px-6 lg:px-8">
+    <section id="faq" className="relative min-h-screen px-4 py-16 sm:px-6 lg:px-8">
       {/* Background Decorative Image (Optional) */}
       <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 opacity-30 lg:block">
         <Image

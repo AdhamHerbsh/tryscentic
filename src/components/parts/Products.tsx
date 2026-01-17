@@ -38,6 +38,8 @@ export default function Products({
   const currentQuery = searchParams.get("q") || "";
   const currentBrand = searchParams.get("brand_id") || "";
   const currentCategory = searchParams.get("category_id") || "";
+  const currentMinPrice = Number(searchParams.get("min_price")) || undefined;
+  const currentMaxPrice = Number(searchParams.get("max_price")) || undefined;
 
   const updateSearchParam = (params: { [key: string]: string | number | null }) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -137,7 +139,15 @@ export default function Products({
               categories={categories}
               selectedBrand={currentBrand}
               selectedCategory={currentCategory}
+              minPrice={currentMinPrice}
+              maxPrice={currentMaxPrice}
               onFilterChange={(key, value) => updateSearchParam({ [key]: value })}
+              onClearAll={() => updateSearchParam({
+                brand_id: "",
+                category_id: "",
+                min_price: "",
+                max_price: ""
+              })}
             />
           </aside>
         )}

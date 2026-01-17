@@ -74,7 +74,7 @@ export default function TransactionReviewTable({ transactions }: { transactions:
                     <tbody className="divide-y divide-gray-800">
                         {transactions.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="p-8 text-center text-gray-500">
+                                <td colSpan={5} className="p-8 text-center text-gray-200">
                                     No pending top-up requests found.
                                 </td>
                             </tr>
@@ -82,19 +82,19 @@ export default function TransactionReviewTable({ transactions }: { transactions:
                             transactions.map((tx) => (
                                 <tr key={tx.id} className="hover:bg-gray-800/50 transition-colors">
                                     <td className="p-4">
-                                        <p className="text-white font-medium">{tx.user?.full_name || "Unknown User"}</p>
-                                        <p className="text-xs text-gray-500">{tx.user?.email}</p>
+                                        <p className="text-white font-bold">{tx.user?.full_name || "Unknown User"}</p>
+                                        <p className="text-sm text-gray-200">{tx.user?.email}</p>
                                     </td>
                                     <td className="p-4 text-emerald-400 font-bold">
                                         LE {tx.amount.toFixed(2)}
                                     </td>
                                     <td className="p-4 text-gray-300">
                                         <div className="flex items-center gap-2">
-                                            <FileText size={16} className="text-gray-500" />
+                                            <FileText size={16} className="text-gray-200" />
                                             {tx.description}
                                         </div>
                                     </td>
-                                    <td className="p-4 text-gray-500 text-sm">
+                                    <td className="p-4 text-gray-200">
                                         {new Date(tx.created_at).toLocaleDateString()}
                                     </td>
                                     <td className="p-4 text-right">
@@ -136,7 +136,7 @@ export default function TransactionReviewTable({ transactions }: { transactions:
                                     {selectedTx.proof_url ? (
                                         <div className="relative aspect-9/16 w-full lg:w-3/4 mx-auto bg-black rounded-lg border border-gray-800 overflow-hidden group">
                                             {/* Note: proof_url is a signed URL generated server-side */}
-                                            <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                                            <div className="absolute inset-0 flex items-center justify-center text-gray-200">
                                                 Loading Image...
                                             </div>
                                             <img
@@ -153,7 +153,7 @@ export default function TransactionReviewTable({ transactions }: { transactions:
                                             </Link>
                                         </div>
                                     ) : (
-                                        <div className="flex flex-col items-center justify-center h-64 bg-gray-800/50 rounded-lg text-gray-500">
+                                        <div className="flex flex-col items-center justify-center h-64 bg-gray-800/50 rounded-lg text-gray-200">
                                             <FileText size={48} className="mb-2 opacity-50" />
                                             <p>No proof uploaded</p>
                                         </div>
@@ -164,16 +164,16 @@ export default function TransactionReviewTable({ transactions }: { transactions:
                                 <div className="space-y-6">
                                     <div className="space-y-4 bg-gray-800/30 p-6 rounded-xl border border-gray-700">
                                         <div>
-                                            <span className="block text-xs text-gray-500 uppercase mb-1">User</span>
+                                            <span className="block text-xs text-gray-200 uppercase mb-1">User</span>
                                             <p className="text-lg font-bold text-white">{selectedTx.user?.full_name}</p>
                                             <p className="text-sm text-gray-400">{selectedTx.user?.email}</p>
                                         </div>
                                         <div>
-                                            <span className="block text-xs text-gray-500 uppercase mb-1">Requested Amount</span>
+                                            <span className="block text-xs text-gray-200 uppercase mb-1">Requested Amount</span>
                                             <p className="text-3xl font-bold text-emerald-400">LE {selectedTx.amount.toFixed(2)}</p>
                                         </div>
                                         <div>
-                                            <span className="block text-xs text-gray-500 uppercase mb-1">Note / Description</span>
+                                            <span className="block text-xs text-gray-200 uppercase mb-1">Note / Description</span>
                                             <p className="text-gray-300">{selectedTx.description}</p>
                                         </div>
                                     </div>

@@ -57,7 +57,7 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
       price: product.price,
       image: product.image,
     });
-    toast.success(`${product.title} added to cart!`);
+    toast.success(`${product.title} added to cart!`, { duration: 500 });
   };
 
   return (
